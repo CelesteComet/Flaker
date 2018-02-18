@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Flaker</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="rendezvous_placeholder">Rendezvous at...</string>
+</resources>
