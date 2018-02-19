@@ -43,22 +43,22 @@ UX
 
 #### Day 1
 * Assess feasibility of project
-* Design database schema - ** JOEY, ROSE **
+* Design database schema - **JOEY, ROSE**
 * Finish user authentication tutorials - **JOEY, ROSE**
-* Finish basic app tab navigation - ** BRUCE **
-* Login and User page views - ** Alex **
+* Finish basic app tab navigation - **BRUCE**
+* Login and User page views - **Alex**
 
 #### Day 2
-* Implement user authentication - ** JOEY, ROSE, Alex ** 
-* Integrate profile views with backend ** Alex **
+* Implement user authentication - **JOEY, ROSE, Alex** 
+* Integrate profile views with backend **Alex**
 * Leaderboard - ** Alex **
 
 #### Day 3
-* Test syncing of coordinate response from Google Maps API to database - ** JOEY, ROSE **
-* Begin implementation of real-time location tracking ** All **
+* Test syncing of coordinate response from Google Maps API to database - **JOEY, ROSE**
+* Begin implementation of real-time location tracking **All**
 
 #### Day 4
-* Continue implementation of real-time location tracking. ** All **
+* Continue implementation of real-time location tracking. **All**
 
 #### Day 5
 * Implement friends and friend lists.
