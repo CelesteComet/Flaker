@@ -1,27 +1,10 @@
-
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.flaker.flaker.MapsActivity">
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true">
-
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-
-    </android.support.constraint.ConstraintLayout>
-
 
     <fragment
         android:id="@+id/map"
@@ -29,30 +12,57 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
     </fragment>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/toolbar_container"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="25dp">
+        android:layout_height="wrap_content"
 
-        <EditText
-            android:id="@+id/searchView1"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="58dp"
-            android:background="@android:color/white"
-            android:hint="@string/rendezvous_placeholder"
-            android:inputType="text"
-            android:paddingStart="20dp"
-            android:textColor="@android:color/black"></EditText>
-
-    </RelativeLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
+
+
+    <EditText
+        android:id="@+id/searchView1"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="28dp"
+        android:background="@android:color/white"
+        android:hint="@string/rendezvous_placeholder"
+        android:inputType="text"
+        android:paddingStart="20dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container">
+
+    </EditText>
+
+
+
+
+</android.support.constraint.ConstraintLayout>
 
