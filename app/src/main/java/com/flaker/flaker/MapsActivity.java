@@ -8,10 +8,19 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,8 +39,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
+    private EditText mEditText;
 
-    // The entry points to the Places API.
+    /* The entry points to the Places API. */
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
 
@@ -62,11 +72,54 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+
+            // TODO: Map search result goes to default currently, make it remember where it was last known, google places issue
         }
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+        /* Attach event handler for EditText input */
+//        EditText editText = (EditText) findViewById(R.id.search_bar);
+//        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                boolean handled = false;
+//                String searchLocation = v.getText().toString();
+//                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                    sendMessage(searchLocation);
+//                    handled = true;
+//                }
+//                return handled;
+//            }
+//        });
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                Log.i(TAG, "Place: " + place.getName());
+                LatLng placeLatLng = place.getLatLng();
+
+                // TODO: Implement method to move to a certain part of the map based on place
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
+                mMap.animateCamera(cameraUpdate);
+
+
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error for autocomplete
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
 
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
@@ -79,6 +132,10 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
 
         mapFragment.getMapAsync(this);
 
+    }
+
+    private void sendMessage(String locationToSearch) {
+        Log.d("MEH", locationToSearch);
     }
 
 
@@ -94,8 +151,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
 
         // Prompt the user for permission.
         getLocationPermission();

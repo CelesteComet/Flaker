@@ -18,6 +18,7 @@ public class BaseActivity extends AppCompatActivity {
         // Used to remove the default top title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

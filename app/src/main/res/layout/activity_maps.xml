@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.flaker.flaker.MapsActivity">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-    </fragment>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/toolbar_container"
@@ -26,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp">
 
 
         <android.support.v7.widget.Toolbar
@@ -43,23 +30,48 @@
     </android.support.constraint.ConstraintLayout>
 
 
-    <EditText
-        android:id="@+id/searchView1"
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="28dp"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"></fragment>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginStart="25dp"
         android:background="@android:color/white"
-        android:hint="@string/rendezvous_placeholder"
-        android:inputType="text"
-        android:paddingStart="20dp"
-        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_container">
 
-    </EditText>
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/rendezvous_placeholder"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingStart="20dp"
+            android:textColor="@android:color/black"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"></fragment>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
 
 
 
