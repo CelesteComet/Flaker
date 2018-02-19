@@ -44,7 +44,7 @@ UX
 #### Day 1
 * Assess feasibility of project
 * Design database schema - ** JOEY, ROSE **
-* Finish user authentication tutorials - ** JOEY, ROSE **
+* Finish user authentication tutorials - **JOEY, ROSE**
 * Finish basic app tab navigation - ** BRUCE **
 * Login and User page views - ** Alex **
 
