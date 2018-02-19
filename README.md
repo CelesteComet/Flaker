@@ -4,11 +4,11 @@
 Everyone has experienced the frustration of their friends all arriving at different times to a planned event. Flaker attempts to mitigate the problem by providing the routes and ETAs of their friend group. In addition, a filterable tardiness leaderboard is kept, so you can shame your flakiest friend for his perpetual lateness.
 
 ### Functionality & MVP
-[ ] User can set a destination and send a location request to other users.
-[ ] When a user receives a location request, they choose their mode of transportation, and their estimated time of travel to the destination will be calculated.
-[ ] Every user that belongs to a request will be able to see every other user’s route and estimated time of travel to the location.
-[ ] Users who did not make it to the destination in time will be a Flaker and their points will be calculated.
-[ ] Leaderboard filterable by friend group
+- [ ] User can set a destination and send a location request to other users.
+- [ ] When a user receives a location request, they choose their mode of transportation, and their estimated time of travel to the destination will be calculated.
+- [ ] Every user that belongs to a request will be able to see every other user’s route and estimated time of travel to the location.
+- [ ] Users who did not make it to the destination in time will be a Flaker and their points will be calculated.
+- [ ] Leaderboard filterable by friend group
 
 
 ### Technologies & Technical Challenges
