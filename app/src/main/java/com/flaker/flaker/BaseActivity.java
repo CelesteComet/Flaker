@@ -15,17 +15,10 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d("whatever", "HELLO WORLD");
 
-        // Used to remove the default top title bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
+
+
     }
 
 

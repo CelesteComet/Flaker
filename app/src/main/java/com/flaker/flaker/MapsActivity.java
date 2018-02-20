@@ -7,8 +7,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -68,70 +73,107 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retrieve location and camera position from saved instance state.
-        if (savedInstanceState != null) {
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
-
-            // TODO: Map search result goes to default currently, make it remember where it was last known, google places issue
-        }
-
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
 
-        /* Attach event handler for EditText input */
-//        EditText editText = (EditText) findViewById(R.id.search_bar);
-//        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+
+
+
+//
+//
+        toggle.syncState();
+//
+//        // Retrieve location and camera position from saved instance state.
+//        if (savedInstanceState != null) {
+//            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+//            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+//
+//            // TODO: Map search result goes to default currently, make it remember where it was last known, google places issue
+//        }
+//
+//        setContentView(R.layout.activity_maps);
+//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//
+//        /* Attach event handler for EditText input */
+////        EditText editText = (EditText) findViewById(R.id.search_bar);
+////        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+////            @Override
+////            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+////                boolean handled = false;
+////                String searchLocation = v.getText().toString();
+////                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+////                    sendMessage(searchLocation);
+////                    handled = true;
+////                }
+////                return handled;
+////            }
+////        });
+//
+//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//
+//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
 //            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                boolean handled = false;
-//                String searchLocation = v.getText().toString();
-//                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//                    sendMessage(searchLocation);
-//                    handled = true;
-//                }
-//                return handled;
+//            public void onPlaceSelected(Place place) {
+//                Log.i(TAG, "Place: " + place.getName());
+//                LatLng placeLatLng = place.getLatLng();
+//
+//                // TODO: Implement method to move to a certain part of the map based on place
+//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
+//                mMap.animateCamera(cameraUpdate);
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onError(Status status) {
+//                // TODO: Handle the error for autocomplete
+//                Log.i(TAG, "An error occurred: " + status);
 //            }
 //        });
+//
+//
+//        // Construct a GeoDataClient.
+//        mGeoDataClient = Places.getGeoDataClient(this, null);
+//
+//        // Construct a PlaceDetectionClient.
+//        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+//
+//        // Construct a FusedLocationProviderClient.
+//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//
+//        mapFragment.getMapAsync(this);
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+    }
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                Log.i(TAG, "Place: " + place.getName());
-                LatLng placeLatLng = place.getLatLng();
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Log.d("AWDWA", "onBackPressed: ");
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
-                // TODO: Implement method to move to a certain part of the map based on place
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
-                mMap.animateCamera(cameraUpdate);
-
-
-
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error for autocomplete
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
-
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        mapFragment.getMapAsync(this);
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     private void sendMessage(String locationToSearch) {
