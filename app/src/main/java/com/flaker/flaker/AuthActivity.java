@@ -83,12 +83,16 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     public void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handling sign in");
         if (result.isSuccess()) {
             //Signed in successfully, show authenticated UI
             GoogleSignInAccount acct = result.getSignInAccount();
             statusTextView.setText("Hello, "+ acct.getDisplayName());
+            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(displayMainActivityIntent);
         } else {
-
+            // TODO: HANDLE THE ERROR FOR SIGN IN
+            Log.d(TAG, "handleSignInFailed");
         }
     }
 
