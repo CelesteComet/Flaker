@@ -33,7 +33,6 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("adslkfjalksdjflkasjfdlkas","alksdjflaksdjfalf");
         setContentView(R.layout.activity_auth);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -46,8 +45,6 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
         statusTextView = (TextView) findViewById(R.id.status_textview);
-//        String statusTextView = "Helloo";
-        statusTextView.setText("fuck off");
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(this);
 
