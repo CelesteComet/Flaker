@@ -13,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -143,7 +145,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        LinearLayout navHeader = (LinearLayout) findViewById(R.id.navHeader);
+        navHeader.setOnClickListener(new LinearLayout.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+
+        });
 
 
 
