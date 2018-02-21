@@ -14,7 +14,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
@@ -44,6 +43,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -54,6 +54,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         }
 
     }
+
 
 
     @Override
@@ -138,9 +139,13 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInwithCrednetial:Success");
                             FirebaseUser user = mAuth.getCurrentUser();
+//                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                            startActivity(displayMainActivityIntent);
+//                            updateUI(user);
+                            Log.d("theuser", user.toString());
+
                             Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(displayMainActivityIntent);
-//                            updateUI(user);
 
                         }
                         else {

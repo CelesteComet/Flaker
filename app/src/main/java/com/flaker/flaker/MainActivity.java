@@ -3,9 +3,11 @@ package com.flaker.flaker;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
+import android.support.design.widget.NavigationView;
+
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.transition.AutoTransition;
@@ -13,18 +15,20 @@ import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
 import android.support.transition.Fade;
 import android.support.transition.TransitionManager;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
+
+import android.view.View;
+import android.widget.LinearLayout;
+
+
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
@@ -33,6 +37,7 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -59,7 +64,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +197,7 @@ public class MainActivity extends BaseActivity {
 
                 } else if (id == R.id.nav_manage) {
 
+
                 } else if (id == R.id.nav_share) {
 
                 } else if (id == R.id.nav_send) {
@@ -204,7 +209,26 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
+
+//        LinearLayout navHeader = (LinearLayout) findViewById(R.id.navHeader);
+//        navHeader.setOnClickListener(new LinearLayout.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//
+//        });
+
+
+
+
+
+
+
+
     }
+
+
 
     private void setupMapAPIClients() {
         // Construct a GeoDataClient.
