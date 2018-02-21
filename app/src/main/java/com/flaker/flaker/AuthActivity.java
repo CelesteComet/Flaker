@@ -48,8 +48,11 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(displayMainActivityIntent);
+        if (currentUser != null) {
+            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(displayMainActivityIntent);
+        }
+
     }
 
 
