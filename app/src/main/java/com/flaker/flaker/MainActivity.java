@@ -7,6 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.transition.AutoTransition;
+import android.support.transition.ChangeBounds;
+import android.support.transition.ChangeTransform;
+import android.support.transition.Fade;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -19,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,10 +43,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static android.support.transition.Fade.IN;
 
 public class MainActivity extends BaseActivity {
 
@@ -50,6 +61,11 @@ public class MainActivity extends BaseActivity {
 
     // The Google map fragment object
     private GoogleMap mGoogleMap;
+    private Marker destinationMarker;
+
+    // Confirm View Object
+    private ViewGroup mainMapContent;
+    private View mTextView;
 
     // Permissions
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -61,10 +77,10 @@ public class MainActivity extends BaseActivity {
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
 
-
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+
     // The last known location
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
@@ -89,6 +105,8 @@ public class MainActivity extends BaseActivity {
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
+        setupUI();
+
         setupNavigation();
 
         setupMapAPIClients();
@@ -101,7 +119,21 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void setupUI() {
+        // method to setup initial views
 
+        // Get the root view and create a transition
+        mainMapContent  = (ViewGroup) findViewById(R.id.mainMapContent);
+
+
+        mTextView = (View) findViewById(R.id.textView);
+        mTextView.setTranslationY(-20f);
+//        mainMapContent.removeView(mTextView);
+
+
+
+
+    }
 
     private void setupNavigation() {
         // Get the toolbar
@@ -179,11 +211,22 @@ public class MainActivity extends BaseActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                // Remove the current destination marker if there is one
+                if (destinationMarker != null) { destinationMarker.remove(); }
+
+
                 Log.i("random tag", "Place: " + place.getName());
                 LatLng placeLatLng = place.getLatLng();
 
                 // TODO: Implement method to move to a certain part of the map based on place
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
+                destinationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                        .position(placeLatLng)
+                        .title("Hello world"));
+
+
+
+
                 mGoogleMap.animateCamera(cameraUpdate);
             }
 
