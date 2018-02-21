@@ -44,6 +44,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int RC_SIGN_IN = 9001;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +104,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                Intent displayProfileActivityIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(displayProfileActivityIntent);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
