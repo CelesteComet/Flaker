@@ -16,7 +16,7 @@ public class BaseActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference mRootRef = database.getReference();
-    DatabaseReference mDestinationRef = mRootRef.child("meetings/1/coordinates");
+    DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
