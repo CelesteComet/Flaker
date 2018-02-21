@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.nfc.Tag;
@@ -26,9 +27,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
 
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
@@ -45,12 +54,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.support.transition.Fade.IN;
+import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 public class MainActivity extends BaseActivity {
 
@@ -62,6 +77,10 @@ public class MainActivity extends BaseActivity {
     // The Google map fragment object
     private GoogleMap mGoogleMap;
     private Marker destinationMarker;
+    private LatLng placeLatLng;
+    private List<Polyline> polylines;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
 
     // Confirm View Object
     private ViewGroup mainMapContent;
@@ -87,10 +106,6 @@ public class MainActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +129,22 @@ public class MainActivity extends BaseActivity {
         setupGoogleMapCallback();
 
         setupAutoCompleteWidget();
+    }
 
 
 
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        // check to see if we have a location request object
+        if(mLocationRequest == null) {
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(1000);
+        }
+        Log.d("Bruce", "starting location updates");
+        mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback, null);
+        return;
     }
 
     private void setupUI() {
@@ -156,6 +184,7 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // Handle navigation view item clicks here.
                 int id = item.getItemId();
+
                 if (id == R.id.nav_camera) {
                     // Handle the camera action
                 } else if (id == R.id.nav_gallery) {
@@ -186,6 +215,23 @@ public class MainActivity extends BaseActivity {
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+                    // Update UI with location data
+                    // ...
+                    Log.d("Bruce", "GOT NEW LOCATION");
+                    double stuff = location.getLatitude();
+                    Log.d("Bruce", Double.toString(stuff));
+                    LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    updateMapToLatLng(currentLatLng);
+
+                }
+            };
+        };
     }
 
     private void setupGoogleMapCallback() {
@@ -216,13 +262,14 @@ public class MainActivity extends BaseActivity {
 
 
                 Log.i("random tag", "Place: " + place.getName());
-                LatLng placeLatLng = place.getLatLng();
+                placeLatLng = place.getLatLng();
 
                 // TODO: Implement method to move to a certain part of the map based on place
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
                 destinationMarker = mGoogleMap.addMarker(new MarkerOptions()
                         .position(placeLatLng)
                         .title("Hello world"));
+                drawRouteToMarker();
 
 
 
@@ -237,7 +284,6 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
 
     /**
      * Prompts the user for permission to use the device location.
@@ -296,6 +342,10 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
+                            // Start getting the users location for positioning
+                            Log.d("BRUCE", "starting from after permissions");
+                            startLocationUpdates();
+
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
                             if(mLastKnownLocation != null) {
@@ -317,6 +367,56 @@ public class MainActivity extends BaseActivity {
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    private void updateMapToLatLng(LatLng latLng) {
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+    }
+
+    private void drawRouteToMarker() {
+        LatLng start = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+        LatLng end = placeLatLng;
+        Routing routing = new Routing.Builder()
+                .travelMode(Routing.TravelMode.WALKING)
+                .withListener(new RoutingListener() {
+                    @Override
+                    public void onRoutingFailure(RouteException e) {
+
+                    }
+
+                    @Override
+                    public void onRoutingStart() {
+
+                    }
+
+                    @Override
+                    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+                        polylines = new ArrayList<>();
+                        //add route(s) to the map.
+                        for (int i = 0; i < route.size(); i++) {
+
+                            //In case of more than 5 alternative routes
+
+
+                            PolylineOptions polyOptions = new PolylineOptions();
+
+                            polyOptions.width(10 + i * 3);
+                            polyOptions.addAll(route.get(i).getPoints());
+                            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
+                            polylines.add(polyline);
+
+                            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onRoutingCancelled() {
+
+                    }
+                })
+                .waypoints(start, end)
+                .build();
+        routing.execute();
     }
 
 
