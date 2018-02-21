@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends BaseActivity {
 
@@ -67,6 +69,8 @@ public class MainActivity extends BaseActivity {
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
 
+    private FirebaseAuth mAuth;
+
 
 
 
@@ -75,6 +79,10 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("WADW", "WHAKWHDJWHDJAWHDJAHWDJHWJH");
+        mAuth = FirebaseAuth.getInstance();
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        Log.d("WADW", userEmail);
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -88,6 +96,8 @@ public class MainActivity extends BaseActivity {
         setupGoogleMapCallback();
 
         setupAutoCompleteWidget();
+
+
 
     }
 

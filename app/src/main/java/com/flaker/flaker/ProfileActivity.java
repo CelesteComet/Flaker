@@ -13,8 +13,11 @@ import com.squareup.picasso.Picasso;
 public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private TextView user_email;
-    private ImageView user_image;
+    private TextView userEmail;
+    private ImageView userImage;
+    private TextView phoneNumber;
+    private String phoneNumberVal;
+    private TextView userName;
     String userImageUrl;
 
     @Override
@@ -25,21 +28,38 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 //
         FirebaseUser user = mAuth.getCurrentUser();
-        Log.d("aslkdfja - -- - ", user.getPhotoUrl().toString());
-        user_email = (TextView) findViewById(R.id.user_email);
-        user_email.setText(user.getEmail());
+        userEmail = (TextView) findViewById(R.id.user_email);
+        userEmail.setText("Email: " + user.getEmail());
+
+        phoneNumber = (TextView) findViewById(R.id.phone_number);
+        phoneNumberVal = user.getPhoneNumber();
+
+        if (phoneNumberVal != null) {
+            Integer thing = phoneNumberVal.length();
+            Log.d("phonenumber - - - -", user.getPhoneNumber().toString());
+            Log.d("asdklfj", thing.toString());
+
+
+            phoneNumber.setText(phoneNumberVal.toString());
+        } else {
+            phoneNumber.setText("none");
+        }
+
+        userName = (TextView) findViewById(R.id.userName);
+        userName.setText(user.getDisplayName());
+
 
         userImageUrl = user.getPhotoUrl().toString();
 
 
-        user_image = (ImageView) findViewById(R.id.user_image);
+        userImage = (ImageView) findViewById(R.id.user_image);
         getImageUrl(userImageUrl);
 
 
     }
 
     private void getImageUrl(String url) {
-        Picasso.with(getApplicationContext()).load(url).into(user_image);
+        Picasso.with(getApplicationContext()).load(url).into(userImage);
 //        Log.d("asdlkfjaslkdfaj"," aksldfj - -");
     }
 }

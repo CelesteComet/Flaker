@@ -46,6 +46,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,8 +106,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-                Intent displayProfileActivityIntent = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(displayProfileActivityIntent);
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -129,7 +130,13 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInwithCrednetial:Success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+//                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                            startActivity(displayMainActivityIntent);
+//                            updateUI(user);
+                            Log.d("theuser", user.toString());
+
+                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(displayMainActivityIntent);
 
                         }
                         else {
@@ -157,19 +164,6 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
-
-
-//    public void handleSignInResult(GoogleSignInResult result) {
-//        if (result.isSuccess()) {
-//            //Signed in successfully, show authenticated UI
-//            GoogleSignInAccount acct = result.getSignInAccount();
-//
-//            statusTextView.setText("Hello, "+ acct.getDisplayName());
-//        } else {
-//
-//        }
-//    }
-
 
 
     @Override
