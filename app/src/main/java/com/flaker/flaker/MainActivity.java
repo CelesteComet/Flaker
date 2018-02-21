@@ -121,21 +121,16 @@ public class MainActivity extends BaseActivity {
                 int id = item.getItemId();
                 if (id == R.id.nav_camera) {
                     // Handle the camera action
-                    Log.d("1alksdfjaslfd","asldkfjafadsfklj");
                 } else if (id == R.id.nav_gallery) {
-                    Log.d("2alksdfjaslfd","asldkfjafadsfklj");
 
                 } else if (id == R.id.nav_slideshow) {
-                    Log.d("3alksdfjaslfd","asldkfjafadsfklj");
 
                 } else if (id == R.id.nav_manage) {
-                    Log.d("4alksdfjaslfd","asldkfjafadsfklj");
+
 
                 } else if (id == R.id.nav_share) {
-                    Log.d("5alksdfjaslfd","asldkfjafadsfklj");
 
                 } else if (id == R.id.nav_send) {
-                    Log.d("6alksdfjaslfd","asldkfjafadsfklj");
 
                 }
 
@@ -145,14 +140,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        LinearLayout navHeader = (LinearLayout) findViewById(R.id.navHeader);
-        navHeader.setOnClickListener(new LinearLayout.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-
-        });
+//        LinearLayout navHeader = (LinearLayout) findViewById(R.id.navHeader);
+//        navHeader.setOnClickListener(new LinearLayout.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//
+//        });
 
 
 
