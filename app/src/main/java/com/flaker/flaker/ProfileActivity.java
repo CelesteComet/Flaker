@@ -15,6 +15,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView user_email;
     private ImageView user_image;
+    String userImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,15 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 //
         FirebaseUser user = mAuth.getCurrentUser();
-        Log.d("aslkdfja", user.getEmail());
+        Log.d("aslkdfja - -- - ", user.getPhotoUrl().toString());
         user_email = (TextView) findViewById(R.id.user_email);
         user_email.setText(user.getEmail());
 
+        userImageUrl = user.getPhotoUrl().toString();
+
+
         user_image = (ImageView) findViewById(R.id.user_image);
-        getImageUrl("http://i.imgur.com/DvpvklR.png");
+        getImageUrl(userImageUrl);
 
 
     }
