@@ -8,24 +8,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Window;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+
 public class BaseActivity extends AppCompatActivity {
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference mRootRef = database.getReference();
+    DatabaseReference mDestinationRef = mRootRef.child("meetings/1/coordinates");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("whatever", "HELLO WORLD");
 
-        // Used to remove the default top title bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        mDestinationRef.push().setValue(999.00);
 
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
+
+
     }
 
 

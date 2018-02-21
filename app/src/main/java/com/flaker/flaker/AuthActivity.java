@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
@@ -112,6 +113,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+<<<<<<< HEAD
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getIdToken());
 //        showProgressDialog();
@@ -152,6 +154,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
+
 
 //    public void handleSignInResult(GoogleSignInResult result) {
 //        if (result.isSuccess()) {
