@@ -18,13 +18,12 @@ public class BaseActivity extends AppCompatActivity {
     DatabaseReference mRootRef = database.getReference();
     DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("whatever", "HELLO WORLD");
 
-
-        mDestinationRef.push().setValue(999.00);
 
 
 
