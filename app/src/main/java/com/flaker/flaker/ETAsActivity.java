@@ -1,5 +1,7 @@
 package com.flaker.flaker;
 
+import android.content.Context;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -17,6 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ETAsActivity extends AppCompatActivity {
 
@@ -27,6 +31,8 @@ public class ETAsActivity extends AppCompatActivity {
     private String[] idList;
 
     private ArrayList<String> idList2;
+    ArrayAdapter adapter;
+    public ArrayList<String> users = new ArrayList<String>();
 //    private RelativeLayout etaView;
 
     @Override
@@ -43,17 +49,48 @@ public class ETAsActivity extends AppCompatActivity {
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mRootRef = database.getReference();
+        final DatabaseReference mRootRef = database.getReference();
 
         idList = new String[] {"6487iAKo2NQ6qWvLZ0pKWNNnXW43", "WjyeHpL8VyPOXmESHqJUhvbZTk52"};
 
         etaListView = findViewById(R.id.eta_list_view);
 
 
-        ArrayList<String> users = fetchUsers(idList2, mRootRef, etaListView);
+        users = fetchUsers(idList2, mRootRef, etaListView);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, users);
+//        final Context suh = this;
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, users);
+        adapter.notifyDataSetChanged();
+
+
+
         etaListView.setAdapter(adapter);
+
+        Timer timer = new Timer();
+        TimerTask intervalTask = new TimerTask() {
+            @Override
+            public void run() {
+//                FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                final DatabaseReference mRootRef = database.getReference();
+                Log.d("adslfkj", "asdlfkj");
+                users = fetchUsers(idList2, mRootRef, etaListView);
+
+//                Log.d("asdfklj", "alkdsfjasdf");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("asdfklj", "alkdsfjasdf");
+
+//                        updateList(users);
+                        Log.d("asdflkja", String.valueOf(users));
+//                        etaListView.invalidate();
+
+                    }
+                });
+            }
+        };
+
+        timer.schedule(intervalTask, 5, 1000 );
 
 
 
@@ -61,8 +98,12 @@ public class ETAsActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private ArrayList<String> fetchUsers(final ArrayList<String> idList, DatabaseReference mRootRef, ListView list) {
-        final ArrayList<String> users = new ArrayList<String>();
+//        final ArrayList<String> users = new ArrayList<String>();
+        users.clear();
         final ListView etaList = list;
 
         for (int i = 0; i < idList.size(); i++) {
@@ -83,7 +124,7 @@ public class ETAsActivity extends AppCompatActivity {
 
                     getWindow().getDecorView().findViewById(android.R.id.content).invalidate();
 
-                    users.add(dataSnapshot.child("name").getValue().toString());
+                    users.add(dataSnapshot.child("thing").getValue().toString());
                 }
 
                 @Override
@@ -93,7 +134,7 @@ public class ETAsActivity extends AppCompatActivity {
             });
 
         }
-
+        Log.d("user1", String.valueOf(users));
         return users;
     }
 }
