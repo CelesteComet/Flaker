@@ -49,7 +49,7 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
     </application>
 
 </manifest>
