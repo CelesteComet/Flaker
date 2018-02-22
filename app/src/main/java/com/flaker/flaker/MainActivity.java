@@ -3,16 +3,8 @@ package com.flaker.flaker;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.transition.AutoTransition;
-import android.support.transition.ChangeBounds;
-import android.support.transition.ChangeTransform;
-import android.support.transition.Fade;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -21,14 +13,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
-
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -59,13 +47,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.transition.Fade.IN;
-import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 public class MainActivity extends BaseActivity {
 
@@ -121,15 +104,18 @@ public class MainActivity extends BaseActivity {
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        setupUI();
+        myGoogleMap.init(this);
 
-        setupNavigation();
 
-        setupMapAPIClients();
-
-        setupGoogleMapCallback();
-
-        setupAutoCompleteWidget();
+//        setupUI();
+//
+//        setupNavigation();
+//
+//        setupMapAPIClients();
+//
+//        setupGoogleMapCallback();
+//
+//        setupAutoCompleteWidget();
     }
 
 
