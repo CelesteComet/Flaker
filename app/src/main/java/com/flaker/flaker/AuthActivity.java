@@ -10,11 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
@@ -28,7 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class AuthActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -44,16 +45,18 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(displayMainActivityIntent);
-        }
 
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//            startActivity(displayMainActivityIntent);
+//        }
+//
+//    }
+
 
 
     @Override
@@ -138,9 +141,15 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInwithCrednetial:Success");
                             FirebaseUser user = mAuth.getCurrentUser();
+//                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                            startActivity(displayMainActivityIntent);
+//                            updateUI(user);
+                            Log.d("theuser", user.toString());
+
+                            addUserToDb(user);
+
                             Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(displayMainActivityIntent);
-//                            updateUI(user);
 
                         }
                         else {
@@ -150,6 +159,18 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         }
                     }
                 });
+    }
+
+    private void addUserToDb(FirebaseUser user) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mRootRef = database.getReference();
+        DatabaseReference mDestinationRef = mRootRef.child("users");
+
+        User userObject = new User(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
+        String userId = user.getUid();
+        Log.d("userstuff", userObject.email);
+
+        mDestinationRef.child(userId).setValue(userObject);
     }
 
     private void updateUI(FirebaseUser user) {
