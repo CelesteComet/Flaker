@@ -39,6 +39,7 @@
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="341dp" />
 
+<<<<<<< Updated upstream
     <LinearLayout
         android:id="@+id/sign_out_and_disconnect"
         android:layout_width="fill_parent"
@@ -85,10 +86,17 @@
         android:id="@+id/detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+=======
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+>>>>>>> Stashed changes
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+<<<<<<< Updated upstream
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,5 +107,13 @@
         tools:text="Firebase User ID: 123456789abc" />
 
 
+=======
+        android:text="Flaker"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> Stashed changes
 
 </android.support.constraint.ConstraintLayout>
