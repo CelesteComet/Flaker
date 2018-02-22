@@ -78,9 +78,10 @@ public class MainActivity extends BaseActivity {
     private GoogleMap mGoogleMap;
     private Marker destinationMarker;
     private LatLng placeLatLng;
-    private List<Polyline> polylines;
+    private List<Polyline> polylines = new ArrayList<>();
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private Boolean currentlyRouting = false;
 
     // Confirm View Object
     private ViewGroup mainMapContent;
@@ -223,6 +224,7 @@ public class MainActivity extends BaseActivity {
                 for (Location location : locationResult.getLocations()) {
                     // Update UI with location data
                     // ...
+                    mLastKnownLocation = location;
                     Log.d("Bruce", "GOT NEW LOCATION");
                     double stuff = location.getLatitude();
                     Log.d("Bruce", Double.toString(stuff));
@@ -270,6 +272,7 @@ public class MainActivity extends BaseActivity {
                         .position(placeLatLng)
                         .title("Hello world"));
                 drawRouteToMarker();
+                startLocationUpdates();
 
 
 
@@ -344,7 +347,7 @@ public class MainActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             // Start getting the users location for positioning
                             Log.d("BRUCE", "starting from after permissions");
-                            startLocationUpdates();
+
 
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
@@ -370,7 +373,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateMapToLatLng(LatLng latLng) {
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        if (currentlyRouting) {
+            drawRouteToMarker();
+        }
     }
 
     private void drawRouteToMarker() {
@@ -391,6 +396,13 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+                        currentlyRouting = true;
+                        if(polylines.size() > 0) {
+                            for (Polyline poly : polylines) {
+                                poly.remove();
+                            }
+                        }
+
                         polylines = new ArrayList<>();
                         //add route(s) to the map.
                         for (int i = 0; i < route.size(); i++) {

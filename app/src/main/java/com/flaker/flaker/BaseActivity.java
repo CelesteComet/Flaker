@@ -46,19 +46,19 @@ public class BaseActivity extends AppCompatActivity {
 
         APIUtil client = retrofit.create(APIUtil.class);
 
-        Call<List<GitHubRepo>> call = client.reposForUser("fs-opensource");
-
-        call.enqueue(new Callback<List<GitHubRepo>>() {
-            @Override
-            public void onResponse(Call<List<GitHubRepo>> call, Response<List<GitHubRepo>> response) {
-                Log.d("RESPONSE", "GOT RESPONSE **********");
-                Log.d("RESPONSE", response.body().toString());
-            }
-            @Override
-            public void onFailure(Call<List<GitHubRepo>> call, Throwable t) {
-                Log.d("RESPONSE", "ERROR");
-            }
-        });
+//        Call<List<GitHubRepo>> call = client.reposForUser("fs-opensource");
+//
+//        call.enqueue(new Callback<List<GitHubRepo>>() {
+//            @Override
+//            public void onResponse(Call<List<GitHubRepo>> call, Response<List<GitHubRepo>> response) {
+//                Log.d("RESPONSE", "GOT RESPONSE **********");
+//                Log.d("RESPONSE", response.body().toString());
+//            }
+//            @Override
+//            public void onFailure(Call<List<GitHubRepo>> call, Throwable t) {
+//                Log.d("RESPONSE", "ERROR");
+//            }
+//        });
 
 
 
