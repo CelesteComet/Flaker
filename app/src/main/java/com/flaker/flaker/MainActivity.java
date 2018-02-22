@@ -82,10 +82,10 @@ public class MainActivity extends BaseActivity {
 
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
+    private static final String KEY_LAT_LNG = "lat_lng";
 
-    // The last known location
-    private Location mLastKnownLocation;
+    // The last known latitude and longitude
+    private LatLng mLastKnownLatLng;
     private CameraPosition mCameraPosition;
 
     private FirebaseAuth mAuth;
@@ -100,22 +100,24 @@ public class MainActivity extends BaseActivity {
         Log.d("WADW", userEmail);
 
         if (savedInstanceState != null) {
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            mLastKnownLatLng = savedInstanceState.getParcelable(KEY_LAT_LNG);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
         myGoogleMap.init(this);
 
 
-//        setupUI();
-//
-//        setupNavigation();
+        setupUI();
+
+        setupNavigation();
+
+
 //
 //        setupMapAPIClients();
 //
 //        setupGoogleMapCallback();
 //
-//        setupAutoCompleteWidget();
+
     }
 
 
@@ -210,12 +212,12 @@ public class MainActivity extends BaseActivity {
                 for (Location location : locationResult.getLocations()) {
                     // Update UI with location data
                     // ...
-                    mLastKnownLocation = location;
+                    mLastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     Log.d("Bruce", "GOT NEW LOCATION");
                     double stuff = location.getLatitude();
                     Log.d("Bruce", Double.toString(stuff));
                     LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    updateMapToLatLng(currentLatLng);
+//                    updateMapToLatLng(currentLatLng);
 
                 }
             };
@@ -238,41 +240,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void setupAutoCompleteWidget() {
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // Remove the current destination marker if there is one
-                if (destinationMarker != null) { destinationMarker.remove(); }
-
-
-                Log.i("random tag", "Place: " + place.getName());
-                placeLatLng = place.getLatLng();
-
-                // TODO: Implement method to move to a certain part of the map based on place
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM);
-                destinationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                        .position(placeLatLng)
-                        .title("Hello world"));
-                drawRouteToMarker();
-                startLocationUpdates();
-
-
-
-
-                mGoogleMap.animateCamera(cameraUpdate);
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error for autocomplete
-                Log.i("random tag", "An error occurred: " + status);
-            }
-        });
-    }
 
     /**
      * Prompts the user for permission to use the device location.
@@ -308,7 +276,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 mGoogleMap.setMyLocationEnabled(true);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mLastKnownLocation = null;
+                mLastKnownLatLng = null;
                 getLocationPermission();
             }
         } catch (SecurityException e)  {
@@ -336,11 +304,12 @@ public class MainActivity extends BaseActivity {
 
 
                             // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            if(mLastKnownLocation != null) {
+                            Location location = task.getResult();
+                            mLastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            if(mLastKnownLatLng != null) {
                                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                        new LatLng(location.getLatitude(),
+                                                location.getLongitude()), DEFAULT_ZOOM));
                             }
 
                         } else {
@@ -358,64 +327,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void updateMapToLatLng(LatLng latLng) {
-        if (currentlyRouting) {
-            drawRouteToMarker();
-        }
-    }
-
-    private void drawRouteToMarker() {
-        LatLng start = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-        LatLng end = placeLatLng;
-        Routing routing = new Routing.Builder()
-                .travelMode(Routing.TravelMode.WALKING)
-                .withListener(new RoutingListener() {
-                    @Override
-                    public void onRoutingFailure(RouteException e) {
-
-                    }
-
-                    @Override
-                    public void onRoutingStart() {
-
-                    }
-
-                    @Override
-                    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-                        currentlyRouting = true;
-                        if(polylines.size() > 0) {
-                            for (Polyline poly : polylines) {
-                                poly.remove();
-                            }
-                        }
-
-                        polylines = new ArrayList<>();
-                        //add route(s) to the map.
-                        for (int i = 0; i < route.size(); i++) {
-
-                            //In case of more than 5 alternative routes
 
 
-                            PolylineOptions polyOptions = new PolylineOptions();
-
-                            polyOptions.width(10 + i * 3);
-                            polyOptions.addAll(route.get(i).getPoints());
-                            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
-                            polylines.add(polyline);
-
-                            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onRoutingCancelled() {
-
-                    }
-                })
-                .waypoints(start, end)
-                .build();
-        routing.execute();
-    }
 
 
 
