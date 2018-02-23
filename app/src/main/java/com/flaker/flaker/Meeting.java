@@ -7,17 +7,24 @@ package com.flaker.flaker;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 
-/**
- * Created by rslee on 2/20/18.
- */
-
 @IgnoreExtraProperties
 public class Meeting {
 
     public String address;
-    public Double coordinates;
+    public Double longitude;
+    public Double latitude;
     public String owner;
-    public String scheduled_time ;
+    public Long scheduled_time;
 
+    public Meeting(){
 
+    }
+
+    public Meeting(String address, Double longitude, Double latitude, String owner, Long scheduled_time) {
+        this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.owner = owner;
+        this.scheduled_time = scheduled_time;
+    }
 }
