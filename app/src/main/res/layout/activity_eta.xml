@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.flaker.flaker.EtaTestActivity">
+    tools:context="com.flaker.flaker.EtaActivity">
 
     <ListView
         android:id="@+id/eta_list_view2"
@@ -13,13 +13,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="44dp"></ListView>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="145dp"
-        tools:layout_editor_absoluteY="437dp" />
 
 
 </android.support.constraint.ConstraintLayout>

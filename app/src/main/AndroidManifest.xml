@@ -33,7 +33,7 @@
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
         <activity
-            android:name=".EtaTestActivity"
+            android:name=".EtaActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +45,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
         <!-- <activity android:name=".ETAsActivity"></activity> -->
-        <!--<activity android:name=".EtaTestActivity"></activity>-->
+        <!--<activity android:namEtaActivityvity"></activity>-->
     </application>
 
 </manifest>
