@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.constraint.Guideline;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -311,7 +314,7 @@ public class myGoogleMap extends MainActivity {
         }
     }
 
-    private static void setupAutoCompleteWidget(AppCompatActivity context) {
+    private static void setupAutoCompleteWidget(final AppCompatActivity context) {
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 context.getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -323,6 +326,11 @@ public class myGoogleMap extends MainActivity {
                 myGoogleMap.drawRoute(mLastKnownLatLng, placeLatLng);
                 myGoogleMap.createSingleMarker(placeLatLng);
                 myGoogleMap.requestLocationUpdates();
+
+                Guideline guideLine = (Guideline) context.findViewById(R.id.guideline);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                params.guidePercent = 0.70f; // 45% // range: 0 <-> 1
+                guideLine.setLayoutParams(params);
             }
 
             @Override
