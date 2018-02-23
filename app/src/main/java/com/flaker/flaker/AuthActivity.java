@@ -46,16 +46,16 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int RC_SIGN_IN = 9001;
 
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-//            startActivity(displayMainActivityIntent);
-//        }
-//
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(displayMainActivityIntent);
+        }
+
+    }
 
 
 
@@ -149,7 +149,9 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                             addUserToDb(user);
 
                             Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
                             startActivity(displayMainActivityIntent);
+
 
                         }
                         else {
