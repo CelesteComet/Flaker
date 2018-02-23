@@ -34,8 +34,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
-        <activity
-            android:name=".AuthActivity"
+
+        <!--<activity-->
+            <!--android:name=".AuthActivity"-->
+
+        <activity android:name=".FriendActivity"
+
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +49,7 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
     </application>
 
 </manifest>
