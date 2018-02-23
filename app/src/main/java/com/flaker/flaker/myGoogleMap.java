@@ -277,8 +277,8 @@ public class myGoogleMap extends MainActivity {
                             }
                         } else {
                             Log.d("BRUCE", "ATTEMPTING DEFAULT");
-                            LatLng defaultLatLng = new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude);
-                            moveMapToLatLng(defaultLatLng);
+                            mLastKnownLatLng = new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude);
+                            moveMapToLatLng(mLastKnownLatLng);
                             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
                         }
                     }
