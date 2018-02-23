@@ -31,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -51,6 +53,8 @@ public class BaseActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
 
+    private static final String TAG = "BaseActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +69,6 @@ public class BaseActivity extends AppCompatActivity {
 
         setupNavigation();
 
-
-
-        mDestinationRef.push().setValue(999.00);
 
         // Retro stuff
         Retrofit retrofit = new Retrofit.Builder()
@@ -92,7 +93,31 @@ public class BaseActivity extends AppCompatActivity {
 //            }
 //        });
 
+        //Gets a calendar using the default time zone and locale.
+        //The Calendar returned is based on the current time in the default time zone with the default FORMAT locale.
 
+        Calendar calendar = Calendar.getInstance();
+        Log.d(TAG, "LOOK HERE");
+        Log.d(TAG, calendar.toString());
+        //Returns a Date object representing this Calendar's time value (millisecond offset from the Epoch").
+        Log.d(TAG, calendar.getTime().toString());
+        //Returns this Calendar's time value in milliseconds.
+        Log.d(TAG, String.valueOf(calendar.getTimeInMillis()));
+
+        //Create a Date obj from a long
+        Date date = new Date(calendar.getTimeInMillis());
+        Log.d(TAG, date.toString());
+
+
+        //Compares the time values (millisecond offsets from the Epoch) represented by two Calendar objects. Returns 1 or -1
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.HOUR_OF_DAY, 2);
+        Log.d(TAG, calendar2.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
+
+        calendar.add(Calendar.HOUR_OF_DAY, 10);
+        Log.d(TAG, calendar.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
 
 
 
