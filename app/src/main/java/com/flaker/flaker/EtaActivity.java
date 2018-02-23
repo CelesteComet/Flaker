@@ -29,18 +29,19 @@ public class EtaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_eta);
 
         numbers = (ListView) findViewById(R.id.eta_list_view2);
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stuff);
+//        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stuff);
+        adapter = new EtaAdapter(this, stuff);
         numbers.setAdapter(adapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference mRootRef = database.getReference();
-        final DatabaseReference mDestinationRef = mRootRef.child("test");
+        final DatabaseReference mDestinationRef = mRootRef.child("meetups").child("0329230").child("users");
 
         //initial ETA fetch
-        etaFetch(mRootRef);
+        etaFetch(mDestinationRef);
 
         //Start fetch ETAs loop
-        timedFetch(mRootRef);
+        timedFetch(mDestinationRef);
 
     }
 
@@ -53,7 +54,7 @@ public class EtaActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(intervalTask, 5, 1000);
+        timer.schedule(intervalTask, 5, 3 * 1000);
 
     }
 
@@ -66,7 +67,7 @@ public class EtaActivity extends AppCompatActivity {
                 Log.d("alkfdj", dataSnapshot.getClass().toString());
                 for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
 
-                    stuff.add(indSnapshot.getValue().toString());
+                    stuff.add(indSnapshot.child("eta").getValue().toString());
                 }
 
 //                stuff.add(dataSnapshot.getValue().toString());
