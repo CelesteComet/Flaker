@@ -129,16 +129,8 @@ public class MainActivity extends BaseActivity {
 
         // get current user
         currentUser = mAuth.getCurrentUser();
-
-
-
-
         myGoogleMap.init(this);
-
-
         setupUI();
-
-
 
 
 //
