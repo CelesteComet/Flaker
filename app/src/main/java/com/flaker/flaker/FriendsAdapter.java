@@ -43,7 +43,7 @@ public class FriendsAdapter extends BaseAdapter {
     public FriendsAdapter(Context context, DatabaseReference ref) {
         mContext = context;
         mDatabaseReference = ref;
-        mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -72,7 +72,7 @@ public class FriendsAdapter extends BaseAdapter {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        }
+        };
     }
 
     @Override

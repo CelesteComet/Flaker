@@ -38,7 +38,7 @@
         <!--<activity-->
             <!--android:name=".AuthActivity"-->
 
-        <activity android:name=".FriendActivity"
+        <activity android:name=".AuthActivity"
 
             android:theme="@style/AppTheme">
             <intent-filter>

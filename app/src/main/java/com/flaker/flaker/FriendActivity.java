@@ -69,8 +69,8 @@ public class FriendActivity extends AppCompatActivity {
         eta = res.getStringArray(R.array.eta);
 
 
-        FriendsAdapter friendAdapter = new FriendsAdapter(this, names, eta);
-        friendListView.setAdapter(friendAdapter);
+//        FriendsAdapter friendAdapter = new FriendsAdapter(this, names, eta);
+//        friendListView.setAdapter(friendAdapter);
     }
 
 }

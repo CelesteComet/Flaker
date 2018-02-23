@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -71,6 +72,7 @@ import java.util.List;
 
 public class myGoogleMap extends MainActivity {
 
+
     // API Clients
     private static GeoDataClient mGeoDataClient;
     private static PlaceDetectionClient mPlaceDetectionClient;
@@ -105,18 +107,12 @@ public class myGoogleMap extends MainActivity {
     }
 
     public static void moveMapToLatLngWithBounds(LatLng latLng) {
-        Log.d("BRUCE", "MOVING THE MAP");
-//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-//                new LatLng(mLastKnownLocation.getLatitude(),
-//                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mLastKnownLatLng);
         builder.include(latLng);
         LatLngBounds bounds = builder.build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
-
         mGoogleMap.animateCamera(cameraUpdate);
-        Log.d("BRUCE", "MOVING DONE");
     }
 
     public static void moveMapToLatLng(LatLng latLng) {
@@ -125,7 +121,7 @@ public class myGoogleMap extends MainActivity {
     }
 
     public static void drawRoute(LatLng start, LatLng end) {
-        Log.d("BRUCE", "YAY");
+
         Routing routing = new Routing.Builder()
                 .travelMode(Routing.TravelMode.WALKING)
                 .withListener(new RoutingListener() {
@@ -141,7 +137,7 @@ public class myGoogleMap extends MainActivity {
 
                     @Override
                     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-                        currentlyRouting = true;
+
                         if(polylines.size() > 0) {
                             for (Polyline poly : polylines) {
                                 poly.remove();
@@ -174,7 +170,6 @@ public class myGoogleMap extends MainActivity {
                 .waypoints(start, end)
                 .build();
         routing.execute();
-        Log.d("BRUCE", "FINISHED");
     }
 
 
@@ -190,18 +185,36 @@ public class myGoogleMap extends MainActivity {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
+    @SuppressLint("MissingPermission")
+    private static void requestLocationUpdates() {
+        mLocationRequest = new LocationRequest();
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000);
+
+        mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback,
+                null /* Looper */);
+    }
+
+
     private static void createLocationCallback() {
+
+
         // Construct a location callback
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                    mLastKnownLocation = location;
-                    LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                    moveMapToLatLng(currentLatLng);
+                    Log.d("BRUCE", "GOT A NEW LOCATION");
+                    mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    drawRoute(mLastKnownLatLng, placeLatLng);
+
                 }
             };
         };
+
+
     }
 
     private static void setupGoogleMapCallback(final AppCompatActivity context) {
@@ -309,6 +322,7 @@ public class myGoogleMap extends MainActivity {
                 myGoogleMap.moveMapToLatLngWithBounds(placeLatLng);
                 myGoogleMap.drawRoute(mLastKnownLatLng, placeLatLng);
                 myGoogleMap.createSingleMarker(placeLatLng);
+                myGoogleMap.requestLocationUpdates();
             }
 
             @Override
@@ -320,14 +334,10 @@ public class myGoogleMap extends MainActivity {
     }
 
     private static void createSingleMarker(LatLng latLng) {
-
         // If a marker exists already, remove the marker
         if (destinationMarker != null) {
             destinationMarker.remove();
         }
-
         destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
-
-
     }
 }
