@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,7 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class AuthActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -144,8 +146,12 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 //                            updateUI(user);
                             Log.d("theuser", user.toString());
 
+                            addUserToDb(user);
+
                             Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
                             startActivity(displayMainActivityIntent);
+
 
                         }
                         else {
@@ -155,6 +161,18 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         }
                     }
                 });
+    }
+
+    private void addUserToDb(FirebaseUser user) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mRootRef = database.getReference();
+        DatabaseReference mDestinationRef = mRootRef.child("users");
+
+        User userObject = new User(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
+        String userId = user.getUid();
+        Log.d("userstuff", userObject.email);
+
+        mDestinationRef.child(userId).setValue(userObject);
     }
 
     private void updateUI(FirebaseUser user) {
