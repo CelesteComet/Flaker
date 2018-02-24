@@ -1,20 +1,30 @@
 package com.flaker.flaker;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.SupportActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.directions.route.Route;
@@ -38,17 +48,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +87,17 @@ import java.util.List;
  *
  */
 
-public class myGoogleMap extends MainActivity {
+public class myGoogleMap extends BaseActivity {
 
 
     // API Clients
     private static GeoDataClient mGeoDataClient;
     private static PlaceDetectionClient mPlaceDetectionClient;
     private static FusedLocationProviderClient mFusedLocationProviderClient;
+
+    // Firebase stuff
+    private static FirebaseAuth mAuth;
+    private static FirebaseUser currentUser;
 
     // Main Google Map Object
     private static GoogleMap mGoogleMap;
@@ -101,13 +119,167 @@ public class myGoogleMap extends MainActivity {
     private static LatLng mLastKnownLatLng;
     private static Boolean currentlyRouting = false;
 
+    // UI Specific Things
+    private static ActionBarDrawerToggle toggle;
+
+    // TAG
+    private static String TAG;
+
+    // Confirm View Object
+    /*
+    1. SEARCH DESTINATION
+    2. CONFIRM DESTINATION
+    3. ETA VIEW
+    */
+    private static String viewState = "searchDestination";
+
     public static void init(AppCompatActivity context) {
+
+
+        // get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        // get current user
+        currentUser = mAuth.getCurrentUser();
+
+        TAG = context.toString();
+
+
+        setupNavigation(context);
+        // Setup ActionBar UI
+//        context.getSupportActionBar().setHomeButtonEnabled(true);
+//        context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        context.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_camera);
+
+
+
 
         setupMapAPIClients(context);
         createLocationCallback();
         setupGoogleMapCallback(context);
 
     }
+
+    public static void updateUI(AppCompatActivity context) {
+        switch (viewState) {
+            case "searchDestination":
+                //showSearchDestinationView(context);
+                break;
+            case "confirmDestination":
+                showConfirmDestinationView(context);
+            default:
+                break;
+        }
+    }
+
+    public static void showConfirmDestinationView(AppCompatActivity context) {
+
+        // In this view, the guideline should move to display the menu, the searchFeature should be hidden and the
+        // arrow to go back should be seen instead of the hamburger menu
+
+        ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.7f);
+
+        final Guideline guideLine = (Guideline) context.findViewById(R.id.guideline);
+        final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+
+        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                params.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                guideLine.setLayoutParams(params);
+            }
+        });
+        animation.setDuration(700);
+        animation.start();
+
+        ConstraintLayout autoCompleteLayout = context.findViewById(R.id.place_autocomplete_layout);
+        autoCompleteLayout.setVisibility(ConstraintLayout.GONE);
+
+        // Change icon to Arrow back
+        context.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+
+
+
+
+    }
+
+
+
+    private static void setupNavigation(final AppCompatActivity context) {
+        // Get the toolbar
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+
+        // Make the toolbar into an action bar for interactivity
+//        context.setSupportActionBar(toolbar);
+        // Set home to be displayed
+//        context.getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        // Make drawer toggle-able
+        DrawerLayout drawer = (DrawerLayout) context.findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                context, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+
+
+
+
+        toggle.syncState();
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("cek", "home selected");
+            }
+        });
+
+
+        // Get the navigationView and set an item selected listener
+        NavigationView navigationView = (NavigationView) context.findViewById(R.id.nav_view);
+        navigationView.bringToFront();
+
+
+
+        // Show user information in navigation view
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUserEmail = (TextView) headerView.findViewById(R.id.nav_userName);
+        TextView navUserName = (TextView) headerView.findViewById(R.id.nav_userEmail);
+        navUserEmail.setText(currentUser.getEmail());
+        navUserName.setText(currentUser.getDisplayName());
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // Handle navigation view item clicks here.
+                Log.d("BRUCE", "SOMETHING IS BEING CLICKED AT LEAST");
+                int id = item.getItemId();
+
+                if (id == R.id.home) {
+                    Log.d("BRUCE", "HELLO THERE");
+                } else if (id == R.id.nav_gallery) {
+
+                } else if (id == R.id.nav_slideshow) {
+
+                } else if (id == R.id.nav_manage) {
+
+
+                } else if (id == R.id.nav_share) {
+
+                } else if (id == R.id.nav_send) {
+
+                }
+
+                DrawerLayout drawer = (DrawerLayout) context.findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+    }
+
+
+
+
 
     public static void moveMapToLatLngWithBounds(LatLng latLng) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -227,6 +399,19 @@ public class myGoogleMap extends MainActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    context, R.raw.map_json));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
                 mGoogleMap = googleMap;
                 getLocationPermission(context);
                 getDeviceLocation(context);
@@ -325,12 +510,16 @@ public class myGoogleMap extends MainActivity {
                 myGoogleMap.moveMapToLatLngWithBounds(placeLatLng);
                 myGoogleMap.drawRoute(mLastKnownLatLng, placeLatLng);
                 myGoogleMap.createSingleMarker(placeLatLng);
-                myGoogleMap.requestLocationUpdates();
+                viewState = "confirmDestination";
+                updateUI(context);
+//                myGoogleMap.requestLocationUpdates();
 
-                Guideline guideLine = (Guideline) context.findViewById(R.id.guideline);
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
-                params.guidePercent = 0.70f; // 45% // range: 0 <-> 1
-                guideLine.setLayoutParams(params);
+
+
+
+
+
+
             }
 
             @Override
