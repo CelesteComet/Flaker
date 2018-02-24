@@ -11,7 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -59,11 +61,12 @@ public class MapsActivity extends BaseActivity {
     protected Location mLastKnownLocation;
     protected ArrayList<Polyline> polylines = new ArrayList<Polyline>();
     protected Marker destinationMarker;
+    protected Integer estimatedTimeOfArrival;
+    protected Routing.TravelMode travelMode;
 
     // Default Map Values
     private static final Integer DEFAULT_ZOOM = 15;
     private static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
-
 
 
     protected LatLng mLastKnownLatLng;
@@ -191,10 +194,10 @@ public class MapsActivity extends BaseActivity {
         destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
     }
 
-    protected void drawRoute(LatLng start, LatLng end) {
+    protected void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
 
         Routing routing = new Routing.Builder()
-                .travelMode(Routing.TravelMode.WALKING)
+                .travelMode(mode)
                 .withListener(new RoutingListener() {
                     @Override
                     public void onRoutingFailure(RouteException e) {
@@ -229,7 +232,11 @@ public class MapsActivity extends BaseActivity {
                             Polyline polyline = mGoogleMap.addPolyline(polyOptions);
                             polylines.add(polyline);
 
-//                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                            estimatedTimeOfArrival = route.get(i).getDistanceValue();
+                            TextView mConfirmTextView = findViewById(R.id.confirmTextView);
+                            mConfirmTextView.setText(estimatedTimeOfArrival.toString());
+                            Log.d("ETA", "UPDATED");
+ //                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
                     }
 

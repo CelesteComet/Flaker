@@ -10,7 +10,10 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Routing;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -24,8 +27,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 
-import static com.flaker.flaker.myGoogleMap.drawRoute;
-import static com.flaker.flaker.myGoogleMap.moveMapToLatLngWithBounds;
 
 public class MainActivity extends MapsActivity {
 
@@ -60,7 +61,7 @@ public class MainActivity extends MapsActivity {
             public void onPlaceSelected(Place place) {
                 placeLatLng = place.getLatLng();
                 moveMapToLatLngWithBounds(placeLatLng, true);
-                drawRoute(mLastKnownLatLng, placeLatLng);
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
                 updateUI(viewState);
@@ -128,6 +129,12 @@ public class MainActivity extends MapsActivity {
                 ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
                 autoCompleteLayout.setVisibility(ConstraintLayout.GONE);
 
+                // Display the ETA on the confirm box
+
+                Log.d("ETA", "TRYING TO CHANGE");
+
+
+
                 // Change icon to Arrow back
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
@@ -151,7 +158,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    drawRoute(mLastKnownLatLng, placeLatLng);
+                    drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
 
                 }
             };
@@ -166,7 +173,7 @@ public class MainActivity extends MapsActivity {
 
 
 
-//        myGoogleMap.init(this);
+
 
 
 

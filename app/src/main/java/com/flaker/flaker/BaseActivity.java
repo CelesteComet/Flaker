@@ -1,4 +1,5 @@
 package com.flaker.flaker;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,9 +25,12 @@ import java.util.Date;
 
 public class BaseActivity extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference mRootRef = database.getReference();
-    DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
+    // Provide Firebase database reference to entire app
+    protected FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+    FirebaseDatabase database;
+    DatabaseReference RootDatabaseReference;
+    DatabaseReference UsersDatabase;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -39,7 +43,14 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setupFirebaseAuth();
+        setupFirebaseReferences();
         executeCalendarTest();
+    }
+
+    private void setupFirebaseReferences() {
+        database = FirebaseDatabase.getInstance();
+        RootDatabaseReference = database.getReference();
+        UsersDatabase = RootDatabaseReference.child("users");
     }
 
     private void executeCalendarTest() {
@@ -116,10 +127,15 @@ public class BaseActivity extends AppCompatActivity {
 
                 if (id == R.id.home) {
 
-                } else if (id == R.id.nav_gallery) {
-
-                } else if (id == R.id.nav_slideshow) {
-
+                } else if (id == R.id.nav_friends) {
+//                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendActivity.class);
+//                    finish();
+//                    startActivity(displayFriendsActivityIntent);
+                } else if (id == R.id.nav_requests) {
+                    // Create request list here
+                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    finish();
+                    startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_manage) {
 
 
