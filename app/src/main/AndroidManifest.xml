@@ -50,9 +50,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".EtaActivity"/>
-
-
+        <activity android:name=".EtaActivity" />
+        <activity android:name=".FriendsListActivity"></activity>
     </application>
 
 </manifest>
