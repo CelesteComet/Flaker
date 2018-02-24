@@ -1,4 +1,5 @@
 package com.flaker.flaker;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -116,10 +117,15 @@ public class BaseActivity extends AppCompatActivity {
 
                 if (id == R.id.home) {
 
-                } else if (id == R.id.nav_gallery) {
-
-                } else if (id == R.id.nav_slideshow) {
-
+                } else if (id == R.id.nav_friends) {
+//                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendActivity.class);
+//                    finish();
+//                    startActivity(displayFriendsActivityIntent);
+                } else if (id == R.id.nav_requests) {
+                    // Create request list here
+                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    finish();
+                    startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_manage) {
 
 
