@@ -13,18 +13,18 @@ public class Meeting {
     public String address;
     public Double longitude;
     public Double latitude;
-    public String owner;
-    public Long scheduled_time;
+    public String ownerId;
+    public Long scheduledTime;
 
     public Meeting(){
 
     }
 
-    public Meeting(String address, Double longitude, Double latitude, String owner, Long scheduled_time) {
+    public Meeting(String address, Double longitude, Double latitude, String ownerId, Long scheduledTime) {
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.owner = owner;
-        this.scheduled_time = scheduled_time;
+        this.ownerId = ownerId;
+        this.scheduledTime = scheduledTime;
     }
 }
