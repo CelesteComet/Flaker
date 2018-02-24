@@ -56,7 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1.0" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <!--<android.support.constraint.ConstraintLayout-->
         <!--android:layout_width="match_parent"-->
@@ -66,21 +66,125 @@
         <!--app:layout_constraintBottom_toBottomOf="parent"-->
         <!--tools:layout_editor_absoluteX="0dp">-->
 
-    <!--<android.support.constraint.ConstraintLayout-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height=""></android.support.constraint.ConstraintLayout>-->
-
-    <TextView
-        android:id="@+id/confirmTextView"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorWhite"
-        android:text="HELLO WORLD"
+        android:id="@+id/confirmConstraintLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_weight="0.33">
+
+                <TextClock
+                    android:id="@+id/textClock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/requesterWalkButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="44dp"
+                    android:onClick="changeTravelMode"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textClock"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_menu_camera" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_weight="0.33">
+
+                <TextClock
+                    android:id="@+id/textClock2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/requesterBikeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:onClick="changeTravelMode"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textClock2"
+                    app:layout_constraintVertical_bias="0.569"
+                    app:srcCompat="@drawable/ic_menu_camera" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_weight="0.33">
+
+                <TextClock
+                    android:id="@+id/textClock3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/requesterCarButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:onClick="changeTravelMode"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textClock3"
+                    app:layout_constraintVertical_bias="0.569"
+                    app:srcCompat="@drawable/ic_menu_camera" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+        </LinearLayout>
+
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
     <!--</android.support.constraint.ConstraintLayout>-->
 
 

@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.directions.route.AbstractRouting;
@@ -170,15 +171,29 @@ public class MainActivity extends MapsActivity {
     }
 
 
+    public void changeTravelMode(View view) {
 
+        Integer viewId = view.getId();
 
+        switch (viewId) {
+            case R.id.requesterWalkButton:
+                Log.d(TAG, "*** CHOSE TO WALK ***");
+                travelMode = Routing.TravelMode.WALKING;
 
-
-
-
-
-
-
+                break;
+            case R.id.requesterBikeButton:
+                Log.d(TAG, "*** CHOSE TO BIKE ***");
+                travelMode = Routing.TravelMode.BIKING;
+                break;
+            case R.id.requesterCarButton:
+                Log.d(TAG, "*** CHOSE TO DRIVE ***");
+                travelMode = Routing.TravelMode.DRIVING;
+                break;
+            default:
+                break;
+        }
+        Log.d(TAG, viewId.toString());
+    }
 }
 
 
