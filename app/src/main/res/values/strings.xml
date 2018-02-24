@@ -21,4 +21,21 @@
 
     <string name="action_settings">Settings</string>
 
+
+    <string-array name="names">
+        <item>John</item>
+        <item>Jack</item>
+        <item>Rachel</item>
+        <item>Sierra</item>
+        <item>Ronald</item>
+    </string-array>
+
+    <string-array name="eta">
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>25 min</item>
+        <item>35 min</item>
+    </string-array>
+
 </resources>

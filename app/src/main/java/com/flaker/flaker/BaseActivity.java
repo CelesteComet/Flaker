@@ -1,16 +1,38 @@
 package com.flaker.flaker;
 
+
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import android.view.MenuItem;
+import android.view.View;
+
+
+
 import android.view.Window;
+import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,11 +49,25 @@ public class BaseActivity extends AppCompatActivity {
     DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
 
 
+    // User Authentication References
+    private FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+
+    private static final String TAG = "BaseActivity";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("whatever", "HELLO WORLD");
 
+        setContentView(R.layout.activity_main);
+
+        // get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+        // get current user
+        currentUser = mAuth.getCurrentUser();
+
+        setupNavigation();
 
 
         // Retro stuff
@@ -57,11 +93,100 @@ public class BaseActivity extends AppCompatActivity {
 //            }
 //        });
 
+        //Gets a calendar using the default time zone and locale.
+        //The Calendar returned is based on the current time in the default time zone with the default FORMAT locale.
 
+        Calendar calendar = Calendar.getInstance();
+        Log.d(TAG, "LOOK HERE");
+        Log.d(TAG, calendar.toString());
+        //Returns a Date object representing this Calendar's time value (millisecond offset from the Epoch").
+        Log.d(TAG, calendar.getTime().toString());
+        //Returns this Calendar's time value in milliseconds.
+        Log.d(TAG, String.valueOf(calendar.getTimeInMillis()));
+
+        //Create a Date obj from a long
+        Date date = new Date(calendar.getTimeInMillis());
+        Log.d(TAG, date.toString());
+
+
+        //Compares the time values (millisecond offsets from the Epoch) represented by two Calendar objects. Returns 1 or -1
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.HOUR_OF_DAY, 2);
+        Log.d(TAG, calendar2.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
+
+        calendar.add(Calendar.HOUR_OF_DAY, 10);
+        Log.d(TAG, calendar.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
 
 
 
     }
+
+    private void setupNavigation() {
+        // Get the toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // Make the toolbar into an action bar for interactivity
+        setSupportActionBar(toolbar);
+
+        // Make drawer toggle-able
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // Get the navigationView and set an item selected listener
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        // Show user information in navigation view
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUserEmail = (TextView) headerView.findViewById(R.id.nav_userName);
+        TextView navUserName = (TextView) headerView.findViewById(R.id.nav_userEmail);
+        navUserEmail.setText(currentUser.getEmail());
+        navUserName.setText(currentUser.getDisplayName());
+
+//        navigationView.bringToFront();
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // Handle navigation view item clicks here.
+                int id = item.getItemId();
+                Log.d("BRUCE", String.valueOf(id));
+//                Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(displayMainActivityIntent);
+                if (id == R.id.nav_friends) {
+                    // Handle the camera action
+
+                } else if (id == R.id.nav_requests) {
+
+                } else if (id == R.id.nav_slideshow) {
+
+                } else if (id == R.id.nav_manage) {
+
+                } else if (id == R.id.nav_share) {
+
+                } else if (id == R.id.nav_send) {
+
+                }
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+    }
+
+
+
+
+
+
+
 
 
 

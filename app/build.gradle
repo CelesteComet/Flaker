@@ -42,10 +42,5 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.github.jd-alexander:library:1.1.0'
 
-}
+    apply plugin: 'com.google.gms.google-services'
 
-
-
-
-
-apply plugin: 'com.google.gms.google-services'
