@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.design.widget.NavigationView;
 
 import android.support.design.widget.FloatingActionButton;
@@ -121,6 +123,11 @@ public class MainActivity extends BaseActivity {
             mLastKnownLatLng = savedInstanceState.getParcelable(KEY_LAT_LNG);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
+        Guideline guideLine = (Guideline) findViewById(R.id.guideline);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+        params.guidePercent = 1f; // 45% // range: 0 <-> 1
+        guideLine.setLayoutParams(params);
 
 
 
