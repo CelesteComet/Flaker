@@ -12,7 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -25,10 +32,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import static com.flaker.flaker.myGoogleMap.moveMapToLatLng;
+import java.util.ArrayList;
+
 
 public class MapsActivity extends BaseActivity {
 
@@ -39,13 +51,19 @@ public class MapsActivity extends BaseActivity {
 
     // Permissions
     protected boolean mLocationPermissionGranted;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
 
     // Google Map
     protected GoogleMap mGoogleMap;
     protected Location mLastKnownLocation;
-    protected Location mDefaultLocation;
+    protected ArrayList<Polyline> polylines = new ArrayList<Polyline>();
+    protected Marker destinationMarker;
+
+    // Default Map Values
+    private static final Integer DEFAULT_ZOOM = 15;
+    private static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
+
 
 
     protected LatLng mLastKnownLatLng;
@@ -123,14 +141,14 @@ public class MapsActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = task.getResult();
-                            mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                             if(mLastKnownLocation != null) {
+                                mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                 moveMapToLatLng(mLastKnownLatLng);
+                            } else {
+                                mLastKnownLatLng = mDefaultLatLng;
+                                moveMapToLatLng(mLastKnownLatLng);
+                                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
                             }
-                        } else {
-                            mLastKnownLatLng = new LatLng(mDefaultLocation.getLatitude(), mDefaultLocation.getLongitude());
-                            moveMapToLatLng(mLastKnownLatLng);
-                            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
                         }
                     }
                 });
@@ -159,4 +177,73 @@ public class MapsActivity extends BaseActivity {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
         mGoogleMap.animateCamera(cameraUpdate);
     }
+
+    protected void createSingleMarker(LatLng latLng) {
+        // If a marker exists already, remove the marker
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+        destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
+    }
+
+    protected void drawRoute(LatLng start, LatLng end) {
+
+        Routing routing = new Routing.Builder()
+                .travelMode(Routing.TravelMode.WALKING)
+                .withListener(new RoutingListener() {
+                    @Override
+                    public void onRoutingFailure(RouteException e) {
+
+                    }
+
+                    @Override
+                    public void onRoutingStart() {
+
+                    }
+
+                    @Override
+                    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+
+                        if(polylines.size() > 0) {
+                            for (Polyline poly : polylines) {
+                                poly.remove();
+                            }
+                        }
+
+                        polylines = new ArrayList<>();
+                        //add route(s) to the map.
+                        for (int i = 0; i < route.size(); i++) {
+
+                            //In case of more than 5 alternative routes
+
+
+                            PolylineOptions polyOptions = new PolylineOptions();
+
+                            polyOptions.width(10 + i * 3);
+                            polyOptions.addAll(route.get(i).getPoints());
+                            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
+                            polylines.add(polyline);
+
+//                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onRoutingCancelled() {
+
+                    }
+                })
+                .waypoints(start, end)
+                .build();
+        routing.execute();
+    }
+
+    protected void moveMapToLatLng(LatLng latLng) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
+        mGoogleMap.animateCamera(cameraUpdate);
+    }
+
+
+
+
 }

@@ -1,7 +1,16 @@
 package com.flaker.flaker;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 // Firebase libraries
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,5 +74,64 @@ public class BaseActivity extends AppCompatActivity {
         // Retrieve firebase authentication instance and get the current user
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+    }
+
+    protected void includeDrawer() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
+        // Make drawer toggle-able
+        final DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+
+        toggle.syncState();
+
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("cek", "home selected");
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // Get the navigationView and set an item selected listener
+        NavigationView navigationView = (NavigationView) this.findViewById(R.id.nav_view);
+        navigationView.bringToFront();
+
+        // Show user information in navigation view
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUserEmail = (TextView) headerView.findViewById(R.id.nav_userName);
+        TextView navUserName = (TextView) headerView.findViewById(R.id.nav_userEmail);
+        navUserEmail.setText(currentUser.getEmail());
+        navUserName.setText(currentUser.getDisplayName());
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // Handle navigation view item clicks here.
+
+                int id = item.getItemId();
+
+                if (id == R.id.home) {
+
+                } else if (id == R.id.nav_gallery) {
+
+                } else if (id == R.id.nav_slideshow) {
+
+                } else if (id == R.id.nav_manage) {
+
+
+                } else if (id == R.id.nav_share) {
+
+                } else if (id == R.id.nav_send) {
+
+                }
+                
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
 }

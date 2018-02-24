@@ -1,12 +1,17 @@
 package com.flaker.flaker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -23,6 +28,14 @@ public class MainActivity extends MapsActivity {
 
     // Google Map
     private LatLng placeLatLng;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
+
+    // Activity View State
+    /*
+
+    */
+    private String viewState;
 
     private final String TAG = this.toString();
 
@@ -31,6 +44,7 @@ public class MainActivity extends MapsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupOnMapReadyCallback();
+        includeDrawer();
     }
 
 
@@ -46,14 +60,14 @@ public class MainActivity extends MapsActivity {
                 drawRoute(mLastKnownLatLng, placeLatLng);
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
-                updateUI(context);
+                updateUI();
                 requestLocationUpdates();
             }
 
             @Override
             public void onError(Status status) {
                 // TODO: Handle the error for autocomplete
-                Log.d("Bruce", "An error occurred: " + status);
+                Log.d(TAG, "An error occurred: " + status);
             }
         });
     }
@@ -66,18 +80,18 @@ public class MainActivity extends MapsActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                try {
-                    // Customise the styling of the base map using a JSON object defined
-                    // in a raw resource file.
-                    boolean success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    context, R.raw.map_json));
-                    if (!success) {
-                        Log.e(TAG, "Style parsing failed.");
-                    }
-                } catch (Resources.NotFoundException e) {
-                    Log.e(TAG, "Can't find style. Error: ", e);
-                }
+//                try {
+//                    // Customise the styling of the base map using a JSON object defined
+//                    // in a raw resource file.
+//                    boolean success = googleMap.setMapStyle(
+//                            MapStyleOptions.loadRawResourceStyle(
+//                                    context, R.raw.map_json));
+//                    if (!success) {
+//                        Log.e(TAG, "Style parsing failed.");
+//                    }
+//                } catch (Resources.NotFoundException e) {
+//                    Log.e(TAG, "Can't find style. Error: ", e);
+//                }
                 mGoogleMap = googleMap;
                 getLocationPermission();
                 getDeviceLocation();
@@ -86,6 +100,44 @@ public class MainActivity extends MapsActivity {
             }
         });
     }
+
+    private void updateUI() {
+        switch (viewState) {
+            case "searchDestination":
+                break;
+            case "confirmDestination":
+                break;
+            default:
+                break;
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+
+    private void requestLocationUpdates() {
+        mLocationRequest = new LocationRequest();
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000);
+
+        // Construct a location callback
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+                    Log.d("BRUCE", "GOT A NEW LOCATION");
+                    mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    drawRoute(mLastKnownLatLng, placeLatLng);
+
+                }
+            };
+        };
+
+        mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback,
+                null /* Looper */);
+    }
+
 
 
 //        Guideline guideLine = (Guideline) findViewById(R.id.guideline);
