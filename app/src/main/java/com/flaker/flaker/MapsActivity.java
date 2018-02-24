@@ -169,13 +169,18 @@ public class MapsActivity extends BaseActivity {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
-    protected void moveMapToLatLngWithBounds(LatLng latLng) {
+    protected void moveMapToLatLngWithBounds(LatLng latLng, boolean animate) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mLastKnownLatLng);
         builder.include(latLng);
         LatLngBounds bounds = builder.build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
-        mGoogleMap.animateCamera(cameraUpdate);
+        if (animate == true) {
+            mGoogleMap.animateCamera(cameraUpdate);
+        } else {
+            mGoogleMap.moveCamera(cameraUpdate);
+        }
+
     }
 
     protected void createSingleMarker(LatLng latLng) {
@@ -240,7 +245,7 @@ public class MapsActivity extends BaseActivity {
 
     protected void moveMapToLatLng(LatLng latLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
-        mGoogleMap.animateCamera(cameraUpdate);
+        mGoogleMap.moveCamera(cameraUpdate);
     }
 
 

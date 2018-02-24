@@ -1,10 +1,13 @@
 package com.flaker.flaker;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
@@ -56,11 +59,11 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 placeLatLng = place.getLatLng();
-                moveMapToLatLngWithBounds(placeLatLng);
+                moveMapToLatLngWithBounds(placeLatLng, true);
                 drawRoute(mLastKnownLatLng, placeLatLng);
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
-                updateUI();
+                updateUI(viewState);
                 requestLocationUpdates();
             }
 
@@ -101,11 +104,32 @@ public class MainActivity extends MapsActivity {
         });
     }
 
-    private void updateUI() {
+    private void updateUI(String viewState) {
         switch (viewState) {
             case "searchDestination":
                 break;
             case "confirmDestination":
+                ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.7f);
+
+                final Guideline guideLine = (Guideline) this.findViewById(R.id.guideline);
+                final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+
+                animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        params.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        guideLine.setLayoutParams(params);
+                    }
+                });
+                animation.setDuration(1300);
+                animation.start();
+
+                ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout.setVisibility(ConstraintLayout.GONE);
+
+                // Change icon to Arrow back
+//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
             default:
                 break;
@@ -140,10 +164,7 @@ public class MainActivity extends MapsActivity {
 
 
 
-//        Guideline guideLine = (Guideline) findViewById(R.id.guideline);
-//        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
-//        params.guidePercent = 1f; // 45% // range: 0 <-> 1
-//        guideLine.setLayoutParams(params);
+
 
 //        myGoogleMap.init(this);
 
