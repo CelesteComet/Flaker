@@ -33,7 +33,7 @@
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
         <activity
-            android:name=".EtaActivity"
+            android:name=".AuthActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
