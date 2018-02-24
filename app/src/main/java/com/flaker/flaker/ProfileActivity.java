@@ -50,16 +50,16 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         userImageUrl = user.getPhotoUrl().toString();
+        Log.d("photo url", userImageUrl);
 
 
         userImage = (ImageView) findViewById(R.id.user_image);
-        getImageUrl(userImageUrl);
+        setImageUrl(userImageUrl);
 
 
     }
 
-    private void getImageUrl(String url) {
+    private void setImageUrl(String url) {
         Picasso.with(getApplicationContext()).load(url).into(userImage);
-//        Log.d("asdlkfjaslkdfaj"," aksldfj - -");
     }
 }
