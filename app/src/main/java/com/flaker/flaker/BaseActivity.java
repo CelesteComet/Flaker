@@ -25,9 +25,12 @@ import java.util.Date;
 
 public class BaseActivity extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference mRootRef = database.getReference();
-    DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
+    // Provide Firebase database reference to entire app
+    protected FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+    FirebaseDatabase database;
+    DatabaseReference RootDatabaseReference;
+    DatabaseReference UsersDatabase;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -40,7 +43,14 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setupFirebaseAuth();
+        setupFirebaseReferences();
         executeCalendarTest();
+    }
+
+    private void setupFirebaseReferences() {
+        database = FirebaseDatabase.getInstance();
+        RootDatabaseReference = database.getReference();
+        UsersDatabase = RootDatabaseReference.child("users");
     }
 
     private void executeCalendarTest() {

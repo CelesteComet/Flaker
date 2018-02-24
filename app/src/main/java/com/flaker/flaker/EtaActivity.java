@@ -52,9 +52,7 @@ public class EtaActivity extends AppCompatActivity {
                 etaFetch(reference);
             }
         };
-
         timer.schedule(intervalTask, 5, 3 * 1000);
-
     }
 
     private void etaFetch(DatabaseReference reference) {
