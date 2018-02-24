@@ -148,7 +148,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
                             addUserToDb(user);
 
-                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), ProfileActivity.class);
                             startActivity(displayMainActivityIntent);
 
                         }

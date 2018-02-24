@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class EtaActivity extends AppCompatActivity {
-    public ArrayList<String> stuff = new ArrayList<String>();
+    public ArrayList<String[]> stuff = new ArrayList<String[]>();
     private ListView numbers;
     ArrayAdapter adapter;
 
@@ -30,7 +29,7 @@ public class EtaActivity extends AppCompatActivity {
 
         numbers = (ListView) findViewById(R.id.eta_list_view2);
 //        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stuff);
-        adapter = new EtaAdapter(this, stuff);
+        adapter = new EtaAdapter(this, (ArrayList<String[]>) stuff);
         numbers.setAdapter(adapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -66,8 +65,12 @@ public class EtaActivity extends AppCompatActivity {
                 stuff.clear();
                 Log.d("alkfdj", dataSnapshot.getClass().toString());
                 for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
-
-                    stuff.add(indSnapshot.child("eta").getValue().toString());
+                    String[] user = new String[3];
+                    user[0] = indSnapshot.child("eta").getValue().toString();
+                    user[1] = indSnapshot.child("name").getValue().toString();
+                    user[2] = indSnapshot.child("photo_url").getValue().toString();
+//                    stuff.add(indSnapshot.child("eta").getValue().toString());
+                    stuff.add(user);
                 }
 
 //                stuff.add(dataSnapshot.getValue().toString());
