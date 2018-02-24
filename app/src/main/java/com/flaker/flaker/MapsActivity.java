@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -16,11 +17,18 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import static com.flaker.flaker.myGoogleMap.moveMapToLatLng;
 
 public class MapsActivity extends BaseActivity {
 
@@ -33,8 +41,12 @@ public class MapsActivity extends BaseActivity {
     protected boolean mLocationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
+
     // Google Map
     protected GoogleMap mGoogleMap;
+    protected Location mLastKnownLocation;
+    protected Location mDefaultLocation;
+
 
     protected LatLng mLastKnownLatLng;
     protected Location mCameraPosition;
@@ -54,39 +66,31 @@ public class MapsActivity extends BaseActivity {
         }
 
         setupAPIClients();
-        setupOnMapReadyCallback();
     }
 
-    private void setupOnMapReadyCallback() {
-        final Context context = this;
-        FragmentManager mFragmentManager = this.getSupportFragmentManager();
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) mFragmentManager.findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                try {
-                    // Customise the styling of the base map using a JSON object defined
-                    // in a raw resource file.
-                    boolean success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    context, R.raw.map_json));
-                    if (!success) {
-                        Log.e(TAG, "Style parsing failed.");
-                    }
-                } catch (Resources.NotFoundException e) {
-                    Log.e(TAG, "Can't find style. Error: ", e);
-                }
-                mGoogleMap = googleMap;
+    /**
+     * Updates the map's UI settings based on whether the user has granted location permission.
+     */
+    protected void updateLocationUI() {
+        if (mGoogleMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mLastKnownLocation = null;
                 getLocationPermission();
-                getDeviceLocation(context);
-                updateLocationUI(context);
-                setupAutoCompleteWidget(context);
             }
-        });
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 
-    private void getLocationPermission() {
+    protected void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
          * device. The result of the permission request is handled by a callback,
@@ -103,7 +107,40 @@ public class MapsActivity extends BaseActivity {
         }
     }
 
-    private void setupAPIClients() {
+    /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    protected void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = task.getResult();
+                            mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            if(mLastKnownLocation != null) {
+                                moveMapToLatLng(mLastKnownLatLng);
+                            }
+                        } else {
+                            mLastKnownLatLng = new LatLng(mDefaultLocation.getLatitude(), mDefaultLocation.getLongitude());
+                            moveMapToLatLng(mLastKnownLatLng);
+                            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    protected void setupAPIClients() {
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -112,5 +149,14 @@ public class MapsActivity extends BaseActivity {
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    protected void moveMapToLatLngWithBounds(LatLng latLng) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(mLastKnownLatLng);
+        builder.include(latLng);
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
+        mGoogleMap.animateCamera(cameraUpdate);
     }
 }

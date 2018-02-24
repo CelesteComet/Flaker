@@ -512,14 +512,7 @@ public class myGoogleMap extends BaseActivity {
                 myGoogleMap.createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
                 updateUI(context);
-//                myGoogleMap.requestLocationUpdates();
-
-
-
-
-
-
-
+                myGoogleMap.requestLocationUpdates();
             }
 
             @Override
