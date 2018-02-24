@@ -35,7 +35,7 @@ public class FriendActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         DatabaseReference myRef = UsersDatabase;
-
+        
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
