@@ -55,9 +55,8 @@
         <activity android:name=".RequestTestActivity"></activity>
 
         <activity android:name=".MapsActivity" />
-        <activity android:name=".EtaActivity"/>
-
-
+        <activity android:name=".EtaActivity" />
+        <activity android:name=".FriendsListActivity"></activity>
     </application>
 
 </manifest>
