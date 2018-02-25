@@ -28,9 +28,10 @@ public class BaseActivity extends AppCompatActivity {
     // Provide Firebase database reference to entire app
     protected FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-    FirebaseDatabase database;
-    DatabaseReference RootDatabaseReference;
-    DatabaseReference UsersDatabase;
+    protected static FirebaseDatabase database;
+    protected static DatabaseReference RootDatabaseReference;
+    protected static DatabaseReference UsersDatabase;
+    protected static DatabaseReference MeetupsDatabase;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -51,7 +52,9 @@ public class BaseActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         RootDatabaseReference = database.getReference();
         UsersDatabase = RootDatabaseReference.child("users");
+        MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
+
 
     private void executeCalendarTest() {
         //Gets a calendar using the default time zone and locale.
@@ -134,7 +137,6 @@ public class BaseActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_requests) {
                     // Create request list here
                     Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
-                    finish();
                     startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_manage) {
 

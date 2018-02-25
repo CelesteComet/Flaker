@@ -2,6 +2,7 @@ package com.flaker.flaker;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
@@ -10,10 +11,15 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Routing;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -27,13 +33,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 
+import java.sql.Time;
+import java.util.Calendar;
+
 
 public class MainActivity extends MapsActivity {
 
+
+
     // Google Map
-    private LatLng placeLatLng;
+    private LatLng placeLatLng = mDefaultLatLng;
+    private Place destinationPlace;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+
+    // UI
+    private FloatingActionsMenu menuMultipleActions;
 
     // Activity View State
     /*
@@ -42,6 +57,8 @@ public class MainActivity extends MapsActivity {
     private String viewState;
 
     private final String TAG = this.toString();
+    private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +66,13 @@ public class MainActivity extends MapsActivity {
         setContentView(R.layout.activity_main);
         setupOnMapReadyCallback();
         includeDrawer();
+        includeFAB();
+
+
+    }
+
+    private void includeFAB() {
+        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
     }
 
 
@@ -60,8 +84,9 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 placeLatLng = place.getLatLng();
+                destinationPlace = place;
                 moveMapToLatLngWithBounds(placeLatLng, true);
-                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
+                drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
                 updateUI(viewState);
@@ -110,10 +135,13 @@ public class MainActivity extends MapsActivity {
             case "searchDestination":
                 break;
             case "confirmDestination":
-                ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.7f);
+                ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.77f);
+                ValueAnimator animation2 = ValueAnimator.ofFloat(1.0f, 0.63f);
 
                 final Guideline guideLine = (Guideline) this.findViewById(R.id.guideline);
+                final Guideline guideLine2 = (Guideline) this.findViewById(R.id.guideline2);
                 final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                final ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) guideLine2.getLayoutParams();
 
                 animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -123,7 +151,22 @@ public class MainActivity extends MapsActivity {
                         guideLine.setLayoutParams(params);
                     }
                 });
-                animation.setDuration(1300);
+
+                animation2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        params2.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        guideLine2.setLayoutParams(params2);
+                    }
+                });
+
+
+
+                animation2.setDuration(800);
+                animation2.start();
+
+                animation.setDuration(800);
                 animation.start();
 
                 ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
@@ -158,7 +201,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
+                    drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
                 }
             };
@@ -170,15 +213,56 @@ public class MainActivity extends MapsActivity {
     }
 
 
+    public void changeTravelMode(View view) {
 
+        Integer viewId = view.getId();
+        menuMultipleActions.toggle();
+        switch (viewId) {
+            case R.id.action_a:
+                Log.d(TAG, "*** CHOSE TO WALK ***");
+                travelMode = Routing.TravelMode.WALKING;
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
+                break;
+            case R.id.action_b:
+                Log.d(TAG, "*** CHOSE TO BIKE ***");
+                travelMode = Routing.TravelMode.BIKING;
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.BIKING);
+                break;
+            case R.id.action_c:
+                Log.d(TAG, "*** CHOSE TO DRIVE ***");
+                travelMode = Routing.TravelMode.DRIVING;
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING);
+                break;
+            default:
+                break;
+        }
 
+    }
 
-
-
-
-
-
-
+    public void selectMeetupTime(View view) {
+        TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                Calendar calendar = Calendar.getInstance();
+                Calendar c2 = Calendar.getInstance();
+                c2.set(Calendar.HOUR_OF_DAY, i);
+                c2.set(Calendar.MINUTE, i1);
+                long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
+                if (sub < 0) {
+                    Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
+                }
+                Meeting meeting = new Meeting(
+                        "RANDOM ADDRESS",
+                        placeLatLng.longitude,
+                        placeLatLng.latitude,
+                        currentUser.getUid(),
+                        c2.getTimeInMillis());
+                MeetupsDatabase.push().setValue(meeting);
+            }
+        };
+        TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
+        mTimePicker.show();
+    }
 }
 
 

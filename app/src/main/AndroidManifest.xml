@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Flaker"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
@@ -35,7 +35,9 @@
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
         <activity
+
             android:name=".AuthActivity"
+
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +48,7 @@
         <activity android:name=".BaseActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".RequestTestActivity"></activity>
         <activity android:name=".MapsActivity" />
         <activity android:name=".EtaActivity" />
         <activity android:name=".FriendsListActivity"></activity>
