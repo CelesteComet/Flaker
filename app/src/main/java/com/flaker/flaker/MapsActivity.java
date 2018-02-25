@@ -233,7 +233,7 @@ public class MapsActivity extends BaseActivity {
                             polylines.add(polyline);
 
                             estimatedTimeOfArrival = route.get(i).getDistanceValue();
-                            TextView mConfirmTextView = findViewById(R.id.confirmConstraintLayout);
+                            TextView mConfirmTextView = findViewById(R.id.mConfirmTextView);
                             mConfirmTextView.setText(estimatedTimeOfArrival.toString());
                             Log.d("ETA", "UPDATED");
  //                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();

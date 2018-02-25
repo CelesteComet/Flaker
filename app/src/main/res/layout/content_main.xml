@@ -19,7 +19,8 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></fragment>
+        app:layout_constraintTop_toTopOf="parent">
+    </fragment>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/place_autocomplete_layout"
@@ -56,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.7" />
 
     <!--<android.support.constraint.ConstraintLayout-->
         <!--android:layout_width="match_parent"-->
@@ -67,21 +68,26 @@
         <!--tools:layout_editor_absoluteX="0dp">-->
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/confirmConstraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:id="@+id/confirmConstraintLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" >
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="100dp"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.33">
 
                 <TextClock
@@ -95,26 +101,24 @@
 
                 <ImageButton
                     android:id="@+id/requesterWalkButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="44dp"
                     android:onClick="changeTravelMode"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textClock"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/ic_menu_camera" />
+                    app:srcCompat="@drawable/ic_directions_walk_black" />
 
 
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="100dp"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.33">
 
                 <TextClock
@@ -128,9 +132,8 @@
 
                 <ImageButton
                     android:id="@+id/requesterBikeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:onClick="changeTravelMode"
@@ -138,15 +141,15 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textClock2"
-                    app:layout_constraintVertical_bias="0.569"
-                    app:srcCompat="@drawable/ic_menu_camera" />
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_directions_bike_black" />
 
 
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="100dp"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.33">
 
                 <TextClock
@@ -160,9 +163,8 @@
 
                 <ImageButton
                     android:id="@+id/requesterCarButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:onClick="changeTravelMode"
@@ -170,8 +172,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textClock3"
-                    app:layout_constraintVertical_bias="0.569"
-                    app:srcCompat="@drawable/ic_menu_camera" />
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_directions_car_black" />
 
 
             </android.support.constraint.ConstraintLayout>
@@ -179,7 +181,44 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/chooseDestinationButton"
+            android:layout_width="206dp"
+            android:layout_height="53dp"
+            android:layout_marginBottom="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Confirm Destination"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.049"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:layout_constraintVertical_bias="0.0" />
 
+        <TextView
+            android:id="@+id/mConfirmTextView"
+            android:layout_width="77dp"
+            android:layout_height="66dp"
+            android:text="TextView"
+            app:layout_constraintTop_toBottomOf="@+id/chooseDestinationButton"
+            tools:layout_editor_absoluteX="254dp" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:onClick="selectMeetupTime"
+            android:text="Select Time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/chooseDestinationButton"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
     </android.support.constraint.ConstraintLayout>
