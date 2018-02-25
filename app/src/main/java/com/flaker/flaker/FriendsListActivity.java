@@ -104,30 +104,20 @@ public class FriendsListActivity extends BaseActivity {
     private void addUserToFriendsList(DataSnapshot users) {
         String[] friend = new String[3];
         DataSnapshot user = null;
+
         for (DataSnapshot theUser: users.getChildren()) {
-            Log.d("laksdfj", theUser.child("score").getValue().toString());
             user = theUser;
         }
+
         friend[0] = user.child("name").getValue().toString();
         friend[1] = user.child("imageUrl").getValue().toString();
         friend[2] = user.child("score").getValue().toString();
-//        friendsList.clear();
+
         friendsList.add(friend);
 
         adapter.notifyDataSetChanged();
 
 
-
-
-//        friend[0] = user.child("name").getValue().toString();
-//        Log.d("userhelloo", user.toString());
-//
-//        friend[1] = user.child("users").child("imageUrl").getValue().toString();
-////        friend[2] = user.child("email").getValue().toString();
-//
-//        friendsList.add(friend);
-//
-//        adapter.notifyDataSetChanged();
 
 
     }
@@ -141,14 +131,14 @@ public class FriendsListActivity extends BaseActivity {
 
                 for (DataSnapshot friendSnapShot: dataSnapshot.getChildren()) {
                     String[] friend = new String[3];
-                    Log.d("userhelloo2", friendSnapShot.toString());
+
                     friend[0] = friendSnapShot.child("name").getValue().toString();
                     friend[1] = friendSnapShot.child("photo_url").getValue().toString();
                     friend[2] = friendSnapShot.child("score").getValue().toString();
 
                     friendsList.add(friend);
 
-                    Log.d("friendslist2", friendsList.get(0)[0].toString());
+
                 }
 
                 adapter.notifyDataSetChanged();
