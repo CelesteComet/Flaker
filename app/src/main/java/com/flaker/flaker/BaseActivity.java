@@ -133,13 +133,13 @@ public class BaseActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_friends) {
                     Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendsListActivity.class);
                     startActivity(displayFriendsActivityIntent);
-                } else if (id == R.id.nav_requests) {
+                } else if (id == R.id.nav_etas) {
                     // Create request list here
-                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    startActivity(displayETAsActivityIntent);
+                } else if (id == R.id.nav_requests) {
+                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
                     startActivity(displayRequestsActivityIntent);
-                } else if (id == R.id.nav_manage) {
-
-
                 } else if (id == R.id.nav_share) {
 
                 } else if (id == R.id.nav_send) {

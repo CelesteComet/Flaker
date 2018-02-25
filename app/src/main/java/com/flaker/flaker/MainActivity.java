@@ -47,6 +47,7 @@ public class MainActivity extends MapsActivity {
     private Place destinationPlace;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private Calendar c2;
 
     // UI
     private FloatingActionsMenu menuMultipleActions;
@@ -275,20 +276,13 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 Calendar calendar = Calendar.getInstance();
-                Calendar c2 = Calendar.getInstance();
+                c2 = Calendar.getInstance();
                 c2.set(Calendar.HOUR_OF_DAY, i);
                 c2.set(Calendar.MINUTE, i1);
                 long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
                 if (sub < 0) {
                     Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
                 }
-                Meeting meeting = new Meeting(
-                        "RANDOM ADDRESS",
-                        placeLatLng.longitude,
-                        placeLatLng.latitude,
-                        currentUser.getUid(),
-                        c2.getTimeInMillis());
-                MeetupsDatabase.push().setValue(meeting);
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
@@ -300,6 +294,13 @@ public class MainActivity extends MapsActivity {
 //        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
 //        startActivity(showRequesterViewIntent);
         viewState = "requesterView";
+        Meeting meeting = new Meeting(
+                destinationPlace.getName().toString(),
+                placeLatLng.longitude,
+                placeLatLng.latitude,
+                currentUser.getUid(),
+                c2.getTimeInMillis());
+        MeetupsDatabase.push().setValue(meeting);
         updateUI(viewState);
     }
 }
