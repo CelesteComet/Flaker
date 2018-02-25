@@ -103,6 +103,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         fab:layout_constraintBottom_toBottomOf="parent"
         fab:layout_constraintEnd_toEndOf="parent"
         fab:layout_constraintHorizontal_bias="0.076"

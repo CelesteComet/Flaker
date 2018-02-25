@@ -198,7 +198,7 @@ public class MapsActivity extends BaseActivity {
 
         Routing routing = new Routing.Builder()
                 .travelMode(mode)
-                .key("AIzaSyBczfV0SOBlzKO3VQmXbqDytEJcu-skLoo")
+                .key(getString(R.string.google_directions_key))
                 .withListener(new RoutingListener() {
                     @Override
                     public void onRoutingFailure(RouteException e) {
@@ -236,10 +236,10 @@ public class MapsActivity extends BaseActivity {
                             estimatedTimeOfArrival = route.get(i).getDistanceValue();
                             Log.d("BRUCE", "DOING ");
                             String parsed = timeParse(estimatedTimeOfArrival);
-                            TextView mConfirmTextView = findViewById(R.id.mConfirmTextView);
+                            TextView confirmETAText = findViewById(R.id.confirmETAText);
                             Log.d("BRUCE", "DOING ");
                             Log.d("BRUCE", parsed);
-                            mConfirmTextView.setText(parsed);
+                            confirmETAText.setText(parsed);
 
                             //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
@@ -272,7 +272,8 @@ public class MapsActivity extends BaseActivity {
         String s2 = "";
         String s3 = "";
 
-        if (p2 < 10) {
+        if (p2 == 0) {
+            s2 = ""; } else if (p2 < 10) {
             s2 = "0" + Integer.toString(p2);
         } else {
             s2 = Integer.toString(p2);
@@ -284,13 +285,13 @@ public class MapsActivity extends BaseActivity {
             s1 = Integer.toString(p1);
         }
 
-        if (p3 < 10) {
+        if (p3 == 0) {
+            s3 = ""; } else if (p3 < 10) {
             s3 = "0" + Integer.toString(p3);
         } else {
             s3 = Integer.toString(p3);
         }
-        // System.out.print( s2 + ":" + s3 + ":" + s1);
-        return  s2 + ":" + s3 + ":" + s1;
+        return s2 + ":" + s3 + ":" + s1;
 
     }
 
