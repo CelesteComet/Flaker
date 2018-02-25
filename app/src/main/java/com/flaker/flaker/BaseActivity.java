@@ -31,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference RootDatabaseReference;
     DatabaseReference UsersDatabase;
+    DatabaseReference MeetupsDatabase;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -51,6 +52,7 @@ public class BaseActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         RootDatabaseReference = database.getReference();
         UsersDatabase = RootDatabaseReference.child("users");
+        MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
 
 

@@ -2,6 +2,7 @@ package com.flaker.flaker;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
@@ -10,7 +11,9 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Routing;
@@ -26,6 +29,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+
+import java.sql.Time;
+import java.util.Calendar;
 
 
 public class MainActivity extends MapsActivity {
@@ -170,15 +176,45 @@ public class MainActivity extends MapsActivity {
     }
 
 
+    public void changeTravelMode(View view) {
 
+        Integer viewId = view.getId();
 
+        switch (viewId) {
+            case R.id.requesterWalkButton:
+                Log.d(TAG, "*** CHOSE TO WALK ***");
+                travelMode = Routing.TravelMode.WALKING;
 
+                break;
+            case R.id.requesterBikeButton:
+                Log.d(TAG, "*** CHOSE TO BIKE ***");
+                travelMode = Routing.TravelMode.BIKING;
+                break;
+            case R.id.requesterCarButton:
+                Log.d(TAG, "*** CHOSE TO DRIVE ***");
+                travelMode = Routing.TravelMode.DRIVING;
+                break;
+            default:
+                break;
+        }
+        Log.d(TAG, viewId.toString());
+    }
 
-
-
-
-
-
+    public void selectMeetupTime(View view) {
+        TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                Calendar calendar = Calendar.getInstance();
+                Integer secondsToFuture = (i * 30 * 60) + (i1 * 60);
+                long epochTime = calendar.getTimeInMillis() + secondsToFuture;
+                Log.d(TAG, "PICKING SOME TIME");
+                Log.d(TAG, String.valueOf(i * 30 * 60));
+                Log.d(TAG, String.valueOf(i1 * 60));
+            }
+        };
+        TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
+        mTimePicker.show();
+    }
 }
 
 
