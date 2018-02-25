@@ -204,9 +204,12 @@ public class MainActivity extends MapsActivity {
         TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                Calendar calendar = Calendar.getInstance();
+                Integer secondsToFuture = (i * 30 * 60) + (i1 * 60);
+                long epochTime = calendar.getTimeInMillis() + secondsToFuture;
                 Log.d(TAG, "PICKING SOME TIME");
-                Log.d(TAG, String.valueOf(i));
-                Log.d(TAG, String.valueOf(i1));
+                Log.d(TAG, String.valueOf(i * 30 * 60));
+                Log.d(TAG, String.valueOf(i1 * 60));
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
