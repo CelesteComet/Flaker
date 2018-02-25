@@ -131,9 +131,8 @@ public class BaseActivity extends AppCompatActivity {
                 if (id == R.id.home) {
 
                 } else if (id == R.id.nav_friends) {
-//                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendActivity.class);
-//                    finish();
-//                    startActivity(displayFriendsActivityIntent);
+                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendsListActivity.class);
+                    startActivity(displayFriendsActivityIntent);
                 } else if (id == R.id.nav_requests) {
                     // Create request list here
                     Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);

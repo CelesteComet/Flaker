@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
@@ -176,11 +177,41 @@ public class MainActivity extends MapsActivity {
 
                 Log.d("ETA", "TRYING TO CHANGE");
 
-
-
                 // Change icon to Arrow back
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
+            case "requesterView":
+                ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
+                ValueAnimator backAnimation2 = ValueAnimator.ofFloat(0.63f, 1.0f);
+
+                final Guideline backGuideLine = (Guideline) this.findViewById(R.id.guideline);
+                final Guideline backGuideLine2 = (Guideline) this.findViewById(R.id.guideline2);
+                final ConstraintLayout.LayoutParams backParams = (ConstraintLayout.LayoutParams) backGuideLine.getLayoutParams();
+                final ConstraintLayout.LayoutParams backParams2 = (ConstraintLayout.LayoutParams) backGuideLine2.getLayoutParams();
+
+                backAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        backParams.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        backGuideLine.setLayoutParams(backParams);
+                    }
+                });
+
+                backAnimation2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        backParams2.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        backGuideLine2.setLayoutParams(backParams2);
+                    }
+                });
+
+                backAnimation2.setDuration(800);
+                backAnimation2.start();
+
+                backAnimation.setDuration(800);
+                backAnimation.start();
             default:
                 break;
         }
@@ -262,6 +293,14 @@ public class MainActivity extends MapsActivity {
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
         mTimePicker.show();
+    }
+
+
+    public void beginRequest(View view) {
+//        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
+//        startActivity(showRequesterViewIntent);
+        viewState = "requesterView";
+        updateUI(viewState);
     }
 }
 
