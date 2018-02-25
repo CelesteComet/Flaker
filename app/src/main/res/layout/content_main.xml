@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainMapContent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -57,7 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1" />
+        app:layout_constraintGuide_percent="0.7" />
 
     <!--<android.support.constraint.ConstraintLayout-->
         <!--android:layout_width="match_parent"-->
@@ -222,6 +223,40 @@
 
 
     </android.support.constraint.ConstraintLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        fab:fab_addButtonColorNormal="@color/colorPrimaryDark"
+        fab:fab_addButtonColorPressed="@color/colorWhite"
+        fab:fab_addButtonPlusIconColor="@color/colorPrimary"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorPrimaryDark"
+            fab:fab_title="Action A"
+            fab:fab_colorPressed="@color/colorWhite"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorWhite"
+            fab:fab_title="Action with a very long name that won\'t fit on the screen"
+            fab:fab_colorPressed="@color/colorPrimaryDark"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
 
 
     <!--</android.support.constraint.ConstraintLayout>-->

@@ -234,7 +234,7 @@ public class MapsActivity extends BaseActivity {
                             TextView mConfirmTextView = findViewById(R.id.mConfirmTextView);
                             mConfirmTextView.setText(estimatedTimeOfArrival.toString());
                             Log.d("ETA", "UPDATED");
- //                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
                     }
 

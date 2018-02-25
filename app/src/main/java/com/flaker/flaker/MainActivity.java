@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Routing;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -36,6 +38,8 @@ import java.util.Calendar;
 
 
 public class MainActivity extends MapsActivity {
+
+
 
     // Google Map
     private LatLng placeLatLng = mDefaultLatLng;
@@ -58,8 +62,26 @@ public class MainActivity extends MapsActivity {
         setContentView(R.layout.activity_main);
         setupOnMapReadyCallback();
         includeDrawer();
+        includeFAB();
+
+
     }
 
+    private void includeFAB() {
+        final View actionB = findViewById(R.id.action_b);
+
+        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
+        actionC.setTitle("Hide/Show Action above");
+        actionC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        menuMultipleActions.addButton(actionC);
+    }
 
 
     private void setupAutoCompleteWidget() {
