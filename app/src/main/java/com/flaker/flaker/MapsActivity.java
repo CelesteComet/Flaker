@@ -55,23 +55,20 @@ public class MapsActivity extends BaseActivity {
     protected boolean mLocationPermissionGranted;
     protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-
     // Google Map
     protected GoogleMap mGoogleMap;
     protected Location mLastKnownLocation;
     protected ArrayList<Polyline> polylines = new ArrayList<Polyline>();
     protected Marker destinationMarker;
     protected Integer estimatedTimeOfArrival;
-    protected Routing.TravelMode travelMode;
+    protected Routing.TravelMode travelMode = Routing.TravelMode.WALKING;
 
     // Default Map Values
-    private static final Integer DEFAULT_ZOOM = 15;
-    private static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
+    protected static final Integer DEFAULT_ZOOM = 15;
+    protected static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
 
-
-    protected LatLng mLastKnownLatLng;
+    protected LatLng mLastKnownLatLng = mDefaultLatLng;
     protected Location mCameraPosition;
-
 
     // Class constants
     private final String TAG = this.toString();
@@ -88,6 +85,7 @@ public class MapsActivity extends BaseActivity {
 
         setupAPIClients();
     }
+
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
@@ -195,13 +193,16 @@ public class MapsActivity extends BaseActivity {
     }
 
     protected void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
+        System.out.println("DOING SOMETHING");
+
 
         Routing routing = new Routing.Builder()
                 .travelMode(mode)
+                .key(getString(R.string.google_directions_key))
                 .withListener(new RoutingListener() {
                     @Override
                     public void onRoutingFailure(RouteException e) {
-
+                        Log.d("BRUCE", e.toString());
                     }
 
                     @Override
@@ -233,10 +234,14 @@ public class MapsActivity extends BaseActivity {
                             polylines.add(polyline);
 
                             estimatedTimeOfArrival = route.get(i).getDistanceValue();
-                            TextView mConfirmTextView = findViewById(R.id.mConfirmTextView);
-                            mConfirmTextView.setText(estimatedTimeOfArrival.toString());
-                            Log.d("ETA", "UPDATED");
- //                          Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                            Log.d("BRUCE", "DOING ");
+                            String parsed = timeParse(estimatedTimeOfArrival);
+                            TextView confirmETAText = findViewById(R.id.confirmETAText);
+                            Log.d("BRUCE", "DOING ");
+                            Log.d("BRUCE", parsed);
+                            confirmETAText.setText(parsed);
+
+                            //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -253,6 +258,41 @@ public class MapsActivity extends BaseActivity {
     protected void moveMapToLatLng(LatLng latLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         mGoogleMap.moveCamera(cameraUpdate);
+    }
+
+    public static String timeParse(int secondInput) {
+        int seconds = secondInput;
+        int p1 = seconds % 60;
+        int p2 = seconds / 60;
+        int p3 = p2 % 60;
+        p2 = p2 / 60;
+
+
+        String s1 = "";
+        String s2 = "";
+        String s3 = "";
+
+        if (p2 == 0) {
+            s2 = ""; } else if (p2 < 10) {
+            s2 = "0" + Integer.toString(p2);
+        } else {
+            s2 = Integer.toString(p2);
+        }
+
+        if (p1 < 10) {
+            s1 = "0" + Integer.toString(p1);
+        } else {
+            s1 = Integer.toString(p1);
+        }
+
+        if (p3 == 0) {
+            s3 = ""; } else if (p3 < 10) {
+            s3 = "0" + Integer.toString(p3);
+        } else {
+            s3 = Integer.toString(p3);
+        }
+        return s2 + ":" + s3 + ":" + s1;
+
     }
 
 
