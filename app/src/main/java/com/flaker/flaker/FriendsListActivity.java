@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +23,8 @@ public class FriendsListActivity extends BaseActivity {
     ArrayAdapter adapter;
     private ListView friendsListView;
 
+    DatabaseReference usersRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,9 @@ public class FriendsListActivity extends BaseActivity {
         currentUserId = currentUser.getUid();
 
         database = FirebaseDatabase.getInstance();
+
+        usersRef = database.getReference().child("users");
+
         final DatabaseReference mrootRef = database.getReference();
         friendsListRef = mrootRef.child("friends_list").child(currentUserId);
 
@@ -43,6 +49,17 @@ public class FriendsListActivity extends BaseActivity {
         //initial friends list fetch
         fetchFriendsList();
 
+    }
+
+    private void getUser(String userId) {
+        //put info into a user class
+
+    }
+
+    private void addUserToFriendsList() {
+        //add user to friends list view and add to friends list in db (maybe split up?)
+
+//        friendsListRef.child(userId).setValue(userObject);
     }
 
     private void fetchFriendsList() {
