@@ -6,9 +6,9 @@ Everyone has experienced the frustration of their friends all arriving at differ
 ### Functionality & MVP
 - [ ] User can set a destination and send a location request to other users.
 - [ ] When a user receives a location request, they choose their mode of transportation, and their estimated time of travel to the destination will be calculated.
-- [ ] Every user that belongs to a request will be able to see every other user’s route and estimated time of travel to the location.
+- [ ] Every user that belongs to a request will be able to see everyone else's estimated time of travel to the location.
 - [ ] Users who did not make it to the destination in time will be a Flaker and their points will be calculated.
-- [ ] Leaderboard filterable by friend group
+- [ ] Leaderboard of flakes.
 
 
 ### Technologies & Technical Challenges

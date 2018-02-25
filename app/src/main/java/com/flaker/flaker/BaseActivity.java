@@ -53,6 +53,7 @@ public class BaseActivity extends AppCompatActivity {
         UsersDatabase = RootDatabaseReference.child("users");
     }
 
+
     private void executeCalendarTest() {
         //Gets a calendar using the default time zone and locale.
         //The Calendar returned is based on the current time in the default time zone with the default FORMAT locale.
