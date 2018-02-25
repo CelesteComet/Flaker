@@ -18,7 +18,7 @@ import java.util.TimerTask;
 
 public class EtaActivity extends AppCompatActivity {
     public ArrayList<String[]> etaList = new ArrayList<String[]>();
-    private ListView numbers;
+    private ListView etaListView;
     ArrayAdapter adapter;
 
 
@@ -27,10 +27,10 @@ public class EtaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eta);
 
-        numbers = (ListView) findViewById(R.id.eta_list_view2);
+        etaListView = (ListView) findViewById(R.id.eta_list_view2);
 
         adapter = new EtaAdapter(this, (ArrayList<String[]>) etaList);
-        numbers.setAdapter(adapter);
+        etaListView.setAdapter(adapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference mRootRef = database.getReference();
