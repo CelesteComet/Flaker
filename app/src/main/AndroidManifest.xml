@@ -51,9 +51,7 @@
         <activity android:name=".BaseActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
-
         <activity android:name=".RequestTestActivity"></activity>
-
         <activity android:name=".MapsActivity" />
         <activity android:name=".EtaActivity" />
         <activity android:name=".FriendsListActivity"></activity>
