@@ -135,10 +135,13 @@ public class MainActivity extends MapsActivity {
             case "searchDestination":
                 break;
             case "confirmDestination":
-                ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.7f);
+                ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.77f);
+                ValueAnimator animation2 = ValueAnimator.ofFloat(1.0f, 0.63f);
 
                 final Guideline guideLine = (Guideline) this.findViewById(R.id.guideline);
+                final Guideline guideLine2 = (Guideline) this.findViewById(R.id.guideline2);
                 final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+                final ConstraintLayout.LayoutParams params2 = (ConstraintLayout.LayoutParams) guideLine2.getLayoutParams();
 
                 animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -148,6 +151,21 @@ public class MainActivity extends MapsActivity {
                         guideLine.setLayoutParams(params);
                     }
                 });
+
+                animation2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        params2.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        guideLine2.setLayoutParams(params2);
+                    }
+                });
+
+
+
+                animation2.setDuration(800);
+                animation2.start();
+
                 animation.setDuration(800);
                 animation.start();
 
