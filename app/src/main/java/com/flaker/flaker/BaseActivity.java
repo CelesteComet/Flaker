@@ -28,10 +28,10 @@ public class BaseActivity extends AppCompatActivity {
     // Provide Firebase database reference to entire app
     protected FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-    FirebaseDatabase database;
-    DatabaseReference RootDatabaseReference;
-    DatabaseReference UsersDatabase;
-    DatabaseReference MeetupsDatabase;
+    protected static FirebaseDatabase database;
+    protected static DatabaseReference RootDatabaseReference;
+    protected static DatabaseReference UsersDatabase;
+    protected static DatabaseReference MeetupsDatabase;
 
     // User Authentication References
     protected FirebaseUser currentUser;
