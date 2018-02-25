@@ -1,6 +1,4 @@
 package com.flaker.flaker;
-
-
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -8,114 +6,111 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-
-
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-
 import android.view.MenuItem;
 import android.view.View;
-
-
-
-import android.view.Window;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
-import android.widget.Toast;
 
+// Firebase libraries
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
+// Date libraries
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 
 public class BaseActivity extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference mRootRef = database.getReference();
-    DatabaseReference mDestinationRef = mRootRef.child("meetings/1");
+    // Provide Firebase database reference to entire app
+    protected FirebaseDatabase db = FirebaseDatabase.getInstance();
 
+    FirebaseDatabase database;
+    DatabaseReference RootDatabaseReference;
+    DatabaseReference UsersDatabase;
 
     // User Authentication References
-    private FirebaseUser currentUser;
-    private FirebaseAuth mAuth;
+    protected FirebaseUser currentUser;
+    protected FirebaseAuth mAuth;
 
     private static final String TAG = "BaseActivity";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-
-        // get FirebaseAuth instance
-        mAuth = FirebaseAuth.getInstance();
-        // get current user
-        currentUser = mAuth.getCurrentUser();
-
-        setupNavigation();
-
-
-        // Retro stuff
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        APIUtil client = retrofit.create(APIUtil.class);
-
-//        Call<List<GitHubRepo>> call = client.reposForUser("fs-opensource");
-//
-//        call.enqueue(new Callback<List<GitHubRepo>>() {
-//            @Override
-//            public void onResponse(Call<List<GitHubRepo>> call, Response<List<GitHubRepo>> response) {
-//                Log.d("RESPONSE", "GOT RESPONSE **********");
-//                Log.d("RESPONSE", response.body().toString());
-//            }
-//            @Override
-//            public void onFailure(Call<List<GitHubRepo>> call, Throwable t) {
-//                Log.d("RESPONSE", "ERROR");
-//            }
-//        });
-
-        
-
-
-
+        setupFirebaseAuth();
+        setupFirebaseReferences();
+        executeCalendarTest();
     }
 
-    private void setupNavigation() {
-        // Get the toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupFirebaseReferences() {
+        database = FirebaseDatabase.getInstance();
+        RootDatabaseReference = database.getReference();
+        UsersDatabase = RootDatabaseReference.child("users");
+    }
 
-        // Make the toolbar into an action bar for interactivity
-        setSupportActionBar(toolbar);
+
+    private void executeCalendarTest() {
+        //Gets a calendar using the default time zone and locale.
+        //The Calendar returned is based on the current time in the default time zone with the default FORMAT locale.
+
+        Calendar calendar = Calendar.getInstance();
+        Log.d(TAG, "LOOK HERE");
+        Log.d(TAG, calendar.toString());
+        //Returns a Date object representing this Calendar's time value (millisecond offset from the Epoch").
+        Log.d(TAG, calendar.getTime().toString());
+        //Returns this Calendar's time value in milliseconds.
+        Log.d(TAG, String.valueOf(calendar.getTimeInMillis()));
+
+        //Create a Date obj from a long
+        Date date = new Date(calendar.getTimeInMillis());
+        Log.d(TAG, date.toString());
+
+
+        //Compares the time values (millisecond offsets from the Epoch) represented by two Calendar objects. Returns 1 or -1
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.HOUR_OF_DAY, 2);
+        Log.d(TAG, calendar2.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
+
+        calendar.add(Calendar.HOUR_OF_DAY, 10);
+        Log.d(TAG, calendar.toString());
+        Log.d(TAG, String.valueOf(calendar.compareTo(calendar2)));
+    }
+
+    private void setupFirebaseAuth() {
+        // Retrieve firebase authentication instance and get the current user
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+    }
+
+    protected void includeDrawer() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
 
         // Make drawer toggle-able
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
+        final DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
+
         toggle.syncState();
 
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("cek", "home selected");
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
+
         // Get the navigationView and set an item selected listener
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) this.findViewById(R.id.nav_view);
+        navigationView.bringToFront();
 
         // Show user information in navigation view
         View headerView = navigationView.getHeaderView(0);
@@ -124,25 +119,26 @@ public class BaseActivity extends AppCompatActivity {
         navUserEmail.setText(currentUser.getEmail());
         navUserName.setText(currentUser.getDisplayName());
 
-//        navigationView.bringToFront();
-
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // Handle navigation view item clicks here.
+
                 int id = item.getItemId();
-                Log.d("BRUCE", String.valueOf(id));
-//                Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-//                startActivity(displayMainActivityIntent);
-                if (id == R.id.nav_friends) {
-                    // Handle the camera action
 
+                if (id == R.id.home) {
+
+                } else if (id == R.id.nav_friends) {
+//                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendActivity.class);
+//                    finish();
+//                    startActivity(displayFriendsActivityIntent);
                 } else if (id == R.id.nav_requests) {
-
-                } else if (id == R.id.nav_slideshow) {
-
+                    // Create request list here
+                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    finish();
+                    startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_manage) {
+
 
                 } else if (id == R.id.nav_share) {
 
@@ -150,20 +146,9 @@ public class BaseActivity extends AppCompatActivity {
 
                 }
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
 }

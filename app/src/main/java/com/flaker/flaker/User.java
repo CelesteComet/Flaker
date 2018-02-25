@@ -13,9 +13,6 @@ public class User {
     public String name;
     public String imageUrl;
 
-    public User() {
-
-    }
     public User(String email, String name, String imageUrl) {
         this.email = email;
         this.name = name;

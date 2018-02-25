@@ -19,11 +19,12 @@ import java.util.ArrayList;
  * Created by joeyfeng on 2/21/18.
  */
 
-public class FriendActivity extends AppCompatActivity {
+public class FriendActivity extends BaseActivity {
 
     private static final String TAG = "FriendActivity";
 
     ListView friendListView;
+    private ArrayList<String[]> stuff = new ArrayList<String[]>();
     String[] names;
     String[] eta;
 
@@ -33,16 +34,8 @@ public class FriendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-//        Testing database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("users");
-//        myRef.setValue("hello again world");
-
-
-
-
-
-
+        DatabaseReference myRef = UsersDatabase;
+        
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -71,6 +64,33 @@ public class FriendActivity extends AppCompatActivity {
 
 //        FriendsAdapter friendAdapter = new FriendsAdapter(this, names, eta);
 //        friendListView.setAdapter(friendAdapter);
+    }
+
+    private void fetchFriends(DatabaseReference reference) {
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+
+                // Clear data array
+                stuff.clear();
+
+                for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
+                    String[] user = new String[3];
+                    user[0] = indSnapshot.child("email").getValue().toString();
+                    user[1] = indSnapshot.child("name").getValue().toString();
+                    user[2] = indSnapshot.child("photo_url").getValue().toString();
+                    stuff.add(user);
+                }
+
+//                stuff.add(dataSnapshot.getValue().toString());
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

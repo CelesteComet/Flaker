@@ -14,9 +14,11 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -36,7 +38,9 @@
         <!-- android:name=".AuthActivity" -->
 
         <activity
-            android:name=".RequestTestActivity"
+
+            android:name=".AuthActivity"
+
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +51,13 @@
         <activity android:name=".BaseActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
-        <!--<activity android:name=".RequestTestActivity"></activity>-->
+
+        <activity android:name=".RequestTestActivity"></activity>
+
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".EtaActivity"/>
+
+
     </application>
 
 </manifest>
