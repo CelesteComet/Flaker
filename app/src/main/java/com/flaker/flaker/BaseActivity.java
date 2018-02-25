@@ -137,7 +137,6 @@ public class BaseActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_requests) {
                     // Create request list here
                     Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
-                    finish();
                     startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_manage) {
 

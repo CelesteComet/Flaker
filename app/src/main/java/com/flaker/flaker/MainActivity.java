@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Routing;
@@ -37,7 +38,8 @@ import java.util.Calendar;
 public class MainActivity extends MapsActivity {
 
     // Google Map
-    private LatLng placeLatLng;
+    private LatLng placeLatLng = mDefaultLatLng;
+    private Place destinationPlace;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
 
@@ -48,6 +50,7 @@ public class MainActivity extends MapsActivity {
     private String viewState;
 
     private final String TAG = this.toString();
+    private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class MainActivity extends MapsActivity {
     }
 
 
+
     private void setupAutoCompleteWidget() {
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 this.getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -66,8 +70,9 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 placeLatLng = place.getLatLng();
+                destinationPlace = place;
                 moveMapToLatLngWithBounds(placeLatLng, true);
-                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
+                drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
                 updateUI(viewState);
@@ -129,7 +134,7 @@ public class MainActivity extends MapsActivity {
                         guideLine.setLayoutParams(params);
                     }
                 });
-                animation.setDuration(1300);
+                animation.setDuration(800);
                 animation.start();
 
                 ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
@@ -164,7 +169,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
+                    drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
                 }
             };
@@ -184,15 +189,17 @@ public class MainActivity extends MapsActivity {
             case R.id.requesterWalkButton:
                 Log.d(TAG, "*** CHOSE TO WALK ***");
                 travelMode = Routing.TravelMode.WALKING;
-
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
                 break;
             case R.id.requesterBikeButton:
                 Log.d(TAG, "*** CHOSE TO BIKE ***");
                 travelMode = Routing.TravelMode.BIKING;
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.BIKING);
                 break;
             case R.id.requesterCarButton:
                 Log.d(TAG, "*** CHOSE TO DRIVE ***");
                 travelMode = Routing.TravelMode.DRIVING;
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING);
                 break;
             default:
                 break;
@@ -205,11 +212,20 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 Calendar calendar = Calendar.getInstance();
-                Integer secondsToFuture = (i * 30 * 60) + (i1 * 60);
-                long epochTime = calendar.getTimeInMillis() + secondsToFuture;
-                Log.d(TAG, "PICKING SOME TIME");
-                Log.d(TAG, String.valueOf(i * 30 * 60));
-                Log.d(TAG, String.valueOf(i1 * 60));
+                Calendar c2 = Calendar.getInstance();
+                c2.set(Calendar.HOUR_OF_DAY, i);
+                c2.set(Calendar.MINUTE, i1);
+                long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
+                if (sub < 0) {
+                    Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
+                }
+                Meeting meeting = new Meeting(
+                        "RANDOM ADDRESS",
+                        placeLatLng.longitude,
+                        placeLatLng.latitude,
+                        currentUser.getUid(),
+                        c2.getTimeInMillis());
+                MeetupsDatabase.push().setValue(meeting);
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);

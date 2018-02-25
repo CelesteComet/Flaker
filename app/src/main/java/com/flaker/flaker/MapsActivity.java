@@ -55,23 +55,20 @@ public class MapsActivity extends BaseActivity {
     protected boolean mLocationPermissionGranted;
     protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-
     // Google Map
     protected GoogleMap mGoogleMap;
     protected Location mLastKnownLocation;
     protected ArrayList<Polyline> polylines = new ArrayList<Polyline>();
     protected Marker destinationMarker;
     protected Integer estimatedTimeOfArrival;
-    protected Routing.TravelMode travelMode;
+    protected Routing.TravelMode travelMode = Routing.TravelMode.WALKING;
 
     // Default Map Values
-    private static final Integer DEFAULT_ZOOM = 15;
-    private static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
+    protected static final Integer DEFAULT_ZOOM = 15;
+    protected static LatLng mDefaultLatLng = new LatLng(-33.8523341, 151.2106085); // Australia
 
-
-    protected LatLng mLastKnownLatLng;
+    protected LatLng mLastKnownLatLng = mDefaultLatLng;
     protected Location mCameraPosition;
-
 
     // Class constants
     private final String TAG = this.toString();
@@ -88,6 +85,7 @@ public class MapsActivity extends BaseActivity {
 
         setupAPIClients();
     }
+
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
