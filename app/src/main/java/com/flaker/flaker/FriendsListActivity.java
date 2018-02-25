@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +31,7 @@ public class FriendsListActivity extends BaseActivity {
 
     Button submitButton;
     EditText emailInput;
+    TextView errorMessage;
 
     DatabaseReference usersRef;
 
@@ -48,6 +51,7 @@ public class FriendsListActivity extends BaseActivity {
 
         usersRef = database.getReference().child("users");
         emailInput = (EditText) findViewById(R.id.email_input);
+        errorMessage = (TextView) findViewById(R.id.error_message);
 
         submitButton = (Button) findViewById(R.id.submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -71,19 +75,19 @@ public class FriendsListActivity extends BaseActivity {
 
     private void fetchUser(String email) {
 
-
         Query query = usersRef.orderByChild("name").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Object thing = dataSnapshot.getValue();
-                if (thing == null) {
-                    Log.d("failureee", "sdlfj");
+
+
+                if (dataSnapshot.getValue() == null) {
+                    errorMessage.setText("User not found");
                 } else {
                     Log.d("dlksjf", dataSnapshot.getValue().toString());
+                    errorMessage.setText("");
+                    addUserToFriendsList(dataSnapshot);
                 }
-
-
             }
 
             @Override
@@ -97,10 +101,35 @@ public class FriendsListActivity extends BaseActivity {
 
     }
 
-    private void addUserToFriendsList() {
-        //add user to friends list view and add to friends list in db (maybe split up?)
+    private void addUserToFriendsList(DataSnapshot users) {
+        String[] friend = new String[3];
+        DataSnapshot user = null;
+        for (DataSnapshot theUser: users.getChildren()) {
+            Log.d("laksdfj", theUser.child("score").getValue().toString());
+            user = theUser;
+        }
+        friend[0] = user.child("name").getValue().toString();
+        friend[1] = user.child("imageUrl").getValue().toString();
+        friend[2] = user.child("score").getValue().toString();
+//        friendsList.clear();
+        friendsList.add(friend);
 
-//        friendsListRef.child(userId).setValue(userObject);
+        adapter.notifyDataSetChanged();
+
+
+
+
+//        friend[0] = user.child("name").getValue().toString();
+//        Log.d("userhelloo", user.toString());
+//
+//        friend[1] = user.child("users").child("imageUrl").getValue().toString();
+////        friend[2] = user.child("email").getValue().toString();
+//
+//        friendsList.add(friend);
+//
+//        adapter.notifyDataSetChanged();
+
+
     }
 
     private void fetchFriendsList() {
@@ -112,6 +141,7 @@ public class FriendsListActivity extends BaseActivity {
 
                 for (DataSnapshot friendSnapShot: dataSnapshot.getChildren()) {
                     String[] friend = new String[3];
+                    Log.d("userhelloo2", friendSnapShot.toString());
                     friend[0] = friendSnapShot.child("name").getValue().toString();
                     friend[1] = friendSnapShot.child("photo_url").getValue().toString();
                     friend[2] = friendSnapShot.child("score").getValue().toString();
