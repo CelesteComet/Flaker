@@ -82,30 +82,33 @@
 
         <Button
             android:id="@+id/chooseDestinationButton"
-            android:layout_width="206dp"
-            android:layout_height="53dp"
-            android:layout_marginTop="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
             android:text="Confirm Destination"
-            fab:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="89dp" />
+            fab:layout_constraintBottom_toBottomOf="parent"
+            fab:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/mConfirmTextView"
             android:layout_width="77dp"
             android:layout_height="66dp"
-            android:text="TextView"
-            app:layout_constraintTop_toBottomOf="@+id/chooseDestinationButton"
-            tools:layout_editor_absoluteX="16dp" />
+            android:text="TextView" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="16dp"
             android:onClick="selectMeetupTime"
             android:text="Select Time"
             fab:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="137dp" />
+            fab:layout_constraintEnd_toStartOf="@+id/chooseDestinationButton"
+            fab:layout_constraintHorizontal_bias="0.848"
+            fab:layout_constraintStart_toStartOf="parent" />
 
 
     </android.support.constraint.ConstraintLayout>
