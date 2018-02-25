@@ -47,6 +47,9 @@ public class MainActivity extends MapsActivity {
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
 
+    // UI
+    private FloatingActionsMenu menuMultipleActions;
+
     // Activity View State
     /*
 
@@ -55,6 +58,7 @@ public class MainActivity extends MapsActivity {
 
     private final String TAG = this.toString();
     private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,19 +72,7 @@ public class MainActivity extends MapsActivity {
     }
 
     private void includeFAB() {
-        final View actionB = findViewById(R.id.action_b);
-
-        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
-        actionC.setTitle("Hide/Show Action above");
-        actionC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-            }
-        });
-
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
-        menuMultipleActions.addButton(actionC);
+        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
     }
 
 
@@ -206,19 +198,19 @@ public class MainActivity extends MapsActivity {
     public void changeTravelMode(View view) {
 
         Integer viewId = view.getId();
-
+        menuMultipleActions.toggle();
         switch (viewId) {
-            case R.id.requesterWalkButton:
+            case R.id.action_a:
                 Log.d(TAG, "*** CHOSE TO WALK ***");
                 travelMode = Routing.TravelMode.WALKING;
                 drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING);
                 break;
-            case R.id.requesterBikeButton:
+            case R.id.action_b:
                 Log.d(TAG, "*** CHOSE TO BIKE ***");
                 travelMode = Routing.TravelMode.BIKING;
                 drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.BIKING);
                 break;
-            case R.id.requesterCarButton:
+            case R.id.action_c:
                 Log.d(TAG, "*** CHOSE TO DRIVE ***");
                 travelMode = Routing.TravelMode.DRIVING;
                 drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING);
@@ -226,7 +218,7 @@ public class MainActivity extends MapsActivity {
             default:
                 break;
         }
-        Log.d(TAG, viewId.toString());
+
     }
 
     public void selectMeetupTime(View view) {
