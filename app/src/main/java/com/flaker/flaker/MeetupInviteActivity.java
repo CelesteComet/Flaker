@@ -49,12 +49,13 @@ public class MeetupInviteActivity extends BaseActivity {
                 friendsList.clear();
 
                 for (DataSnapshot friendSnapShot: dataSnapshot.getChildren()) {
-                    String[] friend = new String[4];
+                    String[] friend = new String[5];
 
                     friend[0] = friendSnapShot.child("name").getValue().toString();
                     friend[1] = friendSnapShot.child("imageUrl").getValue().toString();
                     friend[2] = friendSnapShot.child("score").getValue().toString();
-                    friend[4] = friendSnapShot.getKey().toString();
+                    friend[3] = friendSnapShot.getKey().toString();
+                    friend[4] = friendSnapShot.child("email").getValue().toString();
 
                     friendsList.add(friend);
 
