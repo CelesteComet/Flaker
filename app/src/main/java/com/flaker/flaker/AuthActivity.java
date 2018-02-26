@@ -167,12 +167,14 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mRootRef = database.getReference();
         DatabaseReference mDestinationRef = mRootRef.child("users");
+//        DatabaseReference mUserByEmailRef = mRootRef.child("usersByEmail");
 
         User userObject = new User(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
         String userId = user.getUid();
         Log.d("userstuff", userObject.email);
 
         mDestinationRef.child(userId).setValue(userObject);
+//        mUserByEmailRef.child(userObject.email).setValue(userId);
     }
 
     private void updateUI(FirebaseUser user) {
