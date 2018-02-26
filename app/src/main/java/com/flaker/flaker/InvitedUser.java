@@ -14,9 +14,9 @@ public class InvitedUser {
 
     }
 
-    public InvitedUser(Double longitude, Double latitude, String imgUrl, String username) {
-        this.longitude = longitude;
-        this.latitude = latitude;
+    public InvitedUser(String imgUrl, String username) {
+        this.longitude = null;
+        this.latitude = null;
         this.imgUrl = imgUrl;
         this.username = username;
     }
