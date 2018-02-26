@@ -256,6 +256,9 @@ public class MainActivity extends MapsActivity {
 
                 backAnimation.setDuration(800);
                 backAnimation.start();
+
+                requestLocationUpdates(meetingId);
+                currentlyRouting = true;
                 break;
             case "requesteeView":
                 ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
@@ -366,11 +369,13 @@ public class MainActivity extends MapsActivity {
                 placeLatLng.longitude,
                 placeLatLng.latitude,
                 currentUser.getUid(),
+                currentUser.getDisplayName(),
                 c2.getTimeInMillis());
         addMeetingToDb(meeting);
 //        newRef.setValue(meeting);
 //        newRef.child("meetingId").setValue(key);
-        requestLocationUpdates(key);
+
+
         updateUI(viewState);
     }
 

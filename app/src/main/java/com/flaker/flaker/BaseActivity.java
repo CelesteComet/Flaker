@@ -186,18 +186,25 @@ public class BaseActivity extends AppCompatActivity {
                     startActivity(displayFriendsActivityIntent);
                 } else if (id == R.id.nav_etas) {
                     // Create request list here
-                    Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
-                    startActivity(displayETAsActivityIntent);
+                    if (currentlyRouting == false) {
+                        Snackbar mySnackbar = Snackbar.make(findViewById(R.id.drawer_layout),
+                                "Please begin a new route to view ETAs", Snackbar.LENGTH_LONG);
+                        mySnackbar.show();
+                    } else {
+                        Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                        startActivity(displayETAsActivityIntent);
+                    }
                 } else if (id == R.id.nav_requests) {
                     if (currentlyRouting == true) {
                         Snackbar mySnackbar = Snackbar.make(findViewById(R.id.drawer_layout),
                                 "Please cancel your current route", Snackbar.LENGTH_LONG);
 //                        mySnackbar.setAction(R.string.undo_string, new MyUndoListener());
                         mySnackbar.show();
-                        return true;
+                    } else {
+                        Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
+                        startActivity(displayRequestsActivityIntent);
                     }
-                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
-                    startActivity(displayRequestsActivityIntent);
+
                 } else if (id == R.id.nav_share) {
 
                 } else if (id == R.id.nav_send) {
@@ -220,6 +227,7 @@ public class BaseActivity extends AppCompatActivity {
         DatabaseReference newMeetupRef = mDestinationRef.push();
         newMeetupRef.setValue(meeting);
         String key = newMeetupRef.getKey();
+        BaseActivity.meetingId = key;
         MeetupsDatabase.child(key).child("meetingId").setValue(key);
         UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
     }
