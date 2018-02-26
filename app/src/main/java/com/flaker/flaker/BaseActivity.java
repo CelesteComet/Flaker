@@ -59,7 +59,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
-//        MeetupsDatabase.child(meetupId);
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
     }
 
 

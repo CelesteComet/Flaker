@@ -44,7 +44,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:label=""/>
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RequestTestActivity" />
         <activity android:name=".MapsActivity" />
