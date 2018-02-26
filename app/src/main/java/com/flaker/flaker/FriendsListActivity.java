@@ -103,24 +103,33 @@ public class FriendsListActivity extends BaseActivity {
 
     private void addUserToFriendsList(DataSnapshot users) {
         String[] friend = new String[3];
-        DataSnapshot user = null;
+        DataSnapshot userSnapshot = null;
 
         for (DataSnapshot theUser: users.getChildren()) {
-            user = theUser;
+            userSnapshot = theUser;
         }
 
-        friend[0] = user.child("name").getValue().toString();
-        friend[1] = user.child("imageUrl").getValue().toString();
-        friend[2] = user.child("score").getValue().toString();
+        Log.d("user", userSnapshot.toString());
+
+        friend[0] = userSnapshot.child("name").getValue().toString();
+        friend[1] = userSnapshot.child("imageUrl").getValue().toString();
+        friend[2] = userSnapshot.child("score").getValue().toString();
 
         friendsList.add(friend);
 
         adapter.notifyDataSetChanged();
 
+        User newFriend = new User(friend[0], null, friend[1]);
 
-
-
+        addFriendToDb(newFriend, userSnapshot.getKey(), 10);
     }
+
+    private void addFriendToDb(User user, String userId, int score) {
+        friendsListRef.child(userId).setValue(user);
+        friendsListRef.child(userId).child("score").setValue(score);
+    }
+
+
 
     private void fetchFriendsList() {
 
@@ -133,7 +142,7 @@ public class FriendsListActivity extends BaseActivity {
                     String[] friend = new String[3];
 
                     friend[0] = friendSnapShot.child("name").getValue().toString();
-                    friend[1] = friendSnapShot.child("photo_url").getValue().toString();
+                    friend[1] = friendSnapShot.child("imageUrl").getValue().toString();
                     friend[2] = friendSnapShot.child("score").getValue().toString();
 
                     friendsList.add(friend);
