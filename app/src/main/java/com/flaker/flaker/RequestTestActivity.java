@@ -19,7 +19,7 @@ import java.util.Map;
 public class RequestTestActivity extends BaseActivity {
 
 
-    String address = "99 big st";
+    String address = "99 very big st";
     Double longitude = 12.32;
     Double latitude = 15.80;
     String ownerId = "ABCDEFG";
@@ -40,7 +40,7 @@ public class RequestTestActivity extends BaseActivity {
 
         Meeting meeting = new Meeting(address, longitude, latitude, ownerId, scheduledTime);
 
-//        addMeetingToDb(meeting);
+        addMeetingToDb(meeting);
 //        fetchInvites(userId1);
 //        fetchMeetup(meetup1);
 //        fetchUserByEmail();
@@ -58,10 +58,15 @@ public class RequestTestActivity extends BaseActivity {
         DatabaseReference newMeetupRef = mDestinationRef.push();
         newMeetupRef.setValue(meeting);
         String key = newMeetupRef.getKey();
+        MeetupsDatabase.child(key).child("meetingId").setValue(key);
         UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
     }
 
     private void addInvitedUserToMeetup() {
+
+    }
+
+    private void updateInvitedUserLocationInMeetup() {
 
     }
 

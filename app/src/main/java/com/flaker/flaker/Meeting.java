@@ -15,6 +15,7 @@ public class Meeting {
     public Double latitude;
     public String ownerId;
     public Long scheduledTime;
+    public String meetingId;
 
     public Meeting(){
 
@@ -26,5 +27,6 @@ public class Meeting {
         this.latitude = latitude;
         this.ownerId = ownerId;
         this.scheduledTime = scheduledTime;
+        this.meetingId = null;
     }
 }
