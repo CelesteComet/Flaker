@@ -74,6 +74,11 @@ public class FriendsListActivity extends BaseActivity {
     }
 
     private void fetchUser(String email) {
+        if (currentUser.getEmail().equals(email)) {
+            errorMessage.setText("You can't add yourself");
+            return;
+        }
+
 
         Query query = usersRef.orderByChild("name").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -101,6 +106,12 @@ public class FriendsListActivity extends BaseActivity {
 
     }
 
+    private void addFriendErrors() {
+
+    }
+
+
+
     private void addUserToFriendsList(DataSnapshot users) {
         String[] friend = new String[3];
         DataSnapshot userSnapshot = null;
@@ -110,6 +121,10 @@ public class FriendsListActivity extends BaseActivity {
         }
 
         Log.d("user", userSnapshot.toString());
+
+        if (userSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
+            errorMessage.setText("Already a friend");
+        }
 
         friend[0] = userSnapshot.child("name").getValue().toString();
         friend[1] = userSnapshot.child("imageUrl").getValue().toString();
