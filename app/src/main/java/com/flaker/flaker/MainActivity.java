@@ -287,8 +287,7 @@ public class MainActivity extends MapsActivity {
                 View cancelButton2 = findViewById(R.id.endMeetupButton);
                 cancelButton2.setVisibility(View.VISIBLE);
 
-
-
+                drawOtherUsersOnMap();
                 requestLocationUpdates(meetingId);
                 currentlyRouting = true;
                 // Change icon to Arrow back
@@ -306,7 +305,7 @@ public class MainActivity extends MapsActivity {
                 // Show View Button
                 View cancelButton3 = findViewById(R.id.endMeetupButton);
                 cancelButton3.setVisibility(View.VISIBLE);
-
+                drawOtherUsersOnMap();
 
                 currentlyRouting = true;
                 requestLocationUpdates(meetingId);
@@ -339,6 +338,7 @@ public class MainActivity extends MapsActivity {
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
                     sendCurrentLatLngToDatabase(location.getLatitude(), location.getLongitude(), meetingId);
                     //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
+
 
                 }
             };

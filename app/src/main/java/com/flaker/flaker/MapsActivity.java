@@ -41,6 +41,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
@@ -67,6 +70,7 @@ public class MapsActivity extends BaseActivity {
     protected Marker destinationMarker;
     protected Integer estimatedTimeOfArrival;
     protected Routing.TravelMode travelMode = Routing.TravelMode.WALKING;
+    protected ArrayList<LatLng> otherUsers = new ArrayList<LatLng>();
 
     // Default Map Values
     protected static final Integer DEFAULT_ZOOM = 15;
@@ -215,6 +219,29 @@ public class MapsActivity extends BaseActivity {
             destinationMarker.remove();
         }
         destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
+    }
+
+    protected void drawOtherUsersOnMap() {
+        MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
+
+                    double latitude = Double.parseDouble(indSnapshot.child("latitude").getValue().toString());
+                    double longitude = Double.parseDouble(indSnapshot.child("longitude").getValue().toString());
+
+                    mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     protected void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
