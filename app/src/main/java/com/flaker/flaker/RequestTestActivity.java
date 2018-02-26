@@ -52,7 +52,7 @@ public class RequestTestActivity extends BaseActivity {
 
     }
 
-    private void addMeetingToDb(Meeting meeting) {
+    public void addMeetingToDb(Meeting meeting) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mRootRef = database.getReference();
         DatabaseReference mDestinationRef = mRootRef.child("meetups");
@@ -67,7 +67,6 @@ public class RequestTestActivity extends BaseActivity {
     }
 
     private void addInvitedUserToMeetup(User user, String meetupKey) {
-        //create an InvitedUser obj from user
         String newInvitedUserName = user.name;
         String newInvitedUserImgUrl = user.imageUrl;
 

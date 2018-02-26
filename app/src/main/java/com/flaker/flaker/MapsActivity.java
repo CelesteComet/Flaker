@@ -160,6 +160,7 @@ public class MapsActivity extends BaseActivity {
     }
 
     protected void setupAPIClients() {
+        Log.d("BRUCE", "SETTING CLIENTS");
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 

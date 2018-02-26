@@ -2,6 +2,7 @@ package com.flaker.flaker;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -38,6 +39,7 @@ public class BaseActivity extends AppCompatActivity {
     public static DatabaseReference MeetupsDatabase;
 
     public static String meetingId;
+    public static boolean currentlyRouting = false;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -153,6 +155,13 @@ public class BaseActivity extends AppCompatActivity {
                     Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
                     startActivity(displayETAsActivityIntent);
                 } else if (id == R.id.nav_requests) {
+                    if (currentlyRouting == true) {
+                        Snackbar mySnackbar = Snackbar.make(findViewById(R.id.drawer_layout),
+                                "Please cancel your current route", Snackbar.LENGTH_LONG);
+//                        mySnackbar.setAction(R.string.undo_string, new MyUndoListener());
+                        mySnackbar.show();
+                        return true;
+                    }
                     Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
                     startActivity(displayRequestsActivityIntent);
                 } else if (id == R.id.nav_share) {
@@ -165,6 +174,20 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void addMeetingToDb(Meeting meeting) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mRootRef = database.getReference();
+        DatabaseReference mDestinationRef = mRootRef.child("meetups");
+
+        Log.d("meeting", meeting.toString());
+
+        DatabaseReference newMeetupRef = mDestinationRef.push();
+        newMeetupRef.setValue(meeting);
+        String key = newMeetupRef.getKey();
+        MeetupsDatabase.child(key).child("meetingId").setValue(key);
+        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
     }
 
 

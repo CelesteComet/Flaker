@@ -22,6 +22,7 @@ import com.directions.route.Routing;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -63,6 +64,7 @@ public class MainActivity extends MapsActivity {
 
     */
     private String viewState = "searchDestination";
+
 
     private final String TAG = this.toString();
     private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
@@ -262,6 +264,7 @@ public class MainActivity extends MapsActivity {
                 createSingleMarker(placeLatLng);
                 Log.d("BRUCE", "REQUESTING LOCATION UPDATES!!!!");
                 Log.d("RIGHT BRUCE", meetingId);
+                currentlyRouting = true;
                 requestLocationUpdates(meetingId);
                 break;
             default:
@@ -272,6 +275,12 @@ public class MainActivity extends MapsActivity {
     @SuppressLint("MissingPermission")
 
     private void requestLocationUpdates(final String meetingId) {
+        Log.d("LOCATION CALLBACK", "REQUESTING A LOCATION");
+
+        if (mLocationCallback != null) {
+            Log.d("LOCATION CALLBACK", "Attempting to remove");
+            mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+        }
         mLocationRequest = new LocationRequest();
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -290,6 +299,8 @@ public class MainActivity extends MapsActivity {
                 }
             };
         };
+
+
 
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
@@ -356,10 +367,16 @@ public class MainActivity extends MapsActivity {
                 placeLatLng.latitude,
                 currentUser.getUid(),
                 c2.getTimeInMillis());
-        newRef.setValue(meeting);
-        newRef.child("meetingId").setValue(key);
+        addMeetingToDb(meeting);
+//        newRef.setValue(meeting);
+//        newRef.child("meetingId").setValue(key);
         requestLocationUpdates(key);
         updateUI(viewState);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
 
