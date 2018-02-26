@@ -44,14 +44,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".MainActivity"
-            android:label=""/>
+        <activity
+            android:name=".MainActivity"
+            android:label="" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".AuthActivity" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".EtaActivity" />
         <activity android:name=".FriendsListActivity" />
-        <activity android:name=".RequesteeViewActivity"></activity>
+        <activity android:name=".RequesteeViewActivity" />
+        <activity android:name=".MeetupInviteActivity"></activity>
     </application>
 
 </manifest>
