@@ -32,6 +32,7 @@ public class RequestTestActivity extends BaseActivity {
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     Meeting meetup = new Meeting();
     String meetingId;
+    String userName;
     ArrayList<InvitedUser> invitedUsers = new ArrayList<InvitedUser>();
 
     @Override
@@ -39,7 +40,7 @@ public class RequestTestActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.request_test);
 
-        Meeting meeting = new Meeting(address, longitude, latitude, ownerId, scheduledTime);
+//        Meeting meeting = new Meeting(address, longitude, latitude, ownerId, userName, scheduledTime);
 
 //        addMeetingToDb(meeting);
 //        fetchInvites(userId1);
@@ -47,8 +48,9 @@ public class RequestTestActivity extends BaseActivity {
 //        fetchUserByEmail();
 //        fetchCurrentUserOwnedMeetupId();
 //        fetchLocationOfInvitedUsers(meetup1);
-        addInvitedUserToMeetup(user1, meetup1);
+//        addInvitedUserToMeetup(user1, meetup1);
 //        updateInvitedUserLocationInMeetup(meetup1, longitude, latitude);
+          fetchUsername(ownerId);
 
     }
 
@@ -64,6 +66,24 @@ public class RequestTestActivity extends BaseActivity {
         String key = newMeetupRef.getKey();
         MeetupsDatabase.child(key).child("meetingId").setValue(key);
         UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
+    }
+
+    private void fetchUsername(String userId) {
+        DatabaseReference usernameRef = UsersDatabase.child(userId);
+        usernameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                userName = user.name;
+                System.out.println(userName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void addInvitedUserToMeetup(User user, String meetupKey) {

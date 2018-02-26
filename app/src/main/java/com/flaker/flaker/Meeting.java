@@ -14,6 +14,7 @@ public class Meeting {
     public Double longitude;
     public Double latitude;
     public String ownerId;
+    public String ownerName;
     public Long scheduledTime;
     public String meetingId;
 
@@ -21,11 +22,12 @@ public class Meeting {
 
     }
 
-    public Meeting(String address, Double longitude, Double latitude, String ownerId, Long scheduledTime) {
+    public Meeting(String address, Double longitude, Double latitude, String ownerId, String ownerName, Long scheduledTime) {
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
         this.ownerId = ownerId;
+        this.ownerName = ownerName;
         this.scheduledTime = scheduledTime;
         this.meetingId = null;
     }
