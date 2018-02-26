@@ -52,8 +52,8 @@ public class MainActivity extends MapsActivity {
     // Google Map
     private LatLng placeLatLng = mDefaultLatLng;
     private Place destinationPlace;
-    private LocationRequest mLocationRequest;
-    private LocationCallback mLocationCallback;
+
+
     private Calendar c2 = Calendar.getInstance();
     private Boolean timeSelected;
 
@@ -75,7 +75,7 @@ public class MainActivity extends MapsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("BRUCE", "MAIN ACTIVITY CREATING");
+
 
 //        request.add(data.child("address").getValue().toString());
 //        request.add(data.child("ownerId").getValue().toString());
@@ -140,6 +140,7 @@ public class MainActivity extends MapsActivity {
     }
 
     private void setupOnMapReadyCallback() {
+        Log.d("func", "Setting up OnMapReady callback in MainActivity");
         final Context context = this;
         FragmentManager mFragmentManager = this.getSupportFragmentManager();
         SupportMapFragment mapFragment =
@@ -147,39 +148,22 @@ public class MainActivity extends MapsActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-//                try {
-//                    // Customise the styling of the base map using a JSON object defined
-//                    // in a raw resource file.
-//                    boolean success = googleMap.setMapStyle(
-//                            MapStyleOptions.loadRawResourceStyle(
-//                                    context, R.raw.map_json));
-//                    if (!success) {
-//                        Log.e(TAG, "Style parsing failed.");
-//                    }
-//                } catch (Resources.NotFoundException e) {
-//                    Log.e(TAG, "Can't find style. Error: ", e);
-//                }
                 mGoogleMap = googleMap;
-                getLocationPermission();
                 getDeviceLocation();
                 updateLocationUI();
-
                 mGoogleMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
                     @Override
                     public void onMapLoaded() {
-
                         updateUI(viewState);
-                        Log.d("BRUCE", viewState);
-
+                        setupAutoCompleteWidget();
                     }
                 });
-
-                setupAutoCompleteWidget();
             }
         });
     }
 
     private void updateUI(String viewState) {
+        Log.d("func", "Updating the UI in MainActivity, UI is currently: " + viewState);
         switch (viewState) {
             case "searchDestination":
                 ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
@@ -219,13 +203,17 @@ public class MainActivity extends MapsActivity {
                     }
                 });
 
-
-
                 animation2.setDuration(800);
-                animation2.start();
+//                animation2.start();
 
                 animation.setDuration(800);
-                animation.start();
+//                animation.start();
+
+                // Without animations
+                params.guidePercent = 0.77f;
+                guideLine.setLayoutParams(params);
+                params2.guidePercent = 0.63f;
+                guideLine2.setLayoutParams(params2);
 
                 ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
                 autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
@@ -246,7 +234,8 @@ public class MainActivity extends MapsActivity {
                 Log.d("ETA", "TRYING TO CHANGE");
 
                 // Change icon to Arrow back
-//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
+                getSupportActionBar().setIcon(R.drawable.ic_arrow_back_black);
                 break;
             case "requesterView":
                 LinearLayout confirmLinearLayout = this.findViewById(R.id.confirmLinearLayout);
@@ -440,7 +429,16 @@ public class MainActivity extends MapsActivity {
 
     @Override
     public void onBackPressed() {
+        if (viewState == "confirmDestination") {
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
     public void endMeetup(View view) {

@@ -60,8 +60,12 @@ public class MapsActivity extends BaseActivity {
     protected FusedLocationProviderClient mFusedLocationProviderClient;
 
     // Permissions
-    protected boolean mLocationPermissionGranted;
-    protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+
+
+    // Locations
+    protected static LocationRequest mLocationRequest;
+    protected static LocationCallback mLocationCallback;
 
     // Google Map
     protected GoogleMap mGoogleMap;
@@ -100,40 +104,26 @@ public class MapsActivity extends BaseActivity {
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
     protected void updateLocationUI() {
+        Log.d("func", "Updating the map's UI settings");
         if (mGoogleMap == null) {
             return;
         }
         try {
             if (mLocationPermissionGranted) {
+                Log.d("func", "Permission was granted and location UI is enabled");
                 mGoogleMap.setMyLocationEnabled(true);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
+                Log.d("func", "Permission wasn't granted and location UI is disabled");
                 mGoogleMap.setMyLocationEnabled(true);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
-                getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-    protected void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ActivityCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
 
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -156,10 +146,7 @@ public class MapsActivity extends BaseActivity {
                                     moveMapToLatLng(mLastKnownLatLng);
                                 } else {
                                     // Logic to handle location object
-                                    Log.d("BAD", "DOING BAD");
-                                    mLastKnownLatLng = mDefaultLatLng;
-                                    moveMapToLatLng(mLastKnownLatLng);
-                                    mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                    requestSingleLocationUpdate();
                                 }
                             }
                         });
@@ -182,19 +169,17 @@ public class MapsActivity extends BaseActivity {
 //                    }
 //                });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
     protected void setupAPIClients() {
-        Log.d("BRUCE", "SETTING CLIENTS");
+        Log.d("func", "Setting up API Clients in MapsActivity");
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
-
         // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
@@ -225,13 +210,12 @@ public class MapsActivity extends BaseActivity {
         MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot indSnapshot : dataSnapshot.getChildren()) {
 
                     double latitude = Double.parseDouble(indSnapshot.child("latitude").getValue().toString());
                     double longitude = Double.parseDouble(indSnapshot.child("longitude").getValue().toString());
 
                     mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
-
 
 
                 }
@@ -263,7 +247,7 @@ public class MapsActivity extends BaseActivity {
                     @Override
                     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
 
-                        if(polylines.size() > 0) {
+                        if (polylines.size() > 0) {
                             for (Polyline poly : polylines) {
                                 poly.remove();
                             }
@@ -290,8 +274,6 @@ public class MapsActivity extends BaseActivity {
                             confirmETAText.setText("Travel Time: " + parsed);
 
 
-
-
                             //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -310,6 +292,32 @@ public class MapsActivity extends BaseActivity {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         mGoogleMap.moveCamera(cameraUpdate);
         Log.d("BRUCE", "SHOULD BE MOVING");
+    }
+
+    protected void requestSingleLocationUpdate() {
+        Log.d("func", "Requesting a single location update");
+        // Construct a location callback
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+                    Log.d("BRUCE", "GOT A NEW LOCATION");
+                    mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    moveMapToLatLng(mLastKnownLatLng);
+                    mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                }
+            };
+        };
+
+        try {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
+                        mLocationCallback, null);
+                return;
+            }
+        } catch (Exception e) {
+            Log.e("_error", e.toString());
+        }
     }
 
 

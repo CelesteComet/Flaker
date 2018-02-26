@@ -60,6 +60,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
         fab:fab_addButtonColorNormal="@color/colorWhite"
         fab:fab_addButtonColorPressed="@color/colorPrimary"
         fab:fab_addButtonPlusIconColor="@color/colorPrimaryDark"
@@ -225,6 +226,7 @@
         android:layout_marginStart="8dp"
         android:onClick="endMeetup"
         android:text="End Meetup"
+        android:visibility="gone"
         fab:layout_constraintBottom_toTopOf="@+id/guideline2"
         fab:layout_constraintEnd_toEndOf="parent"
         fab:layout_constraintStart_toStartOf="parent" />
