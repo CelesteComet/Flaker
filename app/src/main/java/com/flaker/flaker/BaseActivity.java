@@ -1,8 +1,10 @@
 package com.flaker.flaker;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,6 +38,8 @@ import java.util.Locale;
 import java.util.*;
 import java.text.*;
 
+import static com.flaker.flaker.MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -50,6 +54,10 @@ public class BaseActivity extends AppCompatActivity {
     public static String meetingId;
     public static boolean currentlyRouting = false;
 
+    // Permissions
+    protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static Boolean mLocationPermissionGranted;
+
     // User Authentication References
     protected FirebaseUser currentUser;
     protected FirebaseAuth mAuth;
@@ -59,6 +67,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getLocationPermission();
         setupFirebaseAuth();
         setupFirebaseReferences();
         executeCalendarTest();
@@ -76,7 +85,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
-        Log.d("BRUCE", meetupId);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
     }
@@ -291,6 +299,27 @@ public class BaseActivity extends AppCompatActivity {
 //        Prints out minutes
 //        System.out.println("\n"+normal_min+"\n");
         return normal_time;
+    }
+
+    protected void getLocationPermission() {
+        Log.d("func", "Getting location permission in BaseActivity");
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.d("func", "Locations were permitted");
+            mLocationPermissionGranted = true;
+        } else {
+            Log.d("func", "Locations not permitted");
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
 
