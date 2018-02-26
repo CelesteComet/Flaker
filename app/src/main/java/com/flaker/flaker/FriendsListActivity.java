@@ -80,7 +80,7 @@ public class FriendsListActivity extends BaseActivity {
         }
 
 
-        Query query = usersRef.orderByChild("name").equalTo(email);
+        Query query = usersRef.orderByChild("email").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,7 +103,7 @@ public class FriendsListActivity extends BaseActivity {
     }
 
     private void addUserToFriendsList(DataSnapshot users) {
-        String[] friend = new String[3];
+        String[] friend = new String[4];
         DataSnapshot userSnapshot = null;
 
         for (DataSnapshot theUser: users.getChildren()) {
@@ -119,12 +119,13 @@ public class FriendsListActivity extends BaseActivity {
         friend[0] = userSnapshot.child("name").getValue().toString();
         friend[1] = userSnapshot.child("imageUrl").getValue().toString();
         friend[2] = userSnapshot.child("score").getValue().toString();
+        String email = userSnapshot.child("email").getValue().toString();
 
         friendsList.add(friend);
 
         adapter.notifyDataSetChanged();
 
-        User newFriend = new User(friend[0], null, friend[1]);
+        User newFriend = new User(friend[0], email, friend[1]);
 
         addFriendToDb(newFriend, userSnapshot.getKey(), 10);
     }
