@@ -112,15 +112,23 @@ public class FriendsListActivity extends BaseActivity {
         friend[0] = user.child("name").getValue().toString();
         friend[1] = user.child("imageUrl").getValue().toString();
         friend[2] = user.child("score").getValue().toString();
+        User dbFriend = new User(friend[0], friend[1], friend[2]);
+
 
         friendsList.add(friend);
 
         adapter.notifyDataSetChanged();
-
-
-
-
     }
+
+//    private void addFriendToDb(User dbFriend, ) {
+//        friendsListRef.child
+//
+//        User userObject = new User(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
+//        String userId = user.getUid();
+//        Log.d("userstuff", userObject.email);
+//
+//        mDestinationRef.child(userId).setValue(userObject);
+//    }
 
     private void fetchFriendsList() {
 
