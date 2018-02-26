@@ -98,10 +98,11 @@ public class MainActivity extends MapsActivity {
             viewState = "requesteeView";
 
         }
-        updateUI(viewState);
+
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
+//        updateUI(viewState);
 
 
 
@@ -166,9 +167,8 @@ public class MainActivity extends MapsActivity {
                 mGoogleMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
                     @Override
                     public void onMapLoaded() {
-                        if (viewState == "requesteeView") {
-                            updateUI(viewState);
-                        }
+
+                        updateUI(viewState);
                         Log.d("BRUCE", viewState);
 
                     }

@@ -51,51 +51,51 @@ public class RequesteeViewActivity extends BaseActivity {
 
 
     private void requestsFetch(DatabaseReference reference) {
-        DatabaseReference UserInvitesReference = UsersDatabase.child(currentUser.getUid() + "/invitedMeetups");
-        UserInvitesReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot invitedMeetupsSnapshot) {
-
-                for (DataSnapshot indSnapshot: invitedMeetupsSnapshot.getChildren()) {
-                    System.out.println(indSnapshot.getValue());
-                    String meetupKey = indSnapshot.getValue().toString();
-                    fetchMeetup(meetupKey);
-                    meetings.add(meetup);
-
-                }
-                System.out.println(meetings.toString());
-                System.out.println("INVITES FETCHED");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//        DatabaseReference UserInvitesReference = UsersDatabase.child(currentUser.getUid() + "/invitedMeetups");
+//        UserInvitesReference.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
-//            public void onDataChange(final DataSnapshot dataSnapshot) {
-//                requestsList.clear();
+//            public void onDataChange(DataSnapshot invitedMeetupsSnapshot) {
 //
-//                for (DataSnapshot data: dataSnapshot.getChildren()) {
-//                    ArrayList<String> request = new ArrayList<String>();
-//                    request.add(data.child("address").getValue().toString());
-//                    request.add(data.child("ownerId").getValue().toString());
-//                    request.add(data.child("scheduledTime").getValue().toString());
-//                    request.add(data.child("latitude").getValue().toString());
-//                    request.add(data.child("longitude").getValue().toString());
-//                    request.add(data.child("meetingId").getValue().toString());
-//                    requestsList.add(request);
+//                for (DataSnapshot indSnapshot: invitedMeetupsSnapshot.getChildren()) {
+//                    System.out.println(indSnapshot.getValue());
+//                    String meetupKey = indSnapshot.getValue().toString();
+//                    fetchMeetup(meetupKey);
+//                    meetings.add(meetup);
+//
 //                }
-//
-//                mAdapter.notifyDataSetChanged();
+//                System.out.println(meetings.toString());
+//                System.out.println("INVITES FETCHED");
 //            }
+//
 //            @Override
 //            public void onCancelled(DatabaseError databaseError) {
 //
 //            }
 //        });
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                requestsList.clear();
+
+                for (DataSnapshot data: dataSnapshot.getChildren()) {
+                    ArrayList<String> request = new ArrayList<String>();
+                    request.add(data.child("address").getValue().toString());
+                    request.add(data.child("ownerId").getValue().toString());
+                    request.add(data.child("scheduledTime").getValue().toString());
+                    request.add(data.child("latitude").getValue().toString());
+                    request.add(data.child("longitude").getValue().toString());
+                    request.add(data.child("meetingId").getValue().toString());
+                    requestsList.add(request);
+                }
+
+                mAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void fetchMeetup(String meetupId) {

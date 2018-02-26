@@ -86,11 +86,10 @@ public class EtaActivity extends AppCompatActivity {
 
                 for (DataSnapshot indSnapshot: invitedUsersSnapshot.getChildren()) {
                     InvitedUser iuser = (indSnapshot.getValue(InvitedUser.class));
-                    System.out.println(iuser.longitude.toString());
                     invitedUsers.add(iuser);
                 }
 
-                System.out.println(invitedUsers.toString());
+
             }
 
             @Override

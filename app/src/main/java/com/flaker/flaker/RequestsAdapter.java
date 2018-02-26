@@ -119,8 +119,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.d("BRUCE", dataSnapshot.child("name").getValue().toString());
-                username[0] = dataSnapshot.child("name").getValue().toString();
+//                Log.d("BRUCE", dataSnapshot.child("name").getValue().toString());
+//                username[0] = dataSnapshot.child("name").getValue().toString();
 
 
             }
