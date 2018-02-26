@@ -4,10 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
@@ -17,10 +19,10 @@ import java.util.Map;
 public class RequestTestActivity extends BaseActivity {
 
 
-    String address = "99 e st";
+    String address = "99 big st";
     Double longitude = 12.32;
     Double latitude = 15.80;
-    String ownerId = "123ABC";
+    String ownerId = "ABCDEFG";
     Long scheduledTime = 12349241420L;
 
     String userId1 = "user_key";
@@ -28,6 +30,8 @@ public class RequestTestActivity extends BaseActivity {
 
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     Meeting meetup = new Meeting();
+    String meetingId;
+    ArrayList<InvitedUser> invitedUsers = new ArrayList<InvitedUser>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +41,11 @@ public class RequestTestActivity extends BaseActivity {
         Meeting meeting = new Meeting(address, longitude, latitude, ownerId, scheduledTime);
 
 //        addMeetingToDb(meeting);
-        fetchInvites(userId1);
-        fetchMeetup(meetup1);
+//        fetchInvites(userId1);
+//        fetchMeetup(meetup1);
+//        fetchUserByEmail();
+//        fetchCurrentUserOwnedMeetupId();
+        fetchLocationOfInvitedUsers(meetup1);
     }
 
     private void addMeetingToDb(Meeting meeting) {
@@ -48,8 +55,34 @@ public class RequestTestActivity extends BaseActivity {
 
         Log.d("meeting", meeting.toString());
 
-        mDestinationRef.push().setValue(meeting);
+        DatabaseReference newMeetupRef = mDestinationRef.push();
+        newMeetupRef.setValue(meeting);
+        String key = newMeetupRef.getKey();
+        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
     }
+
+    private void addInvitedUserToMeetup() {
+
+    }
+
+    private void fetchCurrentUserOwnedMeetupId() {
+        //"ABCDEFG" should be replaced by the current user's id
+        UsersDatabase.child("ABCDEFG").child("ownedMeetup").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                meetingId = dataSnapshot.getValue().toString();
+                System.out.println("YAYAYAYAYAY");
+                System.out.println(meetingId);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("THERE WAS AN ERROR");
+            }
+        });
+    }
+
 
     private void fetchMeetup(String meetupId) {
         DatabaseReference meetupRef = MeetupsDatabase.child(meetupId);
@@ -67,7 +100,30 @@ public class RequestTestActivity extends BaseActivity {
             }
         });
 
+    }
 
+    private ArrayList<InvitedUser> fetchLocationOfInvitedUsers(String meetingId) {
+        DatabaseReference InvitedUsersRef = MeetupsDatabase.child(meetingId + "/acceptedUsers");
+        InvitedUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot invitedUsersSnapshot) {
+
+                for (DataSnapshot indSnapshot: invitedUsersSnapshot.getChildren()) {
+                    InvitedUser iuser = (indSnapshot.getValue(InvitedUser.class));
+                    System.out.println(iuser.longitude.toString());
+                    invitedUsers.add(iuser);
+                }
+//
+                System.out.println(invitedUsers.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return invitedUsers;
     }
 
     private ArrayList<Meeting> fetchInvites(String userId) {
@@ -96,5 +152,41 @@ public class RequestTestActivity extends BaseActivity {
 
         return meetings;
     }
+
+//    private void fetchUserByEmail(String email) {
+//        Query query = UsersDatabase.orderByChild("email").equalTo(email);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                User user = dataSnapshot.getValue(User.class);
+//                System.out.println(user.toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+//    private void fetchUserByEmail() {
+//        UsersDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot indSnapshot : dataSnapshot.getChildren()) {
+//                    System.out.println(indSnapshot.getValue());
+//                    System.out.println("USER FETCHED");
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 }

@@ -164,6 +164,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void addUserToDb(FirebaseUser user) {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mRootRef = database.getReference();
         DatabaseReference mDestinationRef = mRootRef.child("users");
@@ -173,6 +174,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         Log.d("userstuff", userObject.email);
 
         mDestinationRef.child(userId).setValue(userObject);
+
     }
 
     private void updateUI(FirebaseUser user) {
