@@ -17,8 +17,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class EtaActivity extends AppCompatActivity {
-    public ArrayList<String[]> stuff = new ArrayList<String[]>();
-    private ListView numbers;
+    public ArrayList<String[]> etaList = new ArrayList<String[]>();
+    private ListView etaListView;
     ArrayAdapter adapter;
 
 
@@ -27,10 +27,10 @@ public class EtaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eta);
 
-        numbers = (ListView) findViewById(R.id.eta_list_view2);
-//        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stuff);
-        adapter = new EtaAdapter(this, (ArrayList<String[]>) stuff);
-        numbers.setAdapter(adapter);
+        etaListView = (ListView) findViewById(R.id.eta_list_view2);
+
+        adapter = new EtaAdapter(this, (ArrayList<String[]>) etaList);
+        etaListView.setAdapter(adapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference mRootRef = database.getReference();
@@ -60,18 +60,17 @@ public class EtaActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
-                stuff.clear();
-                Log.d("alkfdj", dataSnapshot.getClass().toString());
+                etaList.clear();
+
                 for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
                     String[] user = new String[3];
                     user[0] = indSnapshot.child("eta").getValue().toString();
                     user[1] = indSnapshot.child("name").getValue().toString();
                     user[2] = indSnapshot.child("photo_url").getValue().toString();
-//                    stuff.add(indSnapshot.child("eta").getValue().toString());
-                    stuff.add(user);
+
+                    etaList.add(user);
                 }
 
-//                stuff.add(dataSnapshot.getValue().toString());
                 adapter.notifyDataSetChanged();
             }
             @Override
