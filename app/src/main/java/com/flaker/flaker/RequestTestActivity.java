@@ -20,13 +20,14 @@ public class RequestTestActivity extends BaseActivity {
 
 
     String address = "99 very big st";
-    Double longitude = 12.32;
-    Double latitude = 15.80;
+    Double longitude = -12.32;
+    Double latitude = 150.80;
     String ownerId = "ABCDEFG";
     Long scheduledTime = 12349241420L;
 
     String userId1 = "user_key";
     String meetup1 = "meetup_key";
+    User user1 = new User("winston", "winston@email.com", "gorilla.jpg");
 
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     Meeting meetup = new Meeting();
@@ -40,12 +41,15 @@ public class RequestTestActivity extends BaseActivity {
 
         Meeting meeting = new Meeting(address, longitude, latitude, ownerId, scheduledTime);
 
-        addMeetingToDb(meeting);
+//        addMeetingToDb(meeting);
 //        fetchInvites(userId1);
 //        fetchMeetup(meetup1);
 //        fetchUserByEmail();
 //        fetchCurrentUserOwnedMeetupId();
-        fetchLocationOfInvitedUsers(meetup1);
+//        fetchLocationOfInvitedUsers(meetup1);
+        addInvitedUserToMeetup(user1, meetup1);
+//        updateInvitedUserLocationInMeetup(meetup1, longitude, latitude);
+
     }
 
     private void addMeetingToDb(Meeting meeting) {
@@ -62,12 +66,27 @@ public class RequestTestActivity extends BaseActivity {
         UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
     }
 
-    private void addInvitedUserToMeetup() {
+    private void addInvitedUserToMeetup(User user, String meetupKey) {
+        //create an InvitedUser obj from user
+        String newInvitedUserName = user.name;
+        String newInvitedUserImgUrl = user.imageUrl;
 
+        //Replace "G1223232" with newInvitedUserId when it becomes available
+//        String newInvitedUserId = user.getKey();
+        InvitedUser newInvitedUser = new InvitedUser(newInvitedUserImgUrl, newInvitedUserName);
+
+        //add InvitedUser to acceptedUsers for Meetup
+        DatabaseReference invitedUsersRef = MeetupsDatabase.child(meetupKey).child("acceptedUsers");
+        invitedUsersRef.child("G1223232").setValue(newInvitedUser);
+
+        //add Meetup to the invited user's InvitedMeetups
+        DatabaseReference userInvitedMeetupsRef = UsersDatabase.child("G1223232").child("invitedMeetups");
+        userInvitedMeetupsRef.push().setValue(meetupKey);
     }
 
-    private void updateInvitedUserLocationInMeetup() {
-
+    private void updateInvitedUserLocationInMeetup(String meetupId, Double longitude, Double latitude) {
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
     }
 
     private void fetchCurrentUserOwnedMeetupId() {
@@ -83,7 +102,6 @@ public class RequestTestActivity extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("THERE WAS AN ERROR");
             }
         });
     }
