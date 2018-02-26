@@ -7,11 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.SupportActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -70,9 +76,18 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         TextView requestRowScheduledTime = holder.mCardView.findViewById(R.id.requestRowScheduledTime);
 
 
-
         requestRowAddress.setText(mDataset.get(position).get(0)); // address
-        requestRowOwnerId.setText(mDataset.get(position).get(1));
+
+
+        // get the owner Id and change it to owner's name
+        String ownerId = mDataset.get(position).get(1);
+
+        String ownerName = fetchUserById(ownerId);
+
+
+
+        requestRowOwnerId.setText(ownerName); // ownerName
+        requestRowScheduledTime.setText(mDataset.get(position).get(2)); // scheduledTime
 
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +96,6 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                 System.out.println(mDataset.get(position));
                 Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
                 displayMainActivityIntent.putExtra("fromRequestData", mDataset.get(position));
-                displayMainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 mContext.startActivity(displayMainActivityIntent);
 
             }
@@ -95,6 +109,33 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
     public int getItemCount() {
         return mDataset.size();
     }
+
+    public String fetchUserById(String userId) {
+
+        final String[] username = new String[1];
+
+        Query query = BaseActivity.UsersDatabase.child(userId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("BRUCE", dataSnapshot.child("name").getValue().toString());
+                username[0] = dataSnapshot.child("name").getValue().toString();
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("failure", "failureee");
+            }
+        });
+
+        return username[0];
+
+    }
+
+
 
 
 }

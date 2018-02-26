@@ -232,11 +232,8 @@ public class MapsActivity extends BaseActivity {
                             polylines.add(polyline);
 
                             estimatedTimeOfArrival = route.get(i).getDistanceValue();
-                            Log.d("BRUCE", "DOING ");
                             String parsed = timeParse(estimatedTimeOfArrival);
                             TextView confirmETAText = findViewById(R.id.confirmETAText);
-                            Log.d("BRUCE", "DOING ");
-                            Log.d("BRUCE", parsed);
                             confirmETAText.setText(parsed);
 
                             //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
@@ -256,6 +253,7 @@ public class MapsActivity extends BaseActivity {
     protected void moveMapToLatLng(LatLng latLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
         mGoogleMap.moveCamera(cameraUpdate);
+        Log.d("BRUCE", "SHOULD BE MOVING");
     }
 
     public static String timeParse(int secondInput) {

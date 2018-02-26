@@ -100,17 +100,7 @@ public class FriendsListActivity extends BaseActivity {
                 Log.d("failure", "failureee");
             }
         });
-
-
-
-
     }
-
-    private void addFriendErrors() {
-
-    }
-
-
 
     private void addUserToFriendsList(DataSnapshot users) {
         String[] friend = new String[3];
