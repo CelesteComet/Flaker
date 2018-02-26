@@ -58,6 +58,10 @@ public class BaseActivity extends AppCompatActivity {
         MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
 
+    protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
+//        MeetupsDatabase.child(meetupId);
+    }
+
 
     private void executeCalendarTest() {
         //Gets a calendar using the default time zone and locale.
