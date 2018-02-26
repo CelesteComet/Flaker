@@ -193,9 +193,7 @@ public class MapsActivity extends BaseActivity {
     }
 
     protected void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
-        System.out.println("DOING SOMETHING");
-
-
+        Log.d("APIUSAGE", "DRAWING ROUTE USING API");
         Routing routing = new Routing.Builder()
                 .travelMode(mode)
                 .key(getString(R.string.google_directions_key))
