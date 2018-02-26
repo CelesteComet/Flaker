@@ -96,7 +96,7 @@ public class MainActivity extends MapsActivity {
             viewState = "requesteeView";
 
         }
-
+        updateUI(viewState);
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
@@ -167,6 +167,8 @@ public class MainActivity extends MapsActivity {
                         if (viewState == "requesteeView") {
                             updateUI(viewState);
                         }
+                        Log.d("BRUCE", viewState);
+
                     }
                 });
 
@@ -178,6 +180,14 @@ public class MainActivity extends MapsActivity {
     private void updateUI(String viewState) {
         switch (viewState) {
             case "searchDestination":
+                ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout.setVisibility(ConstraintLayout.VISIBLE);
+
+                View cancelButton = findViewById(R.id.endMeetupButton);
+                cancelButton.setVisibility(View.GONE);
+
+                View searchDestinationFAB = findViewById(R.id.multiple_actions);
+                searchDestinationFAB.setVisibility(View.GONE);
                 break;
             case "confirmDestination":
                 ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.77f);
@@ -214,15 +224,18 @@ public class MainActivity extends MapsActivity {
                 animation.setDuration(800);
                 animation.start();
 
-                ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
-                autoCompleteLayout.setVisibility(ConstraintLayout.GONE);
+                ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
+
+                View confirmDestinationFAB = findViewById(R.id.multiple_actions);
+                confirmDestinationFAB.setVisibility(View.VISIBLE);
 
                 // Display the ETA on the confirm box
 
                 Log.d("ETA", "TRYING TO CHANGE");
 
                 // Change icon to Arrow back
-//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
             case "requesterView":
                 ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
@@ -257,16 +270,31 @@ public class MainActivity extends MapsActivity {
                 backAnimation.setDuration(800);
                 backAnimation.start();
 
+                // Show View Button
+                View cancelButton2 = findViewById(R.id.endMeetupButton);
+                cancelButton2.setVisibility(View.VISIBLE);
+
+
+
                 requestLocationUpdates(meetingId);
                 currentlyRouting = true;
+                // Change icon to Arrow back
+//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+
                 break;
             case "requesteeView":
-                ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
-                autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
+                ConstraintLayout autoCompleteLayout3 = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout3.setVisibility(ConstraintLayout.GONE);
                 moveMapToLatLngWithBounds(placeLatLng, true);
                 createSingleMarker(placeLatLng);
                 Log.d("BRUCE", "REQUESTING LOCATION UPDATES!!!!");
                 Log.d("RIGHT BRUCE", meetingId);
+
+                // Show View Button
+                View cancelButton3 = findViewById(R.id.endMeetupButton);
+                cancelButton3.setVisibility(View.VISIBLE);
+
+
                 currentlyRouting = true;
                 requestLocationUpdates(meetingId);
                 break;
@@ -382,6 +410,17 @@ public class MainActivity extends MapsActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    public void endMeetup(View view) {
+        if (viewState == "requesterView") {
+            viewState = "searchDestination";
+            updateUI(viewState);
+
+        } else if (viewState == "requesteeView") {
+            viewState = "searchDestination";
+            updateUI(viewState);
+        }
     }
 }
 
