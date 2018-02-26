@@ -16,8 +16,12 @@ import android.widget.TextView;
 // Firebase libraries
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 // Date libraries
 import java.util.Calendar;
@@ -28,10 +32,12 @@ public class BaseActivity extends AppCompatActivity {
     // Provide Firebase database reference to entire app
     protected FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-    protected static FirebaseDatabase database;
-    protected static DatabaseReference RootDatabaseReference;
-    protected static DatabaseReference UsersDatabase;
-    protected static DatabaseReference MeetupsDatabase;
+    public static FirebaseDatabase database;
+    public static DatabaseReference RootDatabaseReference;
+    public static DatabaseReference UsersDatabase;
+    public static DatabaseReference MeetupsDatabase;
+
+    public static String meetingId;
 
     // User Authentication References
     protected FirebaseUser currentUser;
@@ -59,6 +65,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
+        Log.d("BRUCE", meetupId);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
     }
@@ -159,4 +166,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
 }

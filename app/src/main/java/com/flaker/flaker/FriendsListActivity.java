@@ -95,10 +95,6 @@ public class FriendsListActivity extends BaseActivity {
                 Log.d("failure", "failureee");
             }
         });
-
-
-
-
     }
 
     private void addUserToFriendsList(DataSnapshot users) {
