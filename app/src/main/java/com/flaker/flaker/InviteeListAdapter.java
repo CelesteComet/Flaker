@@ -41,6 +41,8 @@ public class InviteeListAdapter extends ArrayAdapter {
 
         String singlePhotoUrl = singleFriend[1];
 
+        String singleUserId = singleFriend[3];
+
         TextView nameText = (TextView)  inviteesView.findViewById(R.id.invitee_name_text);
         ImageView photoView = (ImageView) inviteesView.findViewById(R.id.invitee_row_photo);
         Button inviteButton = (Button) inviteesView.findViewById(R.id.invite_button);
