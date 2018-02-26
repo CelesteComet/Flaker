@@ -57,6 +57,9 @@ public class RequesteeViewActivity extends BaseActivity {
                     request.add(data.child("address").getValue().toString());
                     request.add(data.child("ownerId").getValue().toString());
                     request.add(data.child("scheduledTime").getValue().toString());
+                    request.add(data.child("latitude").getValue().toString());
+                    request.add(data.child("longitude").getValue().toString());
+                    request.add(data.child("meetingId").getValue().toString());
                     requestsList.add(request);
                 }
 
