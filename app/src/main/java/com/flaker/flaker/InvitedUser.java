@@ -10,6 +10,10 @@ public class InvitedUser {
     public String imgUrl;
     public String username;
 
+    public InvitedUser() {
+
+    }
+
     public InvitedUser(Double longitude, Double latitude, String imgUrl, String username) {
         this.longitude = longitude;
         this.latitude = latitude;

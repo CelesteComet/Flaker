@@ -102,15 +102,19 @@ public class RequestTestActivity extends BaseActivity {
 
     }
 
-    private void fetchLocationOfInvitedUsers(String meetingId) {
+    private ArrayList<InvitedUser> fetchLocationOfInvitedUsers(String meetingId) {
         DatabaseReference InvitedUsersRef = MeetupsDatabase.child(meetingId + "/acceptedUsers");
         InvitedUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot invitedUsersSnapshot) {
 
                 for (DataSnapshot indSnapshot: invitedUsersSnapshot.getChildren()) {
-                    System.out.println(indSnapshot.getValue());
+                    InvitedUser iuser = (indSnapshot.getValue(InvitedUser.class));
+                    System.out.println(iuser.longitude.toString());
+                    invitedUsers.add(iuser);
                 }
+//
+                System.out.println(invitedUsers.toString());
             }
 
             @Override
@@ -118,6 +122,8 @@ public class RequestTestActivity extends BaseActivity {
 
             }
         });
+
+        return invitedUsers;
     }
 
     private ArrayList<Meeting> fetchInvites(String userId) {
