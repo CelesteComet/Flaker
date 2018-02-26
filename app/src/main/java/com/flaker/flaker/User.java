@@ -14,10 +14,10 @@ public class User {
     public String imageUrl;
     public Integer score;
 
-    public User(String name, String email, String imageUrl) {
+    public User(String name, String email, String imageUrl, Integer score) {
         this.email = email;
         this.name = name;
         this.imageUrl = imageUrl;
-
+        this.score = score;
     }
 }

@@ -27,7 +27,7 @@ public class RequestTestActivity extends BaseActivity {
 
     String userId1 = "user_key";
     String meetup1 = "meetup_key";
-    User user1 = new User("winston", "winston@email.com", "gorilla.jpg");
+
 
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     Meeting meetup = new Meeting();

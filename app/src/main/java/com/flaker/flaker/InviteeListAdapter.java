@@ -51,7 +51,7 @@ public class InviteeListAdapter extends ArrayAdapter {
         ImageView photoView = (ImageView) inviteesView.findViewById(R.id.invitee_row_photo);
         Button inviteButton = (Button) inviteesView.findViewById(R.id.invite_button);
 
-        final User tempUser = new User(singleName, singleUserEmail, singlePhotoUrl);
+        final User tempUser = new User(singleName, singleUserEmail, singlePhotoUrl, 0);
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 // Firebase libraries
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 // Date libraries
 import java.util.Calendar;
@@ -169,6 +171,8 @@ public class BaseActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView navUserEmail = (TextView) headerView.findViewById(R.id.nav_userName);
         TextView navUserName = (TextView) headerView.findViewById(R.id.nav_userEmail);
+        ImageView profileImg = (ImageView) headerView.findViewById(R.id.profileImg);
+        Picasso.with(this).load(currentUser.getPhotoUrl()).into(profileImg);
         navUserEmail.setText(currentUser.getEmail());
         navUserName.setText(currentUser.getDisplayName());
 
