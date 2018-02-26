@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.lang.reflect.Array;
@@ -119,7 +120,7 @@ public class MapsActivity extends BaseActivity {
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ActivityCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
@@ -140,23 +141,42 @@ public class MapsActivity extends BaseActivity {
          */
         try {
             if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            mLastKnownLocation = task.getResult();
-                            if(mLastKnownLocation != null) {
-                                mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                moveMapToLatLng(mLastKnownLatLng);
-                            } else {
-                                mLastKnownLatLng = mDefaultLatLng;
-                                moveMapToLatLng(mLastKnownLatLng);
-                                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    Log.d("BAD", "DOING GOOD");
+                                    mLastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                    moveMapToLatLng(mLastKnownLatLng);
+                                } else {
+                                    // Logic to handle location object
+                                    Log.d("BAD", "DOING BAD");
+                                    mLastKnownLatLng = mDefaultLatLng;
+                                    moveMapToLatLng(mLastKnownLatLng);
+                                    mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                }
                             }
-                        }
-                    }
-                });
+                        });
+//                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Location> task) {
+//                        if (task.isSuccessful()) {
+//                            mLastKnownLocation = task.getResult();
+//                            if(mLastKnownLocation != null) {
+//                                Log.d("BAD", "DOING GOOD");
+//                                mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+//                                moveMapToLatLng(mLastKnownLatLng);
+//                            } else {
+//                                Log.d("BAD", "DOING BAD");
+//                                mLastKnownLatLng = mDefaultLatLng;
+//                                moveMapToLatLng(mLastKnownLatLng);
+//                                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+//                            }
+//                        }
+//                    }
+//                });
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());

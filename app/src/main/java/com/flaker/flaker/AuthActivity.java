@@ -169,9 +169,9 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         DatabaseReference mRootRef = database.getReference();
         DatabaseReference mDestinationRef = mRootRef.child("users");
 
-        if (mDestinationRef.child(user.getUid()) != null) {
-            return 0;
-        }
+//        if (mDestinationRef.child(user.getUid()) != null) {
+//            return 0;
+//        }
 
         User userObject = new User(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString(), 0);
         String userId = user.getUid();
