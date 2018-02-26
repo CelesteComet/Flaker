@@ -47,7 +47,7 @@ public class MainActivity extends MapsActivity {
     private Place destinationPlace;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Calendar c2;
+    private Calendar c2 = Calendar.getInstance();
 
     // UI
     private FloatingActionsMenu menuMultipleActions;
@@ -65,7 +65,13 @@ public class MainActivity extends MapsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("BRUCE", "MAIN ACTIVITY CREATING");
         setContentView(R.layout.activity_main);
+        if (savedInstanceState != null) {
+            Log.d("BRUCE", "WE GOT SOMETHING");
+            print(savedInstanceState.get("fromRequestData").toString());
+        }
+
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
@@ -233,7 +239,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
+                    //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
                 }
             };
@@ -295,7 +301,7 @@ public class MainActivity extends MapsActivity {
 //        startActivity(showRequesterViewIntent);
         viewState = "requesterView";
         Meeting meeting = new Meeting(
-                destinationPlace.getName().toString(),
+                destinationPlace.getAddress().toString(),
                 placeLatLng.longitude,
                 placeLatLng.latitude,
                 currentUser.getUid(),

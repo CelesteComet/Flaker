@@ -42,10 +42,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setupFirebaseAuth();
         setupFirebaseReferences();
         executeCalendarTest();
+    }
+
+    protected void print(String str) {
+        System.out.println(str);
     }
 
     private void setupFirebaseReferences() {

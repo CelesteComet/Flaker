@@ -26,9 +26,6 @@ public class RequesteeViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requestee_view);
 
-        ArrayList<String> Bruce = new ArrayList<String>();
-        Bruce.add("HELLO");
-        requestsList.add(Bruce);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.requesteeViewRequestList);
 
@@ -41,7 +38,7 @@ public class RequesteeViewActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new RequestsAdapter(requestsList);
+        mAdapter = new RequestsAdapter(requestsList, this);
         mRecyclerView.setAdapter(mAdapter);
 
         //initial Requests fetch
