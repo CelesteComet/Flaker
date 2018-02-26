@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ public class MainActivity extends MapsActivity {
     private Place destinationPlace;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private Calendar c2 = Calendar.getInstance();
 
     // UI
     private FloatingActionsMenu menuMultipleActions;
@@ -63,7 +65,13 @@ public class MainActivity extends MapsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("BRUCE", "MAIN ACTIVITY CREATING");
         setContentView(R.layout.activity_main);
+        if (savedInstanceState != null) {
+            Log.d("BRUCE", "WE GOT SOMETHING");
+            print(savedInstanceState.get("fromRequestData").toString());
+        }
+
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
@@ -176,11 +184,41 @@ public class MainActivity extends MapsActivity {
 
                 Log.d("ETA", "TRYING TO CHANGE");
 
-
-
                 // Change icon to Arrow back
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
+            case "requesterView":
+                ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
+                ValueAnimator backAnimation2 = ValueAnimator.ofFloat(0.63f, 1.0f);
+
+                final Guideline backGuideLine = (Guideline) this.findViewById(R.id.guideline);
+                final Guideline backGuideLine2 = (Guideline) this.findViewById(R.id.guideline2);
+                final ConstraintLayout.LayoutParams backParams = (ConstraintLayout.LayoutParams) backGuideLine.getLayoutParams();
+                final ConstraintLayout.LayoutParams backParams2 = (ConstraintLayout.LayoutParams) backGuideLine2.getLayoutParams();
+
+                backAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        backParams.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        backGuideLine.setLayoutParams(backParams);
+                    }
+                });
+
+                backAnimation2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                        float animatedValue = (float)updatedAnimation.getAnimatedValue();
+                        backParams2.guidePercent = animatedValue; // 45% // range: 0 <-> 1
+                        backGuideLine2.setLayoutParams(backParams2);
+                    }
+                });
+
+                backAnimation2.setDuration(800);
+                backAnimation2.start();
+
+                backAnimation.setDuration(800);
+                backAnimation.start();
             default:
                 break;
         }
@@ -201,7 +239,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
+                    //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
                 }
             };
@@ -244,24 +282,32 @@ public class MainActivity extends MapsActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 Calendar calendar = Calendar.getInstance();
-                Calendar c2 = Calendar.getInstance();
+                c2 = Calendar.getInstance();
                 c2.set(Calendar.HOUR_OF_DAY, i);
                 c2.set(Calendar.MINUTE, i1);
                 long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
                 if (sub < 0) {
                     Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
                 }
-                Meeting meeting = new Meeting(
-                        "RANDOM ADDRESS",
-                        placeLatLng.longitude,
-                        placeLatLng.latitude,
-                        currentUser.getUid(),
-                        c2.getTimeInMillis());
-                MeetupsDatabase.push().setValue(meeting);
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
         mTimePicker.show();
+    }
+
+
+    public void beginRequest(View view) {
+//        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
+//        startActivity(showRequesterViewIntent);
+        viewState = "requesterView";
+        Meeting meeting = new Meeting(
+                destinationPlace.getAddress().toString(),
+                placeLatLng.longitude,
+                placeLatLng.latitude,
+                currentUser.getUid(),
+                c2.getTimeInMillis());
+        MeetupsDatabase.push().setValue(meeting);
+        updateUI(viewState);
     }
 }
 

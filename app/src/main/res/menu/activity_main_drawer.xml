@@ -9,8 +9,12 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Friends" />
         <item
-            android:id="@+id/nav_requests"
+            android:id="@+id/nav_etas"
             android:icon="@drawable/ic_menu_gallery"
+            android:title="ETAs" />
+        <item
+            android:id="@+id/nav_requests"
+            android:icon="@drawable/ic_menu_share"
             android:title="Requests" />
     </group>
 

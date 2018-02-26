@@ -42,10 +42,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setupFirebaseAuth();
         setupFirebaseReferences();
         executeCalendarTest();
+    }
+
+    protected void print(String str) {
+        System.out.println(str);
     }
 
     private void setupFirebaseReferences() {
@@ -53,6 +56,10 @@ public class BaseActivity extends AppCompatActivity {
         RootDatabaseReference = database.getReference();
         UsersDatabase = RootDatabaseReference.child("users");
         MeetupsDatabase = RootDatabaseReference.child("meetups");
+    }
+
+    protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
+//        MeetupsDatabase.child(meetupId);
     }
 
 
@@ -131,16 +138,15 @@ public class BaseActivity extends AppCompatActivity {
                 if (id == R.id.home) {
 
                 } else if (id == R.id.nav_friends) {
-//                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendActivity.class);
-//                    finish();
-//                    startActivity(displayFriendsActivityIntent);
-                } else if (id == R.id.nav_requests) {
+                    Intent displayFriendsActivityIntent = new Intent(getApplicationContext(), FriendsListActivity.class);
+                    startActivity(displayFriendsActivityIntent);
+                } else if (id == R.id.nav_etas) {
                     // Create request list here
-                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
+                    startActivity(displayETAsActivityIntent);
+                } else if (id == R.id.nav_requests) {
+                    Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
                     startActivity(displayRequestsActivityIntent);
-                } else if (id == R.id.nav_manage) {
-
-
                 } else if (id == R.id.nav_share) {
 
                 } else if (id == R.id.nav_send) {
