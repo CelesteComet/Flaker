@@ -19,11 +19,15 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.flaker.flaker.BaseActivity.MeetupsDatabase;
+import static com.flaker.flaker.BaseActivity.meetingId;
+
 public class EtaActivity extends AppCompatActivity {
     public ArrayList<String[]> etaList = new ArrayList<String[]>();
     private ListView etaListView;
     ArrayAdapter adapter;
     Button meetupInvitees;
+    ArrayList<InvitedUser> invitedUsers = new ArrayList<InvitedUser>();
 
 
     @Override
@@ -75,22 +79,19 @@ public class EtaActivity extends AppCompatActivity {
 
     private void etaFetch(DatabaseReference reference) {
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference InvitedUsersRef = MeetupsDatabase.child(meetingId + "/acceptedUsers");
+        InvitedUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                etaList.clear();
+            public void onDataChange(DataSnapshot invitedUsersSnapshot) {
 
-                for (DataSnapshot indSnapshot: dataSnapshot.getChildren()) {
-                    String[] user = new String[3];
-                    user[0] = indSnapshot.child("eta").getValue().toString();
-                    user[1] = indSnapshot.child("name").getValue().toString();
-                    user[2] = indSnapshot.child("photo_url").getValue().toString();
-
-                    etaList.add(user);
+                for (DataSnapshot indSnapshot: invitedUsersSnapshot.getChildren()) {
+                    InvitedUser iuser = (indSnapshot.getValue(InvitedUser.class));
+                    invitedUsers.add(iuser);
                 }
 
-                adapter.notifyDataSetChanged();
+
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -98,3 +99,5 @@ public class EtaActivity extends AppCompatActivity {
         });
     }
 }
+
+

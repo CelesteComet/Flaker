@@ -21,6 +21,9 @@ public class RequesteeViewActivity extends BaseActivity {
 
     public ArrayList<ArrayList<String>> requestsList = new ArrayList<>();
 
+    private Meeting meetup;
+    private ArrayList<Meeting> meetings = new ArrayList<Meeting>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +48,30 @@ public class RequesteeViewActivity extends BaseActivity {
         requestsFetch(MeetupsDatabase);
     }
 
+
+
     private void requestsFetch(DatabaseReference reference) {
+//        DatabaseReference UserInvitesReference = UsersDatabase.child(currentUser.getUid() + "/invitedMeetups");
+//        UserInvitesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot invitedMeetupsSnapshot) {
+//
+//                for (DataSnapshot indSnapshot: invitedMeetupsSnapshot.getChildren()) {
+//                    System.out.println(indSnapshot.getValue());
+//                    String meetupKey = indSnapshot.getValue().toString();
+//                    fetchMeetup(meetupKey);
+//                    meetings.add(meetup);
+//
+//                }
+//                System.out.println(meetings.toString());
+//                System.out.println("INVITES FETCHED");
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -71,4 +97,50 @@ public class RequesteeViewActivity extends BaseActivity {
             }
         });
     }
+
+    private void fetchMeetup(String meetupId) {
+        DatabaseReference meetupRef = MeetupsDatabase.child(meetupId);
+
+        meetupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot meetupSnapshot) {
+                meetup = meetupSnapshot.getValue(Meeting.class);
+                System.out.println("MEETUP FETCHED");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 }
+
+
+//    private ArrayList<Meeting> fetchInvites(String userId) {
+//        DatabaseReference UserInvitesReference = UsersDatabase.child(userId + "/invitedMeetups");
+//        UserInvitesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot invitedMeetupsSnapshot) {
+//
+//                for (DataSnapshot indSnapshot: invitedMeetupsSnapshot.getChildren()) {
+//                    System.out.println(indSnapshot.getValue());
+//                    String meetupKey = indSnapshot.getValue().toString();
+//                    fetchMeetup(meetupKey);
+//                    meetings.add(meetup);
+//
+//                }
+//                System.out.println(meetings.toString());
+//                System.out.println("INVITES FETCHED");
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//
+//        });
+//
+//        return meetings;
+//    }

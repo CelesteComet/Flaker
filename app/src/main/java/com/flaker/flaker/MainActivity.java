@@ -13,6 +13,7 @@ import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.directions.route.Routing;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -53,6 +55,7 @@ public class MainActivity extends MapsActivity {
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private Calendar c2 = Calendar.getInstance();
+    private Boolean timeSelected;
 
 
     // UI
@@ -63,6 +66,7 @@ public class MainActivity extends MapsActivity {
 
     */
     private String viewState = "searchDestination";
+
 
     private final String TAG = this.toString();
     private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
@@ -98,6 +102,7 @@ public class MainActivity extends MapsActivity {
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
+//        updateUI(viewState);
 
 
 
@@ -162,9 +167,10 @@ public class MainActivity extends MapsActivity {
                 mGoogleMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
                     @Override
                     public void onMapLoaded() {
-                        if (viewState == "requesteeView") {
-                            updateUI(viewState);
-                        }
+
+                        updateUI(viewState);
+                        Log.d("BRUCE", viewState);
+
                     }
                 });
 
@@ -176,8 +182,17 @@ public class MainActivity extends MapsActivity {
     private void updateUI(String viewState) {
         switch (viewState) {
             case "searchDestination":
+                ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout.setVisibility(ConstraintLayout.VISIBLE);
+
+                View cancelButton = findViewById(R.id.endMeetupButton);
+                cancelButton.setVisibility(View.GONE);
+
+                View searchDestinationFAB = findViewById(R.id.multiple_actions);
+                searchDestinationFAB.setVisibility(View.GONE);
                 break;
             case "confirmDestination":
+                timeSelected = false;
                 ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.77f);
                 ValueAnimator animation2 = ValueAnimator.ofFloat(1.0f, 0.63f);
 
@@ -212,8 +227,19 @@ public class MainActivity extends MapsActivity {
                 animation.setDuration(800);
                 animation.start();
 
-                ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
-                autoCompleteLayout.setVisibility(ConstraintLayout.GONE);
+                ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
+
+                View confirmDestinationFAB = findViewById(R.id.multiple_actions);
+                confirmDestinationFAB.setVisibility(View.VISIBLE);
+
+                TextView confirmTitleText = findViewById(R.id.confirmTitleText);
+                confirmTitleText.setText(destinationPlace.getName());
+
+                TextView confirmAddressText = findViewById(R.id.confirmAddressText);
+                confirmAddressText.setText(destinationPlace.getAddress());
+
+
 
                 // Display the ETA on the confirm box
 
@@ -223,6 +249,8 @@ public class MainActivity extends MapsActivity {
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
             case "requesterView":
+                LinearLayout confirmLinearLayout = this.findViewById(R.id.confirmLinearLayout);
+                confirmLinearLayout.setVisibility(LinearLayout.GONE);
                 ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
                 ValueAnimator backAnimation2 = ValueAnimator.ofFloat(0.63f, 1.0f);
 
@@ -254,14 +282,33 @@ public class MainActivity extends MapsActivity {
 
                 backAnimation.setDuration(800);
                 backAnimation.start();
+
+                // Show View Button
+                View cancelButton2 = findViewById(R.id.endMeetupButton);
+                cancelButton2.setVisibility(View.VISIBLE);
+
+
+
+                requestLocationUpdates(meetingId);
+                currentlyRouting = true;
+                // Change icon to Arrow back
+//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+
                 break;
             case "requesteeView":
-                ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
-                autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
+                ConstraintLayout autoCompleteLayout3 = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout3.setVisibility(ConstraintLayout.GONE);
                 moveMapToLatLngWithBounds(placeLatLng, true);
                 createSingleMarker(placeLatLng);
                 Log.d("BRUCE", "REQUESTING LOCATION UPDATES!!!!");
                 Log.d("RIGHT BRUCE", meetingId);
+
+                // Show View Button
+                View cancelButton3 = findViewById(R.id.endMeetupButton);
+                cancelButton3.setVisibility(View.VISIBLE);
+
+
+                currentlyRouting = true;
                 requestLocationUpdates(meetingId);
                 break;
             default:
@@ -272,6 +319,12 @@ public class MainActivity extends MapsActivity {
     @SuppressLint("MissingPermission")
 
     private void requestLocationUpdates(final String meetingId) {
+        Log.d("LOCATION CALLBACK", "REQUESTING A LOCATION");
+
+        if (mLocationCallback != null) {
+            Log.d("LOCATION CALLBACK", "Attempting to remove");
+            mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+        }
         mLocationRequest = new LocationRequest();
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -291,6 +344,8 @@ public class MainActivity extends MapsActivity {
             };
         };
 
+
+
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
                 null /* Looper */);
@@ -298,7 +353,6 @@ public class MainActivity extends MapsActivity {
 
 
     public void changeTravelMode(View view) {
-
         Integer viewId = view.getId();
         menuMultipleActions.toggle();
         switch (viewId) {
@@ -327,22 +381,40 @@ public class MainActivity extends MapsActivity {
         TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                timeSelected = true; // timeSelected false in updateView
                 Calendar calendar = Calendar.getInstance();
                 c2 = Calendar.getInstance();
                 c2.set(Calendar.HOUR_OF_DAY, i);
                 c2.set(Calendar.MINUTE, i1);
                 long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
                 if (sub < 0) {
-                    Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please select a time past the current time", Toast.LENGTH_SHORT).show();
+                } else {
+                    TextView confirmMeetingTime = findViewById(R.id.confirmMeetingTime);
+                    String ampm = "";
+                    if(i > 12) {
+                        ampm = "PM";
+                        i -= 12;
+                    } else if (i == 12) {
+                        ampm = "AM";
+                    } else {
+                        ampm = "AM";
+                    }
+                    confirmMeetingTime.setText("Meeting at " + Integer.toString(i) + ":" + Integer.toString(i1) + ampm);
                 }
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
+
         mTimePicker.show();
     }
 
 
-    public void beginRequest(View view) {
+    public Integer beginRequest(View view) {
+        if (timeSelected == false) {
+            Toast.makeText(MainActivity.this, "Please select a meetup time", Toast.LENGTH_SHORT).show();
+            return 0;
+        }
 //        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
 //        startActivity(showRequesterViewIntent);
         viewState = "requesterView";
@@ -355,11 +427,35 @@ public class MainActivity extends MapsActivity {
                 placeLatLng.longitude,
                 placeLatLng.latitude,
                 currentUser.getUid(),
+                currentUser.getDisplayName(),
                 c2.getTimeInMillis());
-        newRef.setValue(meeting);
-        newRef.child("meetingId").setValue(key);
-        requestLocationUpdates(key);
+        addMeetingToDb(meeting);
+//        newRef.setValue(meeting);
+//        newRef.child("meetingId").setValue(key);
+
+
         updateUI(viewState);
+        return 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    public void endMeetup(View view) {
+        if (viewState == "requesterView") {
+
+            viewState = "searchDestination";
+            updateUI(viewState);
+
+        } else if (viewState == "requesteeView") {
+            viewState = "searchDestination";
+            updateUI(viewState);
+        }
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 }
 

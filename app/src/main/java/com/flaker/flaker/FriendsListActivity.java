@@ -125,7 +125,7 @@ public class FriendsListActivity extends BaseActivity {
 
         adapter.notifyDataSetChanged();
 
-        User newFriend = new User(friend[0], email, friend[1]);
+        User newFriend = new User(friend[0], email, friend[1], Integer.parseInt(friend[2]));
 
         addFriendToDb(newFriend, userSnapshot.getKey(), 10);
     }

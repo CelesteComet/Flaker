@@ -100,16 +100,18 @@
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/confirmLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:orientation="vertical"
         fab:layout_constraintBottom_toBottomOf="parent"
         fab:layout_constraintEnd_toEndOf="parent"
-        fab:layout_constraintHorizontal_bias="0.076"
+        fab:layout_constraintHorizontal_bias="0.0"
         fab:layout_constraintStart_toStartOf="parent"
         fab:layout_constraintTop_toTopOf="@+id/guideline2"
-        fab:layout_constraintVertical_bias="0.0">
+        fab:layout_constraintVertical_bias="0.271">
 
         <TextView
             android:id="@+id/confirmTitleText"
@@ -118,8 +120,16 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="TextView"
             android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+        <TextView
+            android:id="@+id/confirmAddressText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/confirmETAText"
@@ -128,8 +138,17 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+        <TextView
+            android:id="@+id/confirmMeetingTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
 
     </LinearLayout>
 
@@ -180,8 +199,6 @@
             fab:layout_constraintBottom_toBottomOf="parent"
             fab:layout_constraintEnd_toEndOf="parent" />
 
-
-
         <Button
             android:id="@+id/button4"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -196,25 +213,22 @@
             fab:layout_constraintEnd_toStartOf="@+id/chooseDestinationButton"
             fab:layout_constraintHorizontal_bias="0.848"
             fab:layout_constraintStart_toStartOf="parent" />
-
-
-
-
     </android.support.constraint.ConstraintLayout>
 
-
-
-
-
-
+    <Button
+        android:id="@+id/endMeetupButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="162dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="endMeetup"
+        android:text="End Meetup"
+        fab:layout_constraintBottom_toTopOf="@+id/guideline2"
+        fab:layout_constraintEnd_toEndOf="parent"
+        fab:layout_constraintStart_toStartOf="parent" />
     <!--</android.support.constraint.ConstraintLayout>-->
-
-
-
-
-
-
-
 </android.support.constraint.ConstraintLayout>
 
 
