@@ -49,6 +49,7 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 
 
@@ -75,6 +76,7 @@ public class MapsActivity extends BaseActivity {
     protected Integer estimatedTimeOfArrival;
     protected Routing.TravelMode travelMode = Routing.TravelMode.WALKING;
     protected ArrayList<LatLng> otherUsers = new ArrayList<LatLng>();
+    protected HashMap<String, Marker> friendMarkers;
 
     // Default Map Values
     protected static final Integer DEFAULT_ZOOM = 15;
@@ -204,6 +206,50 @@ public class MapsActivity extends BaseActivity {
             destinationMarker.remove();
         }
         destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
+    }
+
+    protected void requestFriendUpdates(String meetingId) {
+
+        // Check if we currently have friendMarkers, if so remove them
+        if (friendMarkers != null) {
+            HashMap<String, Marker> friendMarkers = new HashMap<String, Marker>();
+        }
+
+        MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("datasnap", "SOME STUFF COMING IN");
+                if(dataSnapshot.exists()) {
+                    Log.d("datasnap", dataSnapshot.toString());
+                }
+//                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+//                    snap.getValue();
+
+//                    double latitude = Double.parseDouble(indSnapshot.child("latitude").getValue().toString());
+//                    double longitude = Double.parseDouble(indSnapshot.child("longitude").getValue().toString());
+//
+//                    mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
+
+
+//                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
     }
 
     protected void drawOtherUsersOnMap() {

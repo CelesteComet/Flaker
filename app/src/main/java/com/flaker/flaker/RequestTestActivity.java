@@ -55,6 +55,7 @@ public class RequestTestActivity extends BaseActivity {
     }
 
     public void addMeetingToDb(Meeting meeting) {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mRootRef = database.getReference();
         DatabaseReference mDestinationRef = mRootRef.child("meetups");

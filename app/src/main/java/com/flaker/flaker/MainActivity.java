@@ -47,14 +47,12 @@ import java.util.Calendar;
 
 public class MainActivity extends MapsActivity {
 
-
-
     // Google Map
     private LatLng placeLatLng = mDefaultLatLng;
     private Place destinationPlace;
 
 
-    private Calendar c2 = Calendar.getInstance();
+    private Calendar scheduledTime = Calendar.getInstance();
     private Boolean timeSelected;
 
 
@@ -227,17 +225,13 @@ public class MainActivity extends MapsActivity {
                 TextView confirmAddressText = findViewById(R.id.confirmAddressText);
                 confirmAddressText.setText(destinationPlace.getAddress());
 
-
-
-                // Display the ETA on the confirm box
-
-                Log.d("ETA", "TRYING TO CHANGE");
-
                 // Change icon to Arrow back
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
                 getSupportActionBar().setIcon(R.drawable.ic_arrow_back_black);
+                // TODO: MAKE THIS BUTTON GO BACK!
                 break;
             case "requesterView":
+                currentlyRouting = true;
                 LinearLayout confirmLinearLayout = this.findViewById(R.id.confirmLinearLayout);
                 confirmLinearLayout.setVisibility(LinearLayout.GONE);
                 ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
@@ -267,18 +261,25 @@ public class MainActivity extends MapsActivity {
                 });
 
                 backAnimation2.setDuration(800);
-                backAnimation2.start();
+//                backAnimation2.start();
 
                 backAnimation.setDuration(800);
-                backAnimation.start();
+//                backAnimation.start();
+
+
+                // No animations
+                backParams.guidePercent = 1;
+                backParams2.guidePercent = 1;
+                backGuideLine.setLayoutParams(backParams);
+                backGuideLine.setLayoutParams(backParams2);
 
                 // Show View Button
                 View cancelButton2 = findViewById(R.id.endMeetupButton);
                 cancelButton2.setVisibility(View.VISIBLE);
 
-                drawOtherUsersOnMap();
+                requestFriendUpdates(meetingId);
                 requestLocationUpdates(meetingId);
-                currentlyRouting = true;
+
                 // Change icon to Arrow back
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
 
@@ -372,10 +373,9 @@ public class MainActivity extends MapsActivity {
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 timeSelected = true; // timeSelected false in updateView
                 Calendar calendar = Calendar.getInstance();
-                c2 = Calendar.getInstance();
-                c2.set(Calendar.HOUR_OF_DAY, i);
-                c2.set(Calendar.MINUTE, i1);
-                long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
+                scheduledTime.set(Calendar.HOUR_OF_DAY, i);
+                scheduledTime.set(Calendar.MINUTE, i1);
+                long sub = scheduledTime.getTimeInMillis() - calendar.getTimeInMillis();
                 if (sub < 0) {
                     Toast.makeText(MainActivity.this, "Please select a time past the current time", Toast.LENGTH_SHORT).show();
                 } else {
@@ -394,36 +394,37 @@ public class MainActivity extends MapsActivity {
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
-
         mTimePicker.show();
     }
 
 
     public Integer beginRequest(View view) {
+        Log.d("func", "beginRequest is called in MainActivity");
+
+        // Check if a time for the meetup was selected
         if (timeSelected == false) {
             Toast.makeText(MainActivity.this, "Please select a meetup time", Toast.LENGTH_SHORT).show();
             return 0;
         }
-//        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
-//        startActivity(showRequesterViewIntent);
+
         viewState = "requesterView";
 
-
-        DatabaseReference newRef = MeetupsDatabase.push();
-        String key = newRef.getKey();
+        // Create a new meeting object
         Meeting meeting = new Meeting(
                 destinationPlace.getAddress().toString(),
                 placeLatLng.longitude,
                 placeLatLng.latitude,
                 currentUser.getUid(),
                 currentUser.getDisplayName(),
-                c2.getTimeInMillis());
-        addMeetingToDb(meeting);
-//        newRef.setValue(meeting);
-//        newRef.child("meetingId").setValue(key);
+                scheduledTime.getTimeInMillis());
+
+        // Add the meeting object to the database
+        meetingId = Meeting.addMeetingToDb(currentUser, meeting);
 
 
+        // Update the UI with the new state of the app
         updateUI(viewState);
+
         return 0;
     }
 

@@ -78,6 +78,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void setupFirebaseReferences() {
+        Log.d("func", "Setting up Firebase database references in BaseActivity");
         database = FirebaseDatabase.getInstance();
         RootDatabaseReference = database.getReference();
         UsersDatabase = RootDatabaseReference.child("users");
@@ -229,20 +230,20 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public void addMeetingToDb(Meeting meeting) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mRootRef = database.getReference();
-        DatabaseReference mDestinationRef = mRootRef.child("meetups");
-
-        Log.d("meeting", meeting.toString());
-
-        DatabaseReference newMeetupRef = mDestinationRef.push();
-        newMeetupRef.setValue(meeting);
-        String key = newMeetupRef.getKey();
-        BaseActivity.meetingId = key;
-        MeetupsDatabase.child(key).child("meetingId").setValue(key);
-        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
-    }
+//    public void addMeetingToDb(Meeting meeting) {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference mRootRef = database.getReference();
+//        DatabaseReference mDestinationRef = mRootRef.child("meetups");
+//
+//        Log.d("meeting", meeting.toString());
+//
+//        DatabaseReference newMeetupRef = mDestinationRef.push();
+//        newMeetupRef.setValue(meeting);
+//        String key = newMeetupRef.getKey();
+//        BaseActivity.meetingId = key;
+//        MeetupsDatabase.child(key).child("meetingId").setValue(key);
+//        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
+//    }
 
     public static String timeParse(int secondInput) {
         int seconds = secondInput;
