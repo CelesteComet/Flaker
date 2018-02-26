@@ -85,6 +85,8 @@ public class InviteeListAdapter extends ArrayAdapter {
 //        String newInvitedUserId = user.getKey();
         InvitedUser newInvitedUser = new InvitedUser(newInvitedUserImgUrl, newInvitedUserName);
 
+        Log.d("hi", BaseActivity.meetingId);
+        Log.d("meetupkey", meetupKey);
         //add InvitedUser to acceptedUsers for Meetup
         DatabaseReference invitedUsersRef = MeetupsDatabase.child(meetupKey).child("acceptedUsers");
         invitedUsersRef.child(userId).setValue(newInvitedUser);

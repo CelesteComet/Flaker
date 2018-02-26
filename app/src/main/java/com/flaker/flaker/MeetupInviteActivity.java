@@ -2,6 +2,7 @@ package com.flaker.flaker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -50,6 +51,7 @@ public class MeetupInviteActivity extends BaseActivity {
 
                 for (DataSnapshot friendSnapShot: dataSnapshot.getChildren()) {
                     String[] friend = new String[5];
+                    Log.d("asdflkj", friendSnapShot.toString());
 
                     friend[0] = friendSnapShot.child("name").getValue().toString();
                     friend[1] = friendSnapShot.child("imageUrl").getValue().toString();
