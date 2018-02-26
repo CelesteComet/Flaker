@@ -75,7 +75,7 @@ public class FriendsListActivity extends BaseActivity {
 
     private void fetchUser(String email) {
         if (currentUser.getEmail().equals(email)) {
-            errorMessage.setText("Don't add yourself idiot");
+            errorMessage.setText("You can't add yourself");
             return;
         }
 
