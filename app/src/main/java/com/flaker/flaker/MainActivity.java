@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.firebase.database.DatabaseReference;
 
 import java.sql.Time;
 import java.util.Calendar;
@@ -98,7 +99,7 @@ public class MainActivity extends MapsActivity {
                 createSingleMarker(placeLatLng);
                 viewState = "confirmDestination";
                 updateUI(viewState);
-                requestLocationUpdates();
+
             }
 
             @Override
@@ -226,7 +227,7 @@ public class MainActivity extends MapsActivity {
 
     @SuppressLint("MissingPermission")
 
-    private void requestLocationUpdates() {
+    private void requestLocationUpdates(final String meetingId) {
         mLocationRequest = new LocationRequest();
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -239,6 +240,7 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    sendCurrentLatLngToDatabase(location.getLatitude(), location.getLongitude(), meetingId);
                     //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
                 }
@@ -300,15 +302,31 @@ public class MainActivity extends MapsActivity {
 //        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
 //        startActivity(showRequesterViewIntent);
         viewState = "requesterView";
+
+
+        DatabaseReference newRef = MeetupsDatabase.push();
+        String key = newRef.getKey();
         Meeting meeting = new Meeting(
                 destinationPlace.getAddress().toString(),
                 placeLatLng.longitude,
                 placeLatLng.latitude,
                 currentUser.getUid(),
                 c2.getTimeInMillis());
-        MeetupsDatabase.push().setValue(meeting);
+        newRef.setValue(meeting);
+        requestLocationUpdates(key);
         updateUI(viewState);
     }
 }
 
-
+//    If you invoke the Firebase push() method without arguments it is a pure client-side operation.
+//
+//        var newRef = ref.push(); // this does *not* call the server
+//        You can then add the key() of the new ref to your item:
+//
+//        var newItem = {
+//        name: 'anauleau'
+//        id: newRef.key()
+//        };
+//        And write the item to the new location:
+//
+//        newRef.set(newItem);
