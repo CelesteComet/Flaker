@@ -82,7 +82,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // get seconds of meet up time and convert to normal time
-    private void epochParser(long epoch_sec) {
+    protected void epochParser(long epoch_sec) {
 //        long unix_seconds = 1519623565;
         long unix_seconds = epoch_sec;
         //convert seconds to milliseconds
@@ -234,6 +234,63 @@ public class BaseActivity extends AppCompatActivity {
         BaseActivity.meetingId = key;
         MeetupsDatabase.child(key).child("meetingId").setValue(key);
         UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
+    }
+
+    public static String timeParse(int secondInput) {
+        int seconds = secondInput;
+        int p1 = seconds % 60;
+        int p2 = seconds / 60;
+        int p3 = p2 % 60;
+        p2 = p2 / 60;
+
+
+        String s1 = "";
+        String s2 = "";
+        String s3 = "";
+
+        if (p2 > 0) {
+            s2 = Integer.toString(p2) + "h ";
+        } else {
+            s2 = "";
+        }
+
+        if (p3 > 0) {
+            s3 = Integer.toString(p3);
+        } else {
+            s3 = "0";
+        }
+        // return s2 + ":" + s3 + ":" + s1;
+        // System.out.print(s2+s3 + "min");
+        return s2 + s3 + "min";
+
+
+    }
+
+    public static String normalizeTime(Long epoch_sec) {
+        //        long unix_seconds = 1519623565;
+        long unix_seconds = epoch_sec;
+        //convert seconds to milliseconds
+        Date date = new Date(unix_seconds*1000L);
+        // format of the date
+        SimpleDateFormat hour = new SimpleDateFormat("HH");
+        SimpleDateFormat min = new SimpleDateFormat("mm");
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+
+
+        hour.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_hour = hour.format(date);
+        min.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_min = min.format(date);
+        time.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_time = time.format(date);
+        System.out.println("TESTTT");
+//        Prints out in HH:MM format
+        System.out.println(normal_time);
+//        Prints out just hour
+//        System.out.println("\n"+normal_hour+"\n");
+//        Prints out minutes
+//        System.out.println("\n"+normal_min+"\n");
+        return normal_time;
     }
 
 

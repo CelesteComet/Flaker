@@ -100,16 +100,18 @@
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/confirmLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:orientation="vertical"
         fab:layout_constraintBottom_toBottomOf="parent"
         fab:layout_constraintEnd_toEndOf="parent"
-        fab:layout_constraintHorizontal_bias="0.076"
+        fab:layout_constraintHorizontal_bias="0.0"
         fab:layout_constraintStart_toStartOf="parent"
         fab:layout_constraintTop_toTopOf="@+id/guideline2"
-        fab:layout_constraintVertical_bias="0.0">
+        fab:layout_constraintVertical_bias="0.271">
 
         <TextView
             android:id="@+id/confirmTitleText"
@@ -118,8 +120,16 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="TextView"
             android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+        <TextView
+            android:id="@+id/confirmAddressText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/confirmETAText"
@@ -128,8 +138,17 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="TextView"
-            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+        <TextView
+            android:id="@+id/confirmMeetingTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
 
     </LinearLayout>
 
@@ -140,14 +159,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1" /> <!-- 1 for production 0.77 for testing BRUCEGUIDE (-7)-->
+        app:layout_constraintGuide_percent="0.77" /> <!-- 1 for production 0.77 for testing BRUCEGUIDE (-7)-->
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        fab:layout_constraintGuide_percent="1" /> <!-- 1 for production 0.63 for testing BRUCEGUIDE-->
+        fab:layout_constraintGuide_percent="0.63" /> <!-- 1 for production 0.63 for testing BRUCEGUIDE-->
 
     <!--<android.support.constraint.ConstraintLayout-->
         <!--android:layout_width="match_parent"-->

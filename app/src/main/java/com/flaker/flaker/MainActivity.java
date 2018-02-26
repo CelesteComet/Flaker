@@ -13,6 +13,7 @@ import android.support.constraint.Guideline;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -54,6 +55,7 @@ public class MainActivity extends MapsActivity {
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private Calendar c2 = Calendar.getInstance();
+    private Boolean timeSelected;
 
 
     // UI
@@ -190,6 +192,7 @@ public class MainActivity extends MapsActivity {
                 searchDestinationFAB.setVisibility(View.GONE);
                 break;
             case "confirmDestination":
+                timeSelected = false;
                 ValueAnimator animation = ValueAnimator.ofFloat(1.0f, 0.77f);
                 ValueAnimator animation2 = ValueAnimator.ofFloat(1.0f, 0.63f);
 
@@ -230,14 +233,24 @@ public class MainActivity extends MapsActivity {
                 View confirmDestinationFAB = findViewById(R.id.multiple_actions);
                 confirmDestinationFAB.setVisibility(View.VISIBLE);
 
+                TextView confirmTitleText = findViewById(R.id.confirmTitleText);
+                confirmTitleText.setText(destinationPlace.getName());
+
+                TextView confirmAddressText = findViewById(R.id.confirmAddressText);
+                confirmAddressText.setText(destinationPlace.getAddress());
+
+
+
                 // Display the ETA on the confirm box
 
                 Log.d("ETA", "TRYING TO CHANGE");
 
                 // Change icon to Arrow back
-                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+//                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
                 break;
             case "requesterView":
+                LinearLayout confirmLinearLayout = this.findViewById(R.id.confirmLinearLayout);
+                confirmLinearLayout.setVisibility(LinearLayout.GONE);
                 ValueAnimator backAnimation = ValueAnimator.ofFloat(0.77f, 1.00f);
                 ValueAnimator backAnimation2 = ValueAnimator.ofFloat(0.63f, 1.0f);
 
@@ -340,7 +353,6 @@ public class MainActivity extends MapsActivity {
 
 
     public void changeTravelMode(View view) {
-
         Integer viewId = view.getId();
         menuMultipleActions.toggle();
         switch (viewId) {
@@ -369,22 +381,40 @@ public class MainActivity extends MapsActivity {
         TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                timeSelected = true; // timeSelected false in updateView
                 Calendar calendar = Calendar.getInstance();
                 c2 = Calendar.getInstance();
                 c2.set(Calendar.HOUR_OF_DAY, i);
                 c2.set(Calendar.MINUTE, i1);
                 long sub = c2.getTimeInMillis() - calendar.getTimeInMillis();
                 if (sub < 0) {
-                    Toast.makeText(MainActivity.this, "Please select a date past the current time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please select a time past the current time", Toast.LENGTH_SHORT).show();
+                } else {
+                    TextView confirmMeetingTime = findViewById(R.id.confirmMeetingTime);
+                    String ampm = "";
+                    if(i > 12) {
+                        ampm = "PM";
+                        i -= 12;
+                    } else if (i == 12) {
+                        ampm = "AM";
+                    } else {
+                        ampm = "AM";
+                    }
+                    confirmMeetingTime.setText("Meeting at " + Integer.toString(i) + ":" + Integer.toString(i1) + ampm);
                 }
             }
         };
         TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
+
         mTimePicker.show();
     }
 
 
-    public void beginRequest(View view) {
+    public Integer beginRequest(View view) {
+        if (timeSelected == false) {
+            Toast.makeText(MainActivity.this, "Please select a meetup time", Toast.LENGTH_SHORT).show();
+            return 0;
+        }
 //        Intent showRequesterViewIntent = new Intent(this, RequesterViewActivity.class);
 //        startActivity(showRequesterViewIntent);
         viewState = "requesterView";
@@ -405,6 +435,7 @@ public class MainActivity extends MapsActivity {
 
 
         updateUI(viewState);
+        return 0;
     }
 
     @Override
@@ -414,6 +445,7 @@ public class MainActivity extends MapsActivity {
 
     public void endMeetup(View view) {
         if (viewState == "requesterView") {
+
             viewState = "searchDestination";
             updateUI(viewState);
 
@@ -421,6 +453,9 @@ public class MainActivity extends MapsActivity {
             viewState = "searchDestination";
             updateUI(viewState);
         }
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 }
 

@@ -41,7 +41,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class MapsActivity extends BaseActivity {
@@ -235,7 +239,11 @@ public class MapsActivity extends BaseActivity {
                             estimatedTimeOfArrival = route.get(i).getDistanceValue();
                             String parsed = timeParse(estimatedTimeOfArrival);
                             TextView confirmETAText = findViewById(R.id.confirmETAText);
-                            confirmETAText.setText(parsed);
+
+                            confirmETAText.setText("Travel Time: " + parsed);
+
+
+
 
                             //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
                         }
@@ -257,40 +265,7 @@ public class MapsActivity extends BaseActivity {
         Log.d("BRUCE", "SHOULD BE MOVING");
     }
 
-    public static String timeParse(int secondInput) {
-        int seconds = secondInput;
-        int p1 = seconds % 60;
-        int p2 = seconds / 60;
-        int p3 = p2 % 60;
-        p2 = p2 / 60;
 
-
-        String s1 = "";
-        String s2 = "";
-        String s3 = "";
-
-        if (p2 == 0) {
-            s2 = ""; } else if (p2 < 10) {
-            s2 = "0" + Integer.toString(p2);
-        } else {
-            s2 = Integer.toString(p2);
-        }
-
-        if (p1 < 10) {
-            s1 = "0" + Integer.toString(p1);
-        } else {
-            s1 = Integer.toString(p1);
-        }
-
-        if (p3 == 0) {
-            s3 = ""; } else if (p3 < 10) {
-            s3 = "0" + Integer.toString(p3);
-        } else {
-            s3 = Integer.toString(p3);
-        }
-        return s2 + ":" + s3 + ":" + s1;
-
-    }
 
 
 
