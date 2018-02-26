@@ -29,13 +29,17 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -50,6 +54,7 @@ public class MainActivity extends MapsActivity {
     private LocationCallback mLocationCallback;
     private Calendar c2 = Calendar.getInstance();
 
+
     // UI
     private FloatingActionsMenu menuMultipleActions;
 
@@ -57,7 +62,7 @@ public class MainActivity extends MapsActivity {
     /*
 
     */
-    private String viewState;
+    private String viewState = "searchDestination";
 
     private final String TAG = this.toString();
     private final String PLACE_LATLNG_KEY = "PLACE_LATLNG_KEY";
@@ -67,15 +72,34 @@ public class MainActivity extends MapsActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("BRUCE", "MAIN ACTIVITY CREATING");
+
+//        request.add(data.child("address").getValue().toString());
+//        request.add(data.child("ownerId").getValue().toString());
+//        request.add(data.child("scheduledTime").getValue().toString());
+//        request.add(data.child("latitude").getValue().toString());
+//        request.add(data.child("longitude").getValue().toString());
+
+
         setContentView(R.layout.activity_main);
-        if (savedInstanceState != null) {
-            Log.d("BRUCE", "WE GOT SOMETHING");
-            print(savedInstanceState.get("fromRequestData").toString());
+
+        if (getIntent().getStringArrayListExtra("fromRequestData") != null) {
+            ArrayList<String> list = getIntent().getStringArrayListExtra("fromRequestData");
+            Log.d("BRUCE", list.toString());
+            double latitude = Double.parseDouble(list.get(3));
+            double longitude = Double.parseDouble(list.get(4));
+            meetingId = list.get(5);
+
+            Log.d("BRUCE", meetingId);
+            placeLatLng = new LatLng(latitude, longitude);
+            viewState = "requesteeView";
+
         }
 
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
+
+
 
 
     }
@@ -134,6 +158,16 @@ public class MainActivity extends MapsActivity {
                 getLocationPermission();
                 getDeviceLocation();
                 updateLocationUI();
+
+                mGoogleMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                    @Override
+                    public void onMapLoaded() {
+                        if (viewState == "requesteeView") {
+                            updateUI(viewState);
+                        }
+                    }
+                });
+
                 setupAutoCompleteWidget();
             }
         });
@@ -220,6 +254,16 @@ public class MainActivity extends MapsActivity {
 
                 backAnimation.setDuration(800);
                 backAnimation.start();
+                break;
+            case "requesteeView":
+                ConstraintLayout autoCompleteLayout2 = this.findViewById(R.id.place_autocomplete_layout);
+                autoCompleteLayout2.setVisibility(ConstraintLayout.GONE);
+                moveMapToLatLngWithBounds(placeLatLng, true);
+                createSingleMarker(placeLatLng);
+                Log.d("BRUCE", "REQUESTING LOCATION UPDATES!!!!");
+                Log.d("RIGHT BRUCE", meetingId);
+                requestLocationUpdates(meetingId);
+                break;
             default:
                 break;
         }
@@ -313,6 +357,7 @@ public class MainActivity extends MapsActivity {
                 currentUser.getUid(),
                 c2.getTimeInMillis());
         newRef.setValue(meeting);
+        newRef.child("meetingId").setValue(key);
         requestLocationUpdates(key);
         updateUI(viewState);
     }
