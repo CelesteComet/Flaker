@@ -26,6 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 // Date libraries
 import java.util.Calendar;
 import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.*;
+import java.text.*;
+
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -68,6 +75,33 @@ public class BaseActivity extends AppCompatActivity {
         Log.d("BRUCE", meetupId);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
+    }
+
+    // get seconds of meet up time and convert to normal time
+    private void epochParser(long epoch_sec) {
+//        long unix_seconds = 1519623565;
+        long unix_seconds = epoch_sec;
+        //convert seconds to milliseconds
+        Date date = new Date(unix_seconds*1000L);
+        // format of the date
+        SimpleDateFormat hour = new SimpleDateFormat("HH");
+        SimpleDateFormat min = new SimpleDateFormat("mm");
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+
+
+        hour.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_hour = hour.format(date);
+        min.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_min = min.format(date);
+        time.setTimeZone(TimeZone.getTimeZone("GMT-8"));
+        String normal_time = time.format(date);
+        System.out.println("TESTTT");
+//        Prints out in HH:MM format
+        System.out.println(normal_time);
+//        Prints out just hour
+//        System.out.println("\n"+normal_hour+"\n");
+//        Prints out minutes
+//        System.out.println("\n"+normal_min+"\n");
     }
 
 
