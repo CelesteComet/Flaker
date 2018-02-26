@@ -1,9 +1,12 @@
 package com.flaker.flaker;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +23,7 @@ public class EtaActivity extends AppCompatActivity {
     public ArrayList<String[]> etaList = new ArrayList<String[]>();
     private ListView etaListView;
     ArrayAdapter adapter;
+    Button meetupInvitees;
 
 
     @Override
@@ -42,6 +46,20 @@ public class EtaActivity extends AppCompatActivity {
         //Start fetch ETAs loop
         timedFetch(mDestinationRef);
 
+        Button addInvitees = (Button) findViewById(R.id.add_invitees);
+        addInvitees.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectToInvitees();
+            }
+        });
+    }
+
+
+
+    private void redirectToInvitees() {
+        Intent displayMeetupInviteActivityIntent = new Intent(getApplicationContext(), MeetupInviteActivity.class);
+        startActivity(displayMeetupInviteActivityIntent);
     }
 
     private void timedFetch(final DatabaseReference reference) {
