@@ -85,9 +85,8 @@ public class BaseActivity extends AppCompatActivity {
         MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
 
-    protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
-        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
-        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
+    protected void sendCurrentLatLngToDatabase(InvitedUser user, String meetupId) {
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).setValue(user);
     }
 
     // get seconds of meet up time and convert to normal time

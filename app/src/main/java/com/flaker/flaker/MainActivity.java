@@ -73,39 +73,31 @@ public class MainActivity extends MapsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-//        request.add(data.child("address").getValue().toString());
-//        request.add(data.child("ownerId").getValue().toString());
-//        request.add(data.child("scheduledTime").getValue().toString());
-//        request.add(data.child("latitude").getValue().toString());
-//        request.add(data.child("longitude").getValue().toString());
-
-
         setContentView(R.layout.activity_main);
 
-        if (getIntent().getStringArrayListExtra("fromRequestData") != null) {
-            ArrayList<String> list = getIntent().getStringArrayListExtra("fromRequestData");
-            Log.d("BRUCE", list.toString());
-            double latitude = Double.parseDouble(list.get(3));
-            double longitude = Double.parseDouble(list.get(4));
-            meetingId = list.get(5);
 
-            Log.d("BRUCE", meetingId);
+
+        if (getIntent().getExtras() != null) {
+            Log.d("BRUCE", "GOOD");
+            Meeting meeting = getIntent().getParcelableExtra("bundle");
+
+
+            double latitude = meeting.latitude;
+            double longitude = meeting.longitude;
+            meetingId = meeting.meetingId;
+
             placeLatLng = new LatLng(latitude, longitude);
             viewState = "requesteeView";
-
+        } else {
+            Log.d("BRUCE", "LAME");
         }
-
         setupOnMapReadyCallback();
         includeDrawer();
         includeFAB();
-//        updateUI(viewState);
-
-
-
-
     }
+
+
+
 
     private void includeFAB() {
         menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
@@ -164,6 +156,12 @@ public class MainActivity extends MapsActivity {
         Log.d("func", "Updating the UI in MainActivity, UI is currently: " + viewState);
         switch (viewState) {
             case "searchDestination":
+                if (mLocationCallback != null) {
+                    mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                }
+
+                currentlyRouting = false;
+
                 ConstraintLayout autoCompleteLayout = this.findViewById(R.id.place_autocomplete_layout);
                 autoCompleteLayout.setVisibility(ConstraintLayout.VISIBLE);
 
@@ -226,8 +224,8 @@ public class MainActivity extends MapsActivity {
                 confirmAddressText.setText(destinationPlace.getAddress());
 
                 // Change icon to Arrow back
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
-                getSupportActionBar().setIcon(R.drawable.ic_arrow_back_black);
+//                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
+//                getSupportActionBar().setIcon(R.drawable.ic_arrow_back_black);
                 // TODO: MAKE THIS BUTTON GO BACK!
                 break;
             case "requesterView":
@@ -282,6 +280,9 @@ public class MainActivity extends MapsActivity {
 
                 // Change icon to Arrow back
 //                this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);//your icon here
+                // Change icon to Arrow back
+//                getSupportActionBar().
+//                getSupportActionBar().setIcon(R.drawable.ic_arrow_back_black);
 
                 break;
             case "requesteeView":
@@ -326,7 +327,10 @@ public class MainActivity extends MapsActivity {
                 for (Location location : locationResult.getLocations()) {
                     Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    sendCurrentLatLngToDatabase(location.getLatitude(), location.getLongitude(), meetingId);
+                    InvitedUser user = new InvitedUser();
+                    user.longitude = location.getLongitude();
+                    user.latitude = location.getLatitude();
+                    sendCurrentLatLngToDatabase(user, meetingId);
                     //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
 
