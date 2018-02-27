@@ -77,8 +77,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
 
         final Meeting meeting = mDataset.get(position);
-        System.out.println("HELLO");
-        System.out.println(meeting.address);
+
         requestRowAddress.setText(meeting.address); // address
 
 

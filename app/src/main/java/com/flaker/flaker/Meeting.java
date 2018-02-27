@@ -65,6 +65,13 @@ public class Meeting implements Parcelable {
         return key;
     }
 
+    public static void inviteUserToMeetup(final String userId, final String meetupKey) {
+        UsersDatabase.child(userId)
+                .child("invitedMeetups")
+                .child(meetupKey)
+                .setValue(true);
+    }
+
     public static void addInvitedUserToMeetup(final FirebaseUser user, final String meetupKey) {
         String newInvitedUserName = user.getDisplayName();
         String newInvitedUserImgUrl = user.getPhotoUrl().toString();

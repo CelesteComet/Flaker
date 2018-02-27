@@ -1,19 +1,12 @@
 package com.flaker.flaker;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -29,28 +22,26 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
+import java.util.Map;
 
 
 public class MapsActivity extends BaseActivity {
@@ -76,7 +67,8 @@ public class MapsActivity extends BaseActivity {
     protected Integer estimatedTimeOfArrival;
     protected Routing.TravelMode travelMode = Routing.TravelMode.WALKING;
     protected ArrayList<LatLng> otherUsers = new ArrayList<LatLng>();
-    protected HashMap<String, Marker> friendMarkers;
+    protected HashMap<String, Object> friendMarkers;
+    protected ArrayList<Marker> friendMarkersArray = new ArrayList<Marker>();
 
     // Default Map Values
     protected static final Integer DEFAULT_ZOOM = 15;
@@ -149,6 +141,7 @@ public class MapsActivity extends BaseActivity {
                                 } else {
                                     // Logic to handle location object
                                     requestSingleLocationUpdate();
+                                    mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
                                 }
                             }
                         });
@@ -197,7 +190,6 @@ public class MapsActivity extends BaseActivity {
         } else {
             mGoogleMap.moveCamera(cameraUpdate);
         }
-
     }
 
     protected void createSingleMarker(LatLng latLng) {
@@ -211,27 +203,37 @@ public class MapsActivity extends BaseActivity {
     protected void requestFriendUpdates(String meetingId) {
 
         // Check if we currently have friendMarkers, if so remove them
-        if (friendMarkers != null) {
-            HashMap<String, Marker> friendMarkers = new HashMap<String, Marker>();
+        if (friendMarkers == null) {
+            friendMarkers = new HashMap<String, Object>();
         }
 
         MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("datasnap", "SOME STUFF COMING IN");
-                if(dataSnapshot.exists()) {
-                    Log.d("datasnap", dataSnapshot.toString());
+
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+
+                    Log.d("BRUCE", snap.toString());
+                    Object values = snap.getValue();
+                    Map<String, Object> map = (Map<String, Object>) snap.getValue();
+
+                    map.put(snap.getKey(), snap.getValue());
+
+                    print(map.toString());
+
+
+
+
+                    friendMarkers.put(snap.getKey(), snap.getValue());
+
+
+
+                    drawFriends(friendMarkers);
+
+
+
+
                 }
-//                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-//                    snap.getValue();
-
-//                    double latitude = Double.parseDouble(indSnapshot.child("latitude").getValue().toString());
-//                    double longitude = Double.parseDouble(indSnapshot.child("longitude").getValue().toString());
-//
-//                    mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
-
-
-//                }
             }
 
             @Override
@@ -239,17 +241,37 @@ public class MapsActivity extends BaseActivity {
 
             }
         });
+    }
+
+    protected void drawFriends(HashMap<String, Object> friendMarkers) {
+        // Clear buffer of friend markers
+        if (friendMarkersArray.size() > 0) {
+            for(int i = 0; i < friendMarkersArray.size(); i++) {
+                friendMarkersArray.get(i).remove();
+            }
+        }
+
+        for (Map.Entry<String, Object> entry : friendMarkers.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            print(value.toString());
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(value);// obj is your object
+            try {
+                JSONObject jsonObj = new JSONObject(json);
+                double lat = (double) jsonObj.get("latitude");
+                double lng = (double) jsonObj.get("longitude");
+
+                friendMarkersArray.add(mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
 
 
-
-
-
-
-
-
-
+        }
     }
 
     protected void drawOtherUsersOnMap() {
@@ -347,7 +369,6 @@ public class MapsActivity extends BaseActivity {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                    Log.d("BRUCE", "GOT A NEW LOCATION");
                     mLastKnownLatLng = new LatLng(location.getLatitude(),location.getLongitude());
                     moveMapToLatLng(mLastKnownLatLng);
                     mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
