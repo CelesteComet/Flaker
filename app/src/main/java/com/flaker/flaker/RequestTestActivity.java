@@ -30,7 +30,7 @@ public class RequestTestActivity extends BaseActivity {
 
 
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
-    Meeting meetup = new Meeting();
+    Meeting meetup;
     String meetingId;
     String userName;
     ArrayList<InvitedUser> invitedUsers = new ArrayList<InvitedUser>();

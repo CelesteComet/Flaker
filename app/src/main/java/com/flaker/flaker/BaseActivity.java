@@ -78,15 +78,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void setupFirebaseReferences() {
+        Log.d("func", "Setting up Firebase database references in BaseActivity");
         database = FirebaseDatabase.getInstance();
         RootDatabaseReference = database.getReference();
         UsersDatabase = RootDatabaseReference.child("users");
         MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
 
-    protected void sendCurrentLatLngToDatabase(double latitude, double longitude, String meetupId) {
-        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("latitude").setValue(latitude);
-        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).child("longitude").setValue(longitude);
+    protected void sendCurrentLatLngToDatabase(InvitedUser user, String meetupId) {
+        MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).setValue(user);
     }
 
     // get seconds of meet up time and convert to normal time
@@ -229,20 +229,20 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public void addMeetingToDb(Meeting meeting) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mRootRef = database.getReference();
-        DatabaseReference mDestinationRef = mRootRef.child("meetups");
-
-        Log.d("meeting", meeting.toString());
-
-        DatabaseReference newMeetupRef = mDestinationRef.push();
-        newMeetupRef.setValue(meeting);
-        String key = newMeetupRef.getKey();
-        BaseActivity.meetingId = key;
-        MeetupsDatabase.child(key).child("meetingId").setValue(key);
-        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
-    }
+//    public void addMeetingToDb(Meeting meeting) {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference mRootRef = database.getReference();
+//        DatabaseReference mDestinationRef = mRootRef.child("meetups");
+//
+//        Log.d("meeting", meeting.toString());
+//
+//        DatabaseReference newMeetupRef = mDestinationRef.push();
+//        newMeetupRef.setValue(meeting);
+//        String key = newMeetupRef.getKey();
+//        BaseActivity.meetingId = key;
+//        MeetupsDatabase.child(key).child("meetingId").setValue(key);
+//        UsersDatabase.child(meeting.ownerId).child("ownedMeetup").setValue(key);
+//    }
 
     public static String timeParse(int secondInput) {
         int seconds = secondInput;

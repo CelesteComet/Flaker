@@ -30,7 +30,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
     private Context mContext;
 
-    private ArrayList<ArrayList<String>> mDataset;
+    private ArrayList<Meeting> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -46,8 +46,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RequestsAdapter(ArrayList<ArrayList<String>> requests, Context context) {
-        mDataset = requests;
+    public RequestsAdapter(ArrayList<Meeting> meetings, Context context) {
+        mDataset = meetings;
         mContext = context;
     }
 
@@ -76,27 +76,23 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         TextView requestRowScheduledTime = holder.mCardView.findViewById(R.id.requestRowScheduledTime);
 
 
-        requestRowAddress.setText(mDataset.get(position).get(0)); // address
+        final Meeting meeting = mDataset.get(position);
+
+        requestRowAddress.setText(meeting.address); // address
 
 
-        // get the owner Id and change it to owner's name
-        String ownerId = mDataset.get(position).get(1);
-
-        String ownerName = fetchUserById(ownerId);
-
-
-
-        requestRowOwnerId.setText(ownerName); // ownerName
-        requestRowScheduledTime.setText(mDataset.get(position).get(2)); // scheduledTime
+        requestRowOwnerId.setText(meeting.ownerName); // ownerName
+        requestRowScheduledTime.setText(meeting.scheduledTime.toString()); // scheduledTime
 
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                System.out.println(mDataset.get(position));
-                Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
-                displayMainActivityIntent.putExtra("fromRequestData", mDataset.get(position));
-                mContext.startActivity(displayMainActivityIntent);
+            Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
+            displayMainActivityIntent.putExtra("bundle", meeting);
+            displayMainActivityIntent.putExtra("YO", "BRUCE");
+            mContext.startActivity(displayMainActivityIntent);
+
 
             }
         });
@@ -110,30 +106,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         return mDataset.size();
     }
 
-    public String fetchUserById(String userId) {
 
-        final String[] username = new String[1];
-
-        Query query = BaseActivity.UsersDatabase.child(userId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-//                Log.d("BRUCE", dataSnapshot.child("name").getValue().toString());
-//                username[0] = dataSnapshot.child("name").getValue().toString();
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("failure", "failureee");
-            }
-        });
-
-        return username[0];
-
-    }
 
 
 

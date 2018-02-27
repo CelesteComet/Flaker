@@ -55,7 +55,8 @@ public class InviteeListAdapter extends ArrayAdapter {
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addInvitedUserToMeetup(tempUser, BaseActivity.meetingId, singleUserId);
+            Meeting.inviteUserToMeetup(singleUserId, BaseActivity.meetingId);
+                //addInvitedUserToMeetup(tempUser, BaseActivity.meetingId, singleUserId);
             }
         });
 
@@ -92,8 +93,8 @@ public class InviteeListAdapter extends ArrayAdapter {
         invitedUsersRef.child(userId).setValue(newInvitedUser);
 
         //add Meetup to the invited user's InvitedMeetups
-        DatabaseReference userInvitedMeetupsRef = UsersDatabase.child("G1223232").child("invitedMeetups");
-        userInvitedMeetupsRef.push().setValue(meetupKey);
+//        DatabaseReference userInvitedMeetupsRef = UsersDatabase.child("G1223232").child("invitedMeetups");
+//        userInvitedMeetupsRef.push().setValue(meetupKey);
     }
 
 
