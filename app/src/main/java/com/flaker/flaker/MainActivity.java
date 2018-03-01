@@ -43,6 +43,7 @@ import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 
 public class MainActivity extends MapsActivity {
@@ -289,6 +290,7 @@ public class MainActivity extends MapsActivity {
                 ConstraintLayout autoCompleteLayout3 = this.findViewById(R.id.place_autocomplete_layout);
                 autoCompleteLayout3.setVisibility(ConstraintLayout.GONE);
                 moveMapToLatLngWithBounds(placeLatLng, true);
+                drawRoute(mLastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING);
                 createSingleMarker(placeLatLng);
                 Log.d("BRUCE", "REQUESTING LOCATION UPDATES!!!!");
                 Log.d("RIGHT BRUCE", meetingId);
@@ -297,6 +299,12 @@ public class MainActivity extends MapsActivity {
                 View cancelButton3 = findViewById(R.id.endMeetupButton);
                 cancelButton3.setVisibility(View.VISIBLE);
                 drawOtherUsersOnMap();
+
+
+
+                View searchDestinationFAB2 = findViewById(R.id.multiple_actions);
+                searchDestinationFAB2.setVisibility(View.VISIBLE);
+
 
                 currentlyRouting = true;
                 requestLocationUpdates(meetingId);
