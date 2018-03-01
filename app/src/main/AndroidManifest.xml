@@ -48,14 +48,13 @@
             android:name=".MainActivity"
             android:label="" />
         <activity android:name=".ProfileActivity" />
-
         <activity android:name=".RequestTestActivity" />
-        
         <activity android:name=".MapsActivity" />
         <activity android:name=".EtaActivity" />
         <activity android:name=".FriendsListActivity" />
         <activity android:name=".RequesteeViewActivity" />
-        <activity android:name=".MeetupInviteActivity"></activity>
+        <activity android:name=".MeetupInviteActivity" />
+        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>
