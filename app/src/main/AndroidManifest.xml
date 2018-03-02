@@ -35,7 +35,7 @@
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
         <activity
-            android:name=".AuthActivity"
+            android:name=".TestActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,12 +49,12 @@
             android:label="" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RequestTestActivity" />
-        <activity android:name=".MapsActivity" />
+        <!--<activity android:name=".MapsActivity" />-->
         <activity android:name=".EtaActivity" />
         <activity android:name=".FriendsListActivity" />
         <activity android:name=".RequesteeViewActivity" />
         <activity android:name=".MeetupInviteActivity" />
-        <activity android:name=".TestActivity"></activity>
+        <!--<activity android:name=".TestActivity"></activity>-->
     </application>
 
 </manifest>
