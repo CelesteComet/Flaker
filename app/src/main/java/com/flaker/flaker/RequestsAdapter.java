@@ -88,10 +88,10 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-            Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
-            displayMainActivityIntent.putExtra("bundle", meeting);
-            displayMainActivityIntent.putExtra("YO", "BRUCE");
-            mContext.startActivity(displayMainActivityIntent);
+//            Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
+//            displayMainActivityIntent.putExtra("bundle", meeting);
+//            displayMainActivityIntent.putExtra("YO", "BRUCE");
+//            mContext.startActivity(displayMainActivityIntent);
 
 
             }

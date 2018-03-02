@@ -15,14 +15,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,8 +40,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 
 import static com.flaker.flaker.BaseActivity.mLocationPermissionGranted;
 
@@ -47,10 +58,18 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
     protected FusedLocationProviderClient mFusedLocationProviderClient;
 
     protected SupportMapFragment mMapView;
-    private GoogleMap mGoogleMap;
-    private LatLng lastKnownLatLng;
+    private static GoogleMap mGoogleMap;
+    public static LatLng lastKnownLatLng;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
+
+
+    // Public map variables
+    public static LatLng placeLatLng;
+    public static Place place;
+    public static Routing.TravelMode travelMode = Routing.TravelMode.DRIVING;
+    public static ArrayList<Polyline> polylines = new ArrayList<Polyline>();
+
 
     // Default Map Values
     protected static final Integer DEFAULT_ZOOM = 15;
@@ -138,7 +157,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private void moveMapToLatLng(LatLng lastKnownLatLng) {
+    public static void moveMapToLatLng(LatLng lastKnownLatLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, DEFAULT_ZOOM);
         mGoogleMap.moveCamera(cameraUpdate);
     }
@@ -167,6 +186,66 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             Log.e("_error", e.toString());
         }
+    }
+
+    public static void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
+        Log.d("APIUSAGE", "DRAWING ROUTE USING API");
+        Routing routing = new Routing.Builder()
+                .travelMode(mode)
+                .key(String.valueOf(R.string.google_directions_key))
+                .withListener(new RoutingListener() {
+                    @Override
+                    public void onRoutingFailure(RouteException e) {
+                        Log.d("BRUCE", e.toString());
+                    }
+
+                    @Override
+                    public void onRoutingStart() {
+
+                    }
+
+                    @Override
+                    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+
+                        if (polylines.size() > 0) {
+                            for (Polyline poly : polylines) {
+                                poly.remove();
+                            }
+                        }
+
+                        polylines = new ArrayList<>();
+                        //add route(s) to the map.
+                        for (int i = 0; i < route.size(); i++) {
+
+                            //In case of more than 5 alternative routes
+
+
+                            PolylineOptions polyOptions = new PolylineOptions();
+
+                            polyOptions.width(10 + i * 3);
+                            polyOptions.addAll(route.get(i).getPoints());
+                            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
+                            polylines.add(polyline);
+
+//                            estimatedTimeOfArrival = route.get(i).getDistanceValue();
+//                            String parsed = timeParse(estimatedTimeOfArrival);
+//                            TextView confirmETAText = findViewById(R.id.confirmETAText);
+
+//                            confirmETAText.setText("Travel Time: " + parsed);
+
+
+                            //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onRoutingCancelled() {
+
+                    }
+                })
+                .waypoints(start, end)
+                .build();
+        routing.execute();
     }
 
 

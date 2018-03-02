@@ -14,7 +14,6 @@
         android:id="@+id/mapFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     </FrameLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -47,53 +46,53 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/multiple_actions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        fab:fab_addButtonColorNormal="@color/colorWhite"
-        fab:fab_addButtonColorPressed="@color/colorPrimary"
-        fab:fab_addButtonPlusIconColor="@color/colorPrimaryDark"
-        fab:layout_constraintBottom_toTopOf="@+id/confirmConstraintLayout"
-        fab:layout_constraintEnd_toEndOf="parent"
-        fab:layout_constraintHorizontal_bias="0.945"
-        fab:layout_constraintStart_toStartOf="parent"
-        fab:layout_constraintTop_toTopOf="@+id/map"
-        fab:layout_constraintVertical_bias="1.0">
+    <!--<com.getbase.floatingactionbutton.FloatingActionsMenu-->
+        <!--android:id="@+id/multiple_actions"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="48dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:visibility="visible"-->
+        <!--fab:fab_addButtonColorNormal="@color/colorWhite"-->
+        <!--fab:fab_addButtonColorPressed="@color/colorPrimary"-->
+        <!--fab:fab_addButtonPlusIconColor="@color/colorPrimaryDark"-->
+        <!--fab:layout_constraintBottom_toTopOf="@+id/confirmConstraintLayout"-->
+        <!--fab:layout_constraintEnd_toEndOf="parent"-->
+        <!--fab:layout_constraintHorizontal_bias="0.945"-->
+        <!--fab:layout_constraintStart_toStartOf="parent"-->
+        <!--fab:layout_constraintTop_toTopOf="@+id/map"-->
+        <!--fab:layout_constraintVertical_bias="1.0">-->
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_a"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="changeTravelMode"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_icon="@drawable/ic_directions_walk_black" />
+        <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+            <!--android:id="@+id/action_a"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="changeTravelMode"-->
+            <!--fab:fab_colorNormal="@color/colorWhite"-->
+            <!--fab:fab_colorPressed="@color/colorPrimary"-->
+            <!--fab:fab_icon="@drawable/ic_directions_walk_black" />-->
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_b"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="changeTravelMode"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_icon="@drawable/ic_directions_bike_black" />
+        <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+            <!--android:id="@+id/action_b"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="changeTravelMode"-->
+            <!--fab:fab_colorNormal="@color/colorWhite"-->
+            <!--fab:fab_colorPressed="@color/colorPrimary"-->
+            <!--fab:fab_icon="@drawable/ic_directions_bike_black" />-->
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_c"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="changeTravelMode"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_icon="@drawable/ic_directions_car_black" />
+        <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+            <!--android:id="@+id/action_c"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="changeTravelMode"-->
+            <!--fab:fab_colorNormal="@color/colorWhite"-->
+            <!--fab:fab_colorPressed="@color/colorPrimary"-->
+            <!--fab:fab_icon="@drawable/ic_directions_car_black" />-->
 
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    <!--</com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 
     <LinearLayout
         android:id="@+id/confirmLinearLayout"
