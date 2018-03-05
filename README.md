@@ -63,7 +63,7 @@ UX
 * Continue implementation of real-time location tracking. **All**
 
 #### Day 5
-* Implement friends and friend lists. **ALEX**
+* Implement friends and friend lists. **ALEX, ROSE**
 
 #### Day 6
 * Implement Flaker Leader board
