@@ -53,7 +53,7 @@ UX
 #### Day 2
 * Implement user authentication - **JOEY, ROSE, Alex** 
 * Integrate profile views with backend **Alex**
-* Leaderboard - ** Alex **
+* Leaderboard - **Alex**
 
 #### Day 3
 * Test syncing of coordinate response from Google Maps API to database - **JOEY, ROSE**
