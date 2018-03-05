@@ -63,14 +63,14 @@ UX
 * Continue implementation of real-time location tracking. **All**
 
 #### Day 5
-* Implement friends and friend lists.
+* Implement friends and friend lists. **ALEX**
 	[ ] User can search for friends 
 	[ ] User can send a friend request 
 	[ ] User can add friends who accepted their friend request
 	[ ] When a user removes a friend, the link between the user and the friend is broken.
 
 #### Day 6
-* Implement Flaker Leadership board
+* Implement Flaker Leader board
 	[ ] Database should fetch friends and sort them by flakiness and then display it in a
 	    performant recycler view. 
 * Polish Application loose ends.
