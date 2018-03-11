@@ -49,6 +49,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 
 import static com.flaker.flaker.BaseActivity.mLocationPermissionGranted;
+import static com.flaker.flaker.BaseActivity.timeParse;
 
 
 public class MyMapFragment extends android.support.v4.app.Fragment {
@@ -70,6 +71,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
     public static Place place;
     public static Routing.TravelMode travelMode = Routing.TravelMode.DRIVING;
     public static ArrayList<Polyline> polylines = new ArrayList<Polyline>();
+
 
 
     // Default Map Values
@@ -202,11 +204,11 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public static void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
+    public static void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode, final Activity a) {
         Log.d("APIUSAGE", "DRAWING ROUTE USING API");
         Routing routing = new Routing.Builder()
                 .travelMode(mode)
-                .key(String.valueOf(R.string.google_directions_key))
+                .key("AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8")
                 .withListener(new RoutingListener() {
                     @Override
                     public void onRoutingFailure(RouteException e) {
@@ -241,11 +243,12 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                             Polyline polyline = mGoogleMap.addPolyline(polyOptions);
                             polylines.add(polyline);
 
-//                            estimatedTimeOfArrival = route.get(i).getDistanceValue();
-//                            String parsed = timeParse(estimatedTimeOfArrival);
-//                            TextView confirmETAText = findViewById(R.id.confirmETAText);
+                            Integer estimatedTimeOfArrival = route.get(i).getDistanceValue();
+                            String parsed = timeParse(estimatedTimeOfArrival);
 
-//                            confirmETAText.setText("Travel Time: " + parsed);
+                            TextView confirmETAText = a.findViewById(R.id.confirmETAText);
+
+                            confirmETAText.setText("Travel Time: " + parsed);
 
 
                             //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();

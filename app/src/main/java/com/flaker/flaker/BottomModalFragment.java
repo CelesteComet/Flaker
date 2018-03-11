@@ -56,7 +56,7 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
                 mapFrame.setLayoutParams(params);
 
                 moveMapToLatLngWithBounds(placeLatLng, true);
-                drawRoute(lastKnownLatLng, placeLatLng, travelMode);
+                drawRoute(lastKnownLatLng, placeLatLng, travelMode, getActivity());
                 TestActivity n = (TestActivity) getActivity();
                 n.updateUI("searching");
             }

@@ -296,65 +296,7 @@ public class MapsActivity extends BaseActivity {
         });
     }
 
-    protected void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode) {
-        Log.d("APIUSAGE", "DRAWING ROUTE USING API");
-        Routing routing = new Routing.Builder()
-                .travelMode(mode)
-                .key(getString(R.string.google_directions_key))
-                .withListener(new RoutingListener() {
-                    @Override
-                    public void onRoutingFailure(RouteException e) {
-                        Log.d("BRUCE", e.toString());
-                    }
 
-                    @Override
-                    public void onRoutingStart() {
-
-                    }
-
-                    @Override
-                    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-
-                        if (polylines.size() > 0) {
-                            for (Polyline poly : polylines) {
-                                poly.remove();
-                            }
-                        }
-
-                        polylines = new ArrayList<>();
-                        //add route(s) to the map.
-                        for (int i = 0; i < route.size(); i++) {
-
-                            //In case of more than 5 alternative routes
-
-
-                            PolylineOptions polyOptions = new PolylineOptions();
-
-                            polyOptions.width(10 + i * 3);
-                            polyOptions.addAll(route.get(i).getPoints());
-                            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
-                            polylines.add(polyline);
-
-                            estimatedTimeOfArrival = route.get(i).getDistanceValue();
-                            String parsed = timeParse(estimatedTimeOfArrival);
-                            TextView confirmETAText = findViewById(R.id.confirmETAText);
-
-                            confirmETAText.setText("Travel Time: " + parsed);
-
-
-                            //Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onRoutingCancelled() {
-
-                    }
-                })
-                .waypoints(start, end)
-                .build();
-        routing.execute();
-    }
 
     protected void moveMapToLatLng(LatLng latLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);

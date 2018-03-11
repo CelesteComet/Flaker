@@ -35,6 +35,8 @@ import static com.flaker.flaker.MyMapFragment.lastKnownLatLng;
 import static com.flaker.flaker.MyMapFragment.moveMapToLatLng;
 import static com.flaker.flaker.MyMapFragment.placeLatLng;
 import static com.flaker.flaker.MyMapFragment.travelMode;
+import static com.flaker.flaker.MyMapFragment.place;
+
 
 public class TestActivity extends BaseActivity {
 
@@ -64,8 +66,9 @@ public class TestActivity extends BaseActivity {
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
-                placeLatLng = place.getLatLng();
+            public void onPlaceSelected(Place _place) {
+                place = _place;
+                placeLatLng = _place.getLatLng();
 
 //                createSingleMarker(placeLatLng);
                 Fragment random = new BottomModalFragment();
@@ -90,8 +93,19 @@ public class TestActivity extends BaseActivity {
         switch (ui) {
             case "searching":
 
+                // Views
+                TextView placeTitle = findViewById(R.id.confirmTitleText);
+                TextView placeAddress = findViewById(R.id.confirmAddressText);
+                TextView eta = findViewById(R.id.confirmETAText);
+                TextView meetingTime = findViewById(R.id.confirmMeetingTime);
+
                 ViewGroup a = findViewById(R.id.place_autocomplete_layout);
                 a.setVisibility(View.GONE);
+
+                placeTitle.setText(place.getName());
+                placeAddress.setText(place.getAddress());
+
+
                 break;
             default:
                 break;
