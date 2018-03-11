@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,9 +66,13 @@ public class TestActivity extends BaseActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 placeLatLng = place.getLatLng();
-                moveMapToLatLng(placeLatLng);
-                drawRoute(lastKnownLatLng, placeLatLng, travelMode);
+
 //                createSingleMarker(placeLatLng);
+                Fragment random = new BottomModalFragment();
+                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_from_bottom);
+                transaction.add(R.id.bottomModal, random);
+                transaction.commit();
 
 
 
@@ -79,6 +85,21 @@ public class TestActivity extends BaseActivity {
             }
         });
     }
+
+    protected void updateUI(String ui) {
+        switch (ui) {
+            case "searching":
+
+                ViewGroup a = findViewById(R.id.place_autocomplete_layout);
+                a.setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
 
 
 }

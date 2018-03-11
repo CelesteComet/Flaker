@@ -40,6 +40,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -160,6 +161,19 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
     public static void moveMapToLatLng(LatLng lastKnownLatLng) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, DEFAULT_ZOOM);
         mGoogleMap.moveCamera(cameraUpdate);
+    }
+
+    public static void moveMapToLatLngWithBounds(LatLng latLng, boolean animate) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(lastKnownLatLng);
+        builder.include(latLng);
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
+        if (animate == true) {
+            mGoogleMap.animateCamera(cameraUpdate);
+        } else {
+            mGoogleMap.moveCamera(cameraUpdate);
+        }
     }
 
     protected void requestSingleLocationUpdate() {
