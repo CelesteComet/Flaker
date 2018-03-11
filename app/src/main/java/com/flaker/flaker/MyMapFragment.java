@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
 import static com.flaker.flaker.BaseActivity.mLocationPermissionGranted;
 import static com.flaker.flaker.BaseActivity.timeParse;
 
@@ -203,6 +204,8 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
             Log.e("_error", e.toString());
         }
     }
+
+
 
     public static void drawRoute(LatLng start, LatLng end, Routing.TravelMode mode, final Activity a) {
         Log.d("APIUSAGE", "DRAWING ROUTE USING API");

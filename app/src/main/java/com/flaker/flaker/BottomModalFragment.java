@@ -10,6 +10,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.directions.route.Routing;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+import static android.content.ContentValues.TAG;
 import static com.flaker.flaker.MyMapFragment.drawRoute;
 import static com.flaker.flaker.MyMapFragment.lastKnownLatLng;
 import static com.flaker.flaker.MyMapFragment.moveMapToLatLngWithBounds;
@@ -70,5 +75,31 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bottom_modal, container, false);
+    }
+
+    public void changeTravelMode(View view) {
+        Integer viewId = view.getId();
+        FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+        menuMultipleActions.toggle();
+        switch (viewId) {
+            case R.id.action_a:
+                Log.d(TAG, "*** CHOSE TO WALK ***");
+                travelMode = Routing.TravelMode.WALKING;
+                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING, getActivity());
+                break;
+            case R.id.action_b:
+                Log.d(TAG, "*** CHOSE TO BIKE ***");
+                travelMode = Routing.TravelMode.BIKING;
+                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.BIKING, getActivity());
+                break;
+            case R.id.action_c:
+                Log.d(TAG, "*** CHOSE TO DRIVE ***");
+                travelMode = Routing.TravelMode.DRIVING;
+                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING, getActivity());
+                break;
+            default:
+                break;
+        }
+
     }
 }
