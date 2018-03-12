@@ -19,7 +19,7 @@
             android:layout_height="match_parent">
 
             <include layout="@layout/content_main" />
-            <include layout="@layout/action_bar" />
+            <include layout="@layout/action_bar_map" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.CoordinatorLayout>

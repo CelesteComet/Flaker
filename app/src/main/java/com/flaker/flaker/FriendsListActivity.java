@@ -66,7 +66,7 @@ public class FriendsListActivity extends BaseActivity {
         final DatabaseReference mrootRef = database.getReference();
         friendsListRef = mrootRef.child("friends_list").child(currentUserId);
 
-
+        includeDrawer();
 
         //initial friends list fetch
         fetchFriendsList();
