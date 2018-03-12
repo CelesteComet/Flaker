@@ -9,6 +9,10 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+
+
+
+
     <android.support.constraint.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -25,6 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <include
             android:id="@+id/title"
             layout="@layout/title"
@@ -33,66 +38,63 @@
             app:layout_constraintTop_toBottomOf="@+id/include"
             tools:layout_editor_absoluteX="0dp" />
 
-        <ListView
-            android:id="@+id/friends_list_view"
+        <LinearLayout
+            android:id="@+id/findInputArea"
             android:layout_width="match_parent"
-            android:layout_height="542dp"
-            android:layout_marginTop="52dp"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-            tools:layout_editor_absoluteX="0dp"></ListView>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="251dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="316dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/email_input"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:hint="Enter Friends Email" />
-        </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="0dp"
 
-        <Button
-            android:id="@+id/submit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Add Friend"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.531"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:visibility="visible">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/email_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:hint="@string/edittext_hint"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"
+                android:singleLine="true"
+                android:text="Add Friend"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="104dp" />
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/friends_list_view"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-            tools:layout_editor_absoluteX="200dp" />
-
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/goToAddFriendFAB"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:onClick="goToAddFriend"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="52dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_icon="@drawable/ic_add_black_24dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/findInputArea" />
 
 
 

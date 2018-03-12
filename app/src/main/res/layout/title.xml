@@ -6,6 +6,7 @@
     android:background="@color/colorPrimaryDark">
 
     <TextView
+        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
