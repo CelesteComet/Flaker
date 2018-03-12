@@ -52,7 +52,7 @@
         <activity android:name=".RequestTestActivity" />
         <!-- <activity android:name=".MapsActivity" /> -->
         <activity android:name=".EtaActivity" />
-        <activity android:name=".FriendsListActivity" />
+        <activity android:name=".FriendsListActivity" android:label="" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".RequesteeViewActivity" />
         <activity android:name=".MeetupInviteActivity" />
         <!-- <activity android:name=".TestActivity"></activity> -->
