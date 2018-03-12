@@ -41,6 +41,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -72,6 +74,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
     public static Place place;
     public static Routing.TravelMode travelMode = Routing.TravelMode.DRIVING;
     public static ArrayList<Polyline> polylines = new ArrayList<Polyline>();
+    public static Marker destinationMarker;
 
 
 
@@ -105,25 +108,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
 
         getDeviceLocation();
 
-        if (mMapView != null) {
-            mMapView.onCreate(null);
-            mMapView.onResume();
-            mMapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    mGoogleMap = googleMap;
-                    mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                        @SuppressLint("MissingPermission")
-                        @Override
-                        public void onMapLoaded() {
-                            moveMapToLatLng(lastKnownLatLng);
-                            mGoogleMap.setMyLocationEnabled(true);
-                            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-                        }
-                    });
-                }
-            });
-        }
+
     }
 
     private void setupAPIClients() {
@@ -149,8 +134,29 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                             public void onSuccess(Location location) {
                                 if (location != null) {
                                     lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                                    if (mMapView != null) {
+                                        mMapView.onCreate(null);
+                                        mMapView.onResume();
+                                        mMapView.getMapAsync(new OnMapReadyCallback() {
+                                            @Override
+                                            public void onMapReady(GoogleMap googleMap) {
+                                                mGoogleMap = googleMap;
+                                                mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                                                    @SuppressLint("MissingPermission")
+                                                    @Override
+                                                    public void onMapLoaded() {
+                                                        moveMapToLatLng(lastKnownLatLng);
+                                                        mGoogleMap.setMyLocationEnabled(true);
+                                                        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                 } else {
                                     requestSingleLocationUpdate();
+                                    getDeviceLocation();
                                     mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
                                 }
                             }
@@ -166,17 +172,32 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         mGoogleMap.moveCamera(cameraUpdate);
     }
 
-    public static void moveMapToLatLngWithBounds(LatLng latLng, boolean animate) {
+    public static void moveMapToLatLngWithBounds(LatLng latLng, boolean animate, Activity ctx) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(lastKnownLatLng);
         builder.include(latLng);
+        builder.include(lastKnownLatLng);
+
         LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
+
+        int width = ctx.getResources().getDisplayMetrics().widthPixels;
+        int height = ctx.getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (height * 0.1); // offset from edges of the map 10% of screen
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height/2, padding);
+
         if (animate == true) {
             mGoogleMap.animateCamera(cameraUpdate);
         } else {
             mGoogleMap.moveCamera(cameraUpdate);
         }
+    }
+
+    public static void createSingleMarker(LatLng latLng) {
+        // If a marker exists already, remove the marker
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+        destinationMarker = mGoogleMap.addMarker(new MarkerOptions().position(latLng));
     }
 
     protected void requestSingleLocationUpdate() {

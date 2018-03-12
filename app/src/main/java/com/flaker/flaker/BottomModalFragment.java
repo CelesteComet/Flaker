@@ -31,7 +31,7 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    public Animation onCreateAnimation(int transit, final boolean enter, int nextAnim) {
 
         Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
 
@@ -39,7 +39,23 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onAnimationStart(Animation animation) {
+                if (enter == false) {
+                    FrameLayout mapFrame = getActivity().findViewById(R.id.mapBrame);
+                    FrameLayout blocker = getActivity().findViewById(R.id.mapLayoutBlock);
+
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)  mapFrame.getLayoutParams();
+                    params.weight = 1f;
+
+                    LinearLayout.LayoutParams marams = (LinearLayout.LayoutParams)  blocker.getLayoutParams();
+                    marams.weight = 0.0f;
+
+
+                    blocker.setLayoutParams(marams);
+                    mapFrame.setLayoutParams(params);
+                }
+
             }
+
 
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -47,23 +63,29 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                FrameLayout mapFrame = getActivity().findViewById(R.id.mapBrame);
-                FrameLayout blocker = getActivity().findViewById(R.id.mapLayoutBlock);
+                if (enter != false) {
+                    FrameLayout mapFrame = getActivity().findViewById(R.id.mapBrame);
+                    FrameLayout blocker = getActivity().findViewById(R.id.mapLayoutBlock);
 
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)  mapFrame.getLayoutParams();
-                params.weight = 0.5f;
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)  mapFrame.getLayoutParams();
+                    params.weight = 0.5f;
 
-                LinearLayout.LayoutParams marams = (LinearLayout.LayoutParams)  blocker.getLayoutParams();
-                marams.weight = 0.5f;
+                    LinearLayout.LayoutParams marams = (LinearLayout.LayoutParams)  blocker.getLayoutParams();
+                    marams.weight = 0.5f;
 
 
-                blocker.setLayoutParams(marams);
-                mapFrame.setLayoutParams(params);
+                    blocker.setLayoutParams(marams);
+                    mapFrame.setLayoutParams(params);
 
-                moveMapToLatLngWithBounds(placeLatLng, true);
-                drawRoute(lastKnownLatLng, placeLatLng, travelMode, getActivity());
-                TestActivity n = (TestActivity) getActivity();
-                n.updateUI("searching");
+                    moveMapToLatLngWithBounds(placeLatLng, true, getActivity());
+                    drawRoute(lastKnownLatLng, placeLatLng, travelMode, getActivity());
+
+                    TestActivity n = (TestActivity) getActivity();
+                    n.updateUI("searching");
+                } else {
+
+                }
+
             }
         });
 
@@ -77,29 +99,5 @@ public class BottomModalFragment extends android.support.v4.app.Fragment {
         return inflater.inflate(R.layout.fragment_bottom_modal, container, false);
     }
 
-    public void changeTravelMode(View view) {
-        Integer viewId = view.getId();
-        FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
-        menuMultipleActions.toggle();
-        switch (viewId) {
-            case R.id.action_a:
-                Log.d(TAG, "*** CHOSE TO WALK ***");
-                travelMode = Routing.TravelMode.WALKING;
-                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.WALKING, getActivity());
-                break;
-            case R.id.action_b:
-                Log.d(TAG, "*** CHOSE TO BIKE ***");
-                travelMode = Routing.TravelMode.BIKING;
-                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.BIKING, getActivity());
-                break;
-            case R.id.action_c:
-                Log.d(TAG, "*** CHOSE TO DRIVE ***");
-                travelMode = Routing.TravelMode.DRIVING;
-                drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING, getActivity());
-                break;
-            default:
-                break;
-        }
 
-    }
 }

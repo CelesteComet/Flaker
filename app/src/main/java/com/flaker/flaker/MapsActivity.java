@@ -179,18 +179,7 @@ public class MapsActivity extends BaseActivity {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
-    protected void moveMapToLatLngWithBounds(LatLng latLng, boolean animate) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(mLastKnownLatLng);
-        builder.include(latLng);
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 400);
-        if (animate == true) {
-            mGoogleMap.animateCamera(cameraUpdate);
-        } else {
-            mGoogleMap.moveCamera(cameraUpdate);
-        }
-    }
+
 
     protected void createSingleMarker(LatLng latLng) {
         // If a marker exists already, remove the marker
