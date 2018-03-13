@@ -51,7 +51,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent displayMainActivityIntent = new Intent(getApplicationContext(), TestActivity.class);
             startActivity(displayMainActivityIntent);
         }
 
@@ -148,9 +148,9 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
                             addUserToDb(user);
 
-                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            finish();
-                            startActivity(displayMainActivityIntent);
+//                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                            finish();
+//                            startActivity(displayMainActivityIntent);
 
 
                         }

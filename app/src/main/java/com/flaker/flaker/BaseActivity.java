@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -56,10 +57,12 @@ public class BaseActivity extends AppCompatActivity {
 
     // Permissions
     protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    public static Boolean mLocationPermissionGranted;
+    public static Boolean mLocationPermissionGranted = false;
+
+
 
     // User Authentication References
-    protected FirebaseUser currentUser;
+    public static FirebaseUser currentUser;
     protected FirebaseAuth mAuth;
 
     private static final String TAG = "BaseActivity";
@@ -71,6 +74,22 @@ public class BaseActivity extends AppCompatActivity {
         setupFirebaseAuth();
         setupFirebaseReferences();
         executeCalendarTest();
+    }
+
+    @Override
+    protected void onStop() {
+        // call the superclass method first
+        super.onStop();
+
+        if (currentlyRouting == true) {
+            // tell system it has stopped routing
+            currentlyRouting = false;
+
+            // remove yourself from map
+            MeetupsDatabase.child(meetingId).child("acceptedUsers").child(currentUser.getUid()).removeValue();
+
+
+        }
     }
 
     protected void print(String str) {
@@ -85,7 +104,7 @@ public class BaseActivity extends AppCompatActivity {
         MeetupsDatabase = RootDatabaseReference.child("meetups");
     }
 
-    protected void sendCurrentLatLngToDatabase(InvitedUser user, String meetupId) {
+    protected static void sendCurrentLatLngToDatabase(InvitedUser user, String meetupId) {
         MeetupsDatabase.child(meetupId).child("acceptedUsers").child(currentUser.getUid()).setValue(user);
     }
 
@@ -213,8 +232,10 @@ public class BaseActivity extends AppCompatActivity {
 //                        mySnackbar.setAction(R.string.undo_string, new MyUndoListener());
                         mySnackbar.show();
                     } else {
+
                         Intent displayRequestsActivityIntent = new Intent(getApplicationContext(), RequesteeViewActivity.class);
                         startActivity(displayRequestsActivityIntent);
+
                     }
 
                 } else if (id == R.id.nav_share) {
@@ -321,6 +342,7 @@ public class BaseActivity extends AppCompatActivity {
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
 
 
 

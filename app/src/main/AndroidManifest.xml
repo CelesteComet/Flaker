@@ -36,6 +36,7 @@
 
         <activity
             android:name=".AuthActivity"
+            android:label="Flaker"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,17 +45,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:label="" />
+        <!-- <activity -->
+        <!-- android:name=".MainActivity" -->
+        <!-- android:label="" /> -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".RequestTestActivity" />
-        <activity android:name=".MapsActivity" />
+        <!-- <activity android:name=".MapsActivity" /> -->
         <activity android:name=".EtaActivity" />
-        <activity android:name=".FriendsListActivity" />
+        <activity
+            android:name=".FriendsListActivity"
+            android:label=""
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".RequesteeViewActivity" />
         <activity android:name=".MeetupInviteActivity" />
-        <activity android:name=".TestActivity"></activity>
+         <activity android:name=".TestActivity" android:label=""></activity>
+        <activity android:name=".ConfirmActivity" />
+        <activity android:name=".AddFriendActivity" android:label=""></activity>
     </application>
 
 </manifest>
