@@ -64,6 +64,9 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         LinearLayout mLinearLayout = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.request_row, parent, false);
         ViewHolder vh = new ViewHolder(mLinearLayout);
+
+
+
         return vh;
     }
 
@@ -75,16 +78,22 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         TextView requestRowOwnerId = holder.mLinearLayout.findViewById(R.id.requestRowOwner);
         TextView requestRowAddress = holder.mLinearLayout.findViewById(R.id.requestRowAddress);
-        TextView requestRowScheduledTime = holder.mLinearLayout.findViewById(R.id.requestRowScheduledTime);
+//        TextView requestRowScheduledTime = holder.mLinearLayout.findViewById(R.id.requestRowScheduledTime);
 
 
         final Meeting meeting = mDataset.get(position);
 
+        String militaryTime = BaseActivity.normalizeTime(meeting.scheduledTime).toString();
+
         requestRowAddress.setText(meeting.address); // address
 
 
-        requestRowOwnerId.setText(meeting.ownerName); // ownerName
-        requestRowScheduledTime.setText(meeting.scheduledTime.toString()); // scheduledTime
+        requestRowOwnerId.setText(meeting.ownerName + " @ " + militaryTime); // ownerName
+
+
+
+
+//        requestRowScheduledTime.setText(BaseActivity.normalizeTime(meeting.scheduledTime).toString()); // scheduledTime
 
         holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

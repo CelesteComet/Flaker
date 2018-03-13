@@ -3,8 +3,10 @@ package com.flaker.flaker;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -58,6 +61,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,10 +69,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.ContentValues.TAG;
 import static com.flaker.flaker.BaseActivity.MeetupsDatabase;
+import static com.flaker.flaker.BaseActivity.currentUser;
 import static com.flaker.flaker.BaseActivity.mLocationPermissionGranted;
+import static com.flaker.flaker.BaseActivity.scheduledMillis;
 import static com.flaker.flaker.BaseActivity.timeParse;
 
 
@@ -95,6 +102,8 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
 
     public static HashMap<String, Object> friendMarkers;
     public static ArrayList<Marker> friendMarkersArray = new ArrayList<Marker>();
+
+    public static ValueEventListener friendLocationListener;
 
 
 
@@ -126,10 +135,31 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         // to use the child fragment manager
         FragmentManager mFragmentManager = getChildFragmentManager();
         mMapView = (SupportMapFragment) mFragmentManager.findFragmentById(R.id.map);
+        createValueListeners();
         getDeviceLocation();
+    }
+
+    private void createValueListeners() {
+        friendLocationListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                friendMarkers = new HashMap<String, Object>();
 
 
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Object values = snap.getValue();
+                    Map<String, Object> map = (Map<String, Object>) snap.getValue();
+                    map.put(snap.getKey(), snap.getValue());
+                    friendMarkers.put(snap.getKey(), snap.getValue());
+                    drawFriends(friendMarkers, getContext());
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 
     private void setupAPIClients() {
@@ -170,6 +200,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                                             double longitude = meeting.longitude;
                                             t.meetingId = meeting.meetingId;
                                             placeLatLng = new LatLng(latitude, longitude);
+                                            scheduledMillis = meeting.scheduledTime;
                                             a.findViewById(R.id.mapFrame).setVisibility(View.VISIBLE);
                                             t.updateUI("requesteeNavigating");
                                         }
@@ -342,6 +373,10 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         routing.execute();
     }
 
+    protected static void stopFriendUpdates(String meetingId) {
+        MeetupsDatabase.child(meetingId).child("acceptedUsers").removeEventListener(friendLocationListener);
+    }
+
     protected static void requestFriendUpdates(String meetingId) {
 
         // Check if we currently have friendMarkers, if so remove them
@@ -349,27 +384,10 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
             friendMarkers = new HashMap<String, Object>();
         }
 
-        MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Object values = snap.getValue();
-                    Map<String, Object> map = (Map<String, Object>) snap.getValue();
-                    map.put(snap.getKey(), snap.getValue());
-                    friendMarkers.put(snap.getKey(), snap.getValue());
-                    drawFriends(friendMarkers);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        MeetupsDatabase.child(meetingId).child("acceptedUsers").addValueEventListener(friendLocationListener);
     }
 
-    protected static void drawFriends(HashMap<String, Object> friendMarkers) {
+    protected static void drawFriends(HashMap<String, Object> friendMarkers, Context ctx) {
         // Clear buffer of friend markers
         if (friendMarkersArray.size() > 0) {
             for(int i = 0; i < friendMarkersArray.size(); i++) {
@@ -383,12 +401,33 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
             HashMap<String, Object> map = new HashMap<String, Object>();
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(value);// obj is your object
+
             try {
                 JSONObject jsonObj = new JSONObject(json);
                 double lat = (double) jsonObj.get("latitude");
                 double lng = (double) jsonObj.get("longitude");
+                String username = (String) jsonObj.get("username");
+                String uri = (String) jsonObj.get("imgUrl");
 
-                friendMarkersArray.add(mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))));
+                try {
+                    Bitmap bmImg = Ion.with(ctx)
+                            .load(uri).asBitmap().get();
+
+                    Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(username).icon(BitmapDescriptorFactory.fromBitmap(bmImg)));
+                    friendMarkersArray.add(marker);
+
+//                    mMap.addMarker(new MarkerOptions().position(latlng)
+//                            .icon(BitmapDescriptorFactory.fromBitmap(bmImg)));
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+
+//                friendMarkersArray.add(mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(username)));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -418,6 +457,8 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                     InvitedUser user = new InvitedUser();
                     user.longitude = location.getLongitude();
                     user.latitude = location.getLatitude();
+                    user.username = currentUser.getDisplayName();
+                    user.imgUrl = currentUser.getPhotoUrl().toString();
                     BaseActivity.sendCurrentLatLngToDatabase(user, meetingId);
                     //drawRoute(mLastKnownLatLng, placeLatLng, travelMode);
 
@@ -425,12 +466,37 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                 }
             };
         };
-
-
-
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
                 mLocationCallback,
                 null /* Looper */);
+    }
+
+    public static void clearAll() {
+
+        // remove all the friend Markers
+        if (friendMarkersArray.size() > 0) {
+            for(int i = 0; i < friendMarkersArray.size(); i++) {
+                friendMarkersArray.get(i).remove();
+            }
+        }
+
+        // If a marker exists already, remove the marker
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+
+        // set meetup location latlng to null
+        placeLatLng = null;
+
+
+        // remove the polylines
+        if (polylines.size() > 0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.flaker.flaker;
 
 import android.app.Application;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
@@ -45,11 +46,14 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
         FirebaseApp.initializeApp(this);
         db = FirebaseDatabase.getInstance();
 
         setupFirebaseReferences();
         setupFirebaseAuth();
+
         listenForNotifications();
 
         // this method fires once as well as constructor
@@ -91,7 +95,7 @@ public class MyApp extends Application {
             }
         };
 
-        UsersDatabase.child(currentUser.getUid().toString()).addValueEventListener(invitedMeetupsListener);
+        UsersDatabase.child(currentUser.getUid().toString()).child("invitedMeetups").addValueEventListener(invitedMeetupsListener);
     }
 
     private void setupFirebaseAuth() {

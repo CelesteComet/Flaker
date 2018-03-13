@@ -43,6 +43,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile 'joda-time:joda-time:2.9.9'
+    compile 'com.koushikdutta.ion:ion:2.+'
 
 
 

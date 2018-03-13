@@ -4,32 +4,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/requestRow"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:layout_width="match_parent" android:layout_height="match_parent">-->
+    <!--android:layout_width="match_parent" android:layout_height="match_parent">-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/requestRowOwner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/requestRowOwner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/requestRowAddress"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/requestRowAddress"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/requestRowScheduledTime"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/requestRowScheduledTime"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
-        <!--<ImageView-->
-            <!--android:id="@+id/friend_row_photo"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_width="100dp"-->
-            <!--android:layout_height="100dp" />-->
+    <!--<ImageView-->
+    <!--android:id="@+id/friend_row_photo"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="100dp" />-->
 
     <!--</RelativeLayout>-->
 
@@ -41,29 +42,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <TextView
                 android:id="@+id/requestRowOwner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/requestRowAddress"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="16dp" />
 
-            <TextView
-                android:id="@+id/requestRowScheduledTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <!--<TextView-->
+            <!--android:id="@+id/requestRowScheduledTime"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:textSize="16dp"/>-->
 
         </LinearLayout>
 
     </FrameLayout>
-
-
-
 
 
 </LinearLayout>

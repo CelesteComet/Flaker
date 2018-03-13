@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -37,15 +39,24 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import junit.framework.Test;
+
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 
 import java.util.Calendar;
 
 import static android.content.ContentValues.TAG;
 import static com.flaker.flaker.MyMapFragment.drawRoute;
 import static com.flaker.flaker.MyMapFragment.lastKnownLatLng;
+import static com.flaker.flaker.MyMapFragment.mFusedLocationProviderClient;
+import static com.flaker.flaker.MyMapFragment.mLocationCallback;
 import static com.flaker.flaker.MyMapFragment.moveMapToLatLng;
 import static com.flaker.flaker.MyMapFragment.placeLatLng;
 import static com.flaker.flaker.MyMapFragment.travelMode;
@@ -60,6 +71,7 @@ public class TestActivity extends BaseActivity {
     public static Fragment bottomModalFragment;
     public static Boolean timeSelected;
     public Calendar scheduledTime = Calendar.getInstance();
+
     public static Boolean shouldRoute = false;
 
 
@@ -124,8 +136,21 @@ public class TestActivity extends BaseActivity {
 
     protected void updateUI(String ui) {
         ConstraintLayout mFloatingActionsMenu;
+        Button flakeButton = (Button) findViewById(R.id.flakeButton);
+        ViewGroup autocompleteLayout = findViewById(R.id.place_autocomplete_layout);
         timeSelected = false;
         switch (ui) {
+            case "normal":
+                currentlyRouting = false;
+                MyMapFragment.stopFriendUpdates(meetingId);
+                flakeButton.setVisibility(View.INVISIBLE);
+                if (mLocationCallback != null) {
+                    mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                }
+                autocompleteLayout.setVisibility(View.VISIBLE);
+                MyMapFragment.clearAll();
+                meetingId = null;
+                break;
             case "searching":
                 // Views
                 currentlyRouting = false;
@@ -134,13 +159,14 @@ public class TestActivity extends BaseActivity {
                 TextView eta = findViewById(R.id.confirmETAText);
                 TextView meetingTime = findViewById(R.id.confirmMeetingTime);
                 mFloatingActionsMenu = findViewById(R.id.fabby);
-                ViewGroup autocompleteLayout = findViewById(R.id.place_autocomplete_layout);
+
                 autocompleteLayout.setVisibility(View.GONE);
                 mFloatingActionsMenu.setVisibility(View.VISIBLE);
                 placeTitle.setText(place.getName());
                 placeAddress.setText(place.getAddress());
                 break;
             case "navigating":
+                flakeButton.setVisibility(View.VISIBLE);
                 currentlyRouting = true;
                 MyMapFragment.requestFriendUpdates(meetingId);
                 MyMapFragment.requestLocationUpdates(meetingId);
@@ -153,6 +179,7 @@ public class TestActivity extends BaseActivity {
                 break;
             case "requesteeNavigating":
                 currentlyRouting = true;
+                flakeButton.setVisibility(View.VISIBLE);
                 MyMapFragment.requestFriendUpdates(meetingId);
                 MyMapFragment.requestLocationUpdates(meetingId);
                 MyMapFragment.drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING, this);
@@ -250,6 +277,7 @@ public class TestActivity extends BaseActivity {
 
         // Add the meeting object to the database
         meetingId = Meeting.addMeetingToDb(currentUser, meeting);
+        scheduledMillis = meeting.scheduledTime;
 
 
         // Update the UI with the new state of the app
@@ -258,4 +286,57 @@ public class TestActivity extends BaseActivity {
         return 0;
     }
 
+
+    public void onFlake(View view) {
+
+        DateTime now = DateTime.now();
+
+        DateTime dateTime = new DateTime(scheduledMillis);
+        Minutes minutes = Minutes.minutesBetween(now, dateTime);
+        final Integer differenceInTimeInMinutes = minutes.getMinutes();
+        System.out.println(minutes.getMinutes());
+        // get the current time
+
+        // calculate the difference in time
+
+        // get position and check if it is near the end position
+        // firstLocation and secondLocation are Location class instances
+        // distance is stored in result array at index 0
+        float[] result = new float[1];
+        Location.distanceBetween (lastKnownLatLng.latitude, lastKnownLatLng.longitude, placeLatLng.latitude, placeLatLng.longitude, result);
+        // If the person is here, then don't do anything and reset everything
+        if (result[0] < 50) {
+            // distance between first and second location is less than 50m
+            Log.d("BRUCE", "YOU ARE HERE");
+        } else {
+            // add difference in time to user's flake score
+            final DatabaseReference scoreRef = UsersDatabase.child(currentUser.getUid().toString()).child("score");
+            scoreRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    Integer prevScore = dataSnapshot.getValue(Integer.class);
+                    scoreRef.setValue(prevScore + differenceInTimeInMinutes);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            MeetupsDatabase.child(meetingId.toString()).child("acceptedUsers").child(currentUser.getUid().toString()).removeValue();
+
+
+            updateUI("normal");
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // code here to show dialog
+//        super.onBackPressed();  // optional depending on your needs
+    }
 }

@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -57,6 +58,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public static String meetingId;
     public static boolean currentlyRouting = false;
+    public static Long scheduledMillis;
 
     // Permissions
     protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -78,6 +80,8 @@ public class BaseActivity extends AppCompatActivity {
         setupFirebaseReferences();
 //        listenForNotifications();
         executeCalendarTest();
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected void listenForNotifications() {
