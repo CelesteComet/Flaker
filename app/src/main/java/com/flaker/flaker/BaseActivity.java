@@ -76,21 +76,7 @@ public class BaseActivity extends AppCompatActivity {
         executeCalendarTest();
     }
 
-    @Override
-    protected void onStop() {
-        // call the superclass method first
-        super.onStop();
 
-        if (currentlyRouting == true) {
-            // tell system it has stopped routing
-            currentlyRouting = false;
-
-            // remove yourself from map
-            MeetupsDatabase.child(meetingId).child("acceptedUsers").child(currentUser.getUid()).removeValue();
-
-
-        }
-    }
 
     protected void print(String str) {
         System.out.println(str);

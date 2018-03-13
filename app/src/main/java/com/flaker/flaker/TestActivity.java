@@ -88,6 +88,7 @@ public class TestActivity extends BaseActivity {
 
     }
 
+
     private void setupAutoCompleteWidget() {
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 this.getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
