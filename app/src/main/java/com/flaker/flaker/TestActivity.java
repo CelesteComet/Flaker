@@ -218,7 +218,7 @@ public class TestActivity extends BaseActivity {
                 }
             }
         };
-        TimePickerDialog mTimePicker = new TimePickerDialog(this, mTimeSetListener, 12, 30, false);
+        TimePickerDialog mTimePicker = new TimePickerDialog(this, R.style.TimePickerTheme, mTimeSetListener, 12, 30, false);
         mTimePicker.show();
     }
 
