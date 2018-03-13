@@ -73,7 +73,7 @@ public class BaseActivity extends AppCompatActivity {
         getLocationPermission();
         setupFirebaseAuth();
         setupFirebaseReferences();
-        listenForNotifications();
+//        listenForNotifications();
         executeCalendarTest();
     }
 
