@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import junit.framework.Test;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -88,10 +90,10 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-//            Intent displayMainActivityIntent = new Intent(mContext, MainActivity.class);
-//            displayMainActivityIntent.putExtra("bundle", meeting);
-//            displayMainActivityIntent.putExtra("YO", "BRUCE");
-//            mContext.startActivity(displayMainActivityIntent);
+            Intent displayMainActivityIntent = new Intent(mContext, TestActivity.class);
+            displayMainActivityIntent.putExtra("bundle", meeting);
+
+            mContext.startActivity(displayMainActivityIntent);
 
 
             }

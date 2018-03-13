@@ -3,6 +3,7 @@ package com.flaker.flaker;
 import android.app.Activity;
 import android.content.Intent;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +43,17 @@ public class FriendsListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
+
+        // check if new friend exists
+        String newFriendString = getIntent().getStringExtra("newFriend");
+        if (newFriendString != null) {
+            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.drawer_layout),
+                    newFriendString + " added to friend list", Snackbar.LENGTH_LONG);
+            mySnackbar.show();
+        }
+
+
+
         friendsListView = (ListView) findViewById(R.id.friends_list_view);
 
         adapter = new FriendsListAdapter(this, friendsList);
@@ -52,19 +64,19 @@ public class FriendsListActivity extends BaseActivity {
         database = FirebaseDatabase.getInstance();
 
         usersRef = database.getReference().child("users");
-        emailInput = (EditText) findViewById(R.id.email_input);
-        errorMessage = (TextView) findViewById(R.id.error_message);
-
-        submitButton = (Button) findViewById(R.id.submit_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = emailInput.getText().toString();
-                Log.d("email", email);
-                fetchUser(email);
-            }
-        });
-
+//        emailInput = (EditText) findViewById(R.id.email_input);
+//        errorMessage = (TextView) findViewById(R.id.error_message);
+//
+//        submitButton = (Button) findViewById(R.id.submit_button);
+//        submitButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String email = emailInput.getText().toString();
+//                Log.d("email", email);
+//                fetchUser(email);
+//            }
+//        });
+//
         final DatabaseReference mrootRef = database.getReference();
         friendsListRef = mrootRef.child("friends_list").child(currentUserId);
 
@@ -75,67 +87,67 @@ public class FriendsListActivity extends BaseActivity {
 
     }
 
-    private void fetchUser(String email) {
-        if (currentUser.getEmail().equals(email)) {
-            errorMessage.setText("You can't add yourself");
-            return;
-        }
+//    private void fetchUser(String email) {
+//        if (currentUser.getEmail().equals(email)) {
+//            errorMessage.setText("You can't add yourself");
+//            return;
+//        }
+//
+//
+//        Query query = usersRef.orderByChild("email").equalTo(email);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//
+//                if (dataSnapshot.getValue() == null) {
+//                    errorMessage.setText("User not found");
+//                } else {
+//                    Log.d("dlksjf", dataSnapshot.getValue().toString());
+//                    errorMessage.setText("");
+//                    addUserToFriendsList(dataSnapshot);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("failure", "failureee");
+//            }
+//        });
+//    }
 
-
-        Query query = usersRef.orderByChild("email").equalTo(email);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                if (dataSnapshot.getValue() == null) {
-                    errorMessage.setText("User not found");
-                } else {
-                    Log.d("dlksjf", dataSnapshot.getValue().toString());
-                    errorMessage.setText("");
-                    addUserToFriendsList(dataSnapshot);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("failure", "failureee");
-            }
-        });
-    }
-
-    private void addUserToFriendsList(DataSnapshot users) {
-        String[] friend = new String[4];
-        DataSnapshot userSnapshot = null;
-
-        for (DataSnapshot theUser: users.getChildren()) {
-            userSnapshot = theUser;
-        }
-
-        Log.d("user", userSnapshot.toString());
-
-        if (userSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
-            errorMessage.setText("Already a friend");
-        }
-
-        friend[0] = userSnapshot.child("name").getValue().toString();
-        friend[1] = userSnapshot.child("imageUrl").getValue().toString();
-        friend[2] = userSnapshot.child("score").getValue().toString();
-        String email = userSnapshot.child("email").getValue().toString();
-
-        friendsList.add(friend);
-
-        adapter.notifyDataSetChanged();
-
-        User newFriend = new User(friend[0], email, friend[1], Integer.parseInt(friend[2]));
-
-        addFriendToDb(newFriend, userSnapshot.getKey(), 10);
-    }
-
-    private void addFriendToDb(User user, String userId, int score) {
-        friendsListRef.child(userId).setValue(user);
-        friendsListRef.child(userId).child("score").setValue(score);
-    }
+//    private void addUserToFriendsList(DataSnapshot users) {
+//        String[] friend = new String[4];
+//        DataSnapshot userSnapshot = null;
+//
+//        for (DataSnapshot theUser: users.getChildren()) {
+//            userSnapshot = theUser;
+//        }
+//
+//        Log.d("user", userSnapshot.toString());
+//
+//        if (userSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
+//            errorMessage.setText("Already a friend");
+//        }
+//
+//        friend[0] = userSnapshot.child("name").getValue().toString();
+//        friend[1] = userSnapshot.child("imageUrl").getValue().toString();
+//        friend[2] = userSnapshot.child("score").getValue().toString();
+//        String email = userSnapshot.child("email").getValue().toString();
+//
+//        friendsList.add(friend);
+//
+//        adapter.notifyDataSetChanged();
+//
+//        User newFriend = new User(friend[0], email, friend[1], Integer.parseInt(friend[2]));
+//
+//        addFriendToDb(newFriend, userSnapshot.getKey(), 10);
+//    }
+//
+//    private void addFriendToDb(User user, String userId, int score) {
+//        friendsListRef.child(userId).setValue(user);
+//        friendsListRef.child(userId).child("score").setValue(score);
+//    }
 
     private void fetchFriendsList() {
 

@@ -35,8 +35,8 @@
             android:value="AIzaSyA75L5OdKIdMirIibjLha3M_gZUZYtK2j8" />
 
         <activity
-            android:name=".TestActivity"
-            android:label=""
+            android:name=".AuthActivity"
+            android:label="Flaker"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,9 +58,9 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".RequesteeViewActivity" />
         <activity android:name=".MeetupInviteActivity" />
-        <!-- <activity android:name=".TestActivity"></activity> -->
+         <activity android:name=".TestActivity" android:label=""></activity>
         <activity android:name=".ConfirmActivity" />
-        <activity android:name=".AddFriendActivity"></activity>
+        <activity android:name=".AddFriendActivity" android:label=""></activity>
     </application>
 
 </manifest>

@@ -22,7 +22,7 @@
     <string name="action_settings">Settings</string>
 
     // FriendsList and AddFriends
-    <string name="edittext_hint"><font size="15">Hint here!</font></string>
+    <string name="edittext_hint"><font size="40">Hint here!</font></string>
 
 
     <string-array name="names">

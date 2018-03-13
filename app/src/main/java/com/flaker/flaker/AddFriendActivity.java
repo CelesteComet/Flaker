@@ -1,5 +1,6 @@
 package com.flaker.flaker;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -120,5 +121,11 @@ public class AddFriendActivity extends BaseActivity {
     private void addFriendToDb(User user, String userId, int score) {
         friendsListRef.child(userId).setValue(user);
         friendsListRef.child(userId).child("score").setValue(score);
+
+
+
+        Intent goToFriendListIntent = new Intent(this, FriendsListActivity.class);
+        goToFriendListIntent.putExtra("newFriend", user.name);
+        startActivity(goToFriendListIntent);
     }
 }

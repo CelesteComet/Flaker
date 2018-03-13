@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
 import com.directions.route.Routing;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.api.Status;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import junit.framework.Test;
@@ -49,17 +52,24 @@ import static com.flaker.flaker.MyMapFragment.travelMode;
 import static com.flaker.flaker.MyMapFragment.place;
 
 
+
+
 public class TestActivity extends BaseActivity {
 
     public Fragment mMapFragment;
-    public Fragment bottomModalFragment;
-    public Boolean timeSelected;
+    public static Fragment bottomModalFragment;
+    public static Boolean timeSelected;
     public Calendar scheduledTime = Calendar.getInstance();
+    public static Boolean shouldRoute = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+
+
 
         mMapFragment = new MyMapFragment();
 
@@ -68,8 +78,12 @@ public class TestActivity extends BaseActivity {
         transaction.add(R.id.mapFrame, mMapFragment);
         transaction.commit();
 
+
+
         includeDrawer();
         setupAutoCompleteWidget();
+
+
 
 
     }
@@ -78,13 +92,17 @@ public class TestActivity extends BaseActivity {
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 this.getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
+        autocompleteFragment.setHint("Enter a rendezvous point");
+
+
+
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place _place) {
                 place = _place;
                 placeLatLng = _place.getLatLng();
 
-                MyMapFragment.createSingleMarker(placeLatLng);
+                MyMapFragment.createSingleMarker(placeLatLng, null);
                 bottomModalFragment = new BottomModalFragment();
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_from_bottom);
@@ -101,12 +119,15 @@ public class TestActivity extends BaseActivity {
         });
     }
 
+
+
     protected void updateUI(String ui) {
         ConstraintLayout mFloatingActionsMenu;
         timeSelected = false;
         switch (ui) {
             case "searching":
                 // Views
+                currentlyRouting = false;
                 TextView placeTitle = findViewById(R.id.confirmTitleText);
                 TextView placeAddress = findViewById(R.id.confirmAddressText);
                 TextView eta = findViewById(R.id.confirmETAText);
@@ -119,12 +140,23 @@ public class TestActivity extends BaseActivity {
                 placeAddress.setText(place.getAddress());
                 break;
             case "navigating":
+                currentlyRouting = true;
+                MyMapFragment.requestFriendUpdates(meetingId);
+                MyMapFragment.requestLocationUpdates(meetingId);
                 mFloatingActionsMenu = findViewById(R.id.fabby);
                 mFloatingActionsMenu.setVisibility(View.INVISIBLE);
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_from_bottom);
                 transaction.remove(bottomModalFragment);
                 transaction.commit();
+                break;
+            case "requesteeNavigating":
+                currentlyRouting = true;
+                MyMapFragment.requestFriendUpdates(meetingId);
+                MyMapFragment.requestLocationUpdates(meetingId);
+                MyMapFragment.drawRoute(lastKnownLatLng, placeLatLng, Routing.TravelMode.DRIVING, this);
+                findViewById(R.id.place_autocomplete_layout).setVisibility(View.INVISIBLE);
+
                 break;
             default:
                 break;

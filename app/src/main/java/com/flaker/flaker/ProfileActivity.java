@@ -1,6 +1,7 @@
 package com.flaker.flaker;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
@@ -19,6 +20,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String phoneNumberVal;
     private TextView userName;
     String userImageUrl;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
