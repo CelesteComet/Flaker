@@ -73,7 +73,33 @@ public class BaseActivity extends AppCompatActivity {
         getLocationPermission();
         setupFirebaseAuth();
         setupFirebaseReferences();
+        listenForNotifications();
         executeCalendarTest();
+    }
+
+    protected void listenForNotifications() {
+
+        ValueEventListener invitedMeetupsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                Log.d("BRUCE", "WOWOWOW NEW STUFF ");
+                Log.d("BRUCE", dataSnapshot.toString());
+
+                NotificationManagerBruce myNotificationManager = new NotificationManagerBruce(getApplicationContext());
+                myNotificationManager.createNotification("HELLO", "WORLD");
+                // ...
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+
+        UsersDatabase.child(currentUser.getUid().toString()).addValueEventListener(invitedMeetupsListener);
     }
 
 
