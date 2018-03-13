@@ -53,7 +53,7 @@ UX
 #### Day 2
 * Implement user authentication - **JOEY, ROSE, Alex** 
 * Integrate profile views with backend **Alex**
-* Leaderboard - ** Alex **
+* Leaderboard - **Alex**
 
 #### Day 3
 * Test syncing of coordinate response from Google Maps API to database - **JOEY, ROSE**
@@ -63,14 +63,10 @@ UX
 * Continue implementation of real-time location tracking. **All**
 
 #### Day 5
-* Implement friends and friend lists.
-	[ ] User can search for friends 
-	[ ] User can send a friend request 
-	[ ] User can add friends who accepted their friend request
-	[ ] When a user removes a friend, the link between the user and the friend is broken.
+* Implement friends and friend lists. **ALEX, ROSE**
 
 #### Day 6
-* Implement Flaker Leadership board
+* Implement Flaker Leader board
 	[ ] Database should fetch friends and sort them by flakiness and then display it in a
 	    performant recycler view. 
 * Polish Application loose ends.
