@@ -42,7 +42,7 @@ public class EtaActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference mRootRef = database.getReference();
-        final DatabaseReference mDestinationRef = mRootRef.child("meetups").child("0329230").child("users");
+        final DatabaseReference mDestinationRef = mRootRef.child("meetups").child(meetingId.toString()).child("acceptedUsers");
 
         //initial ETA fetch
         etaFetch(mDestinationRef);
@@ -87,7 +87,10 @@ public class EtaActivity extends AppCompatActivity {
                 for (DataSnapshot indSnapshot: invitedUsersSnapshot.getChildren()) {
                     InvitedUser iuser = (indSnapshot.getValue(InvitedUser.class));
                     invitedUsers.add(iuser);
+                    Log.d("BRUCE", invitedUsers.toString());
                 }
+
+                adapter.notifyDataSetChanged();
 
 
             }

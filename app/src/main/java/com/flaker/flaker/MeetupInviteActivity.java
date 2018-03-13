@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,7 +39,9 @@ public class MeetupInviteActivity extends BaseActivity {
 
         final DatabaseReference mrootRef = database.getReference();
         friendsListRef = mrootRef.child("friends_list").child(currentUserId);
-
+        includeDrawer(true);
+        final TextView textView1 = (TextView) findViewById(R.id.titleText);
+        textView1.setText("Invite");
         fetchFriendsList();
     }
 

@@ -257,8 +257,8 @@ public class BaseActivity extends AppCompatActivity {
                                 "Please begin a new route to view ETAs", Snackbar.LENGTH_LONG);
                         mySnackbar.show();
                     } else {
-                        Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
-                        startActivity(displayETAsActivityIntent);
+                        Intent displayMeetupInvite = new Intent(getApplicationContext(), MeetupInviteActivity.class);
+                        startActivity(displayMeetupInvite);
                     }
                 } else if (id == R.id.nav_requests) {
                     if (currentlyRouting == true) {
