@@ -1,11 +1,14 @@
 package com.flaker.flaker;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -182,7 +185,7 @@ public class BaseActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
     }
 
-    protected void includeDrawer() {
+    protected void includeDrawer(Boolean back) {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
@@ -192,15 +195,31 @@ public class BaseActivity extends AppCompatActivity {
                 this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
 
-        toggle.syncState();
 
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("cek", "home selected");
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
+
+        if (back != true) {
+            toggle.syncState();
+            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("cek", "home selected");
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            });
+        } else {
+            Drawable icArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black);
+            icArrow.setColorFilter(getColor(R.color.colorWhite), PorterDuff.Mode.SRC_ATOP);
+            myToolbar.setLogo(icArrow);
+            myToolbar.setOnClickListener(new Toolbar.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+//            toggle.setDrawerIndicatorEnabled(true);
+//            toggle.setHomeAsUpIndicator(R.drawable.ic_happy_black);
+        }
+
 
         // Get the navigationView and set an item selected listener
         NavigationView navigationView = (NavigationView) this.findViewById(R.id.nav_view);

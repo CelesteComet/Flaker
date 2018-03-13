@@ -51,7 +51,7 @@ public class AddFriendActivity extends BaseActivity {
             }
         });
 
-        includeDrawer();
+        includeDrawer(true);
     }
 
     private void fetchUser(String email) {

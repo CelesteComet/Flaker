@@ -80,7 +80,7 @@ public class TestActivity extends BaseActivity {
 
 
 
-        includeDrawer();
+        includeDrawer(false);
         setupAutoCompleteWidget();
 
 
