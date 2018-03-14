@@ -1,6 +1,8 @@
 package com.flaker.flaker;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
 
@@ -48,8 +50,6 @@ public class MyApp extends Application {
         super.onCreate();
 
 
-        FirebaseApp.initializeApp(this);
-        db = FirebaseDatabase.getInstance();
 
         setupFirebaseReferences();
         setupFirebaseAuth();
@@ -102,5 +102,9 @@ public class MyApp extends Application {
         // Retrieve firebase authentication instance and get the current user
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent goToAuth = new Intent(this, AuthActivity.class);
+            startActivity(goToAuth);
+        }
     }
 }
