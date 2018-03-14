@@ -1,11 +1,15 @@
 package com.flaker.flaker;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -54,6 +58,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public static String meetingId;
     public static boolean currentlyRouting = false;
+    public static Long scheduledMillis;
 
     // Permissions
     protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -73,24 +78,38 @@ public class BaseActivity extends AppCompatActivity {
         getLocationPermission();
         setupFirebaseAuth();
         setupFirebaseReferences();
+//        listenForNotifications();
         executeCalendarTest();
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @Override
-    protected void onStop() {
-        // call the superclass method first
-        super.onStop();
+    protected void listenForNotifications() {
 
-        if (currentlyRouting == true) {
-            // tell system it has stopped routing
-            currentlyRouting = false;
+        ValueEventListener invitedMeetupsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                Log.d("BRUCE", "WOWOWOW NEW STUFF ");
+                Log.d("BRUCE", dataSnapshot.toString());
 
-            // remove yourself from map
-            MeetupsDatabase.child(meetingId).child("acceptedUsers").child(currentUser.getUid()).removeValue();
+                NotificationManagerBruce myNotificationManager = new NotificationManagerBruce(getApplicationContext());
+                myNotificationManager.createNotification("HELLO", "WORLD");
+                // ...
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
 
-        }
+        UsersDatabase.child(currentUser.getUid().toString()).addValueEventListener(invitedMeetupsListener);
     }
+
+
 
     protected void print(String str) {
         System.out.println(str);
@@ -170,7 +189,7 @@ public class BaseActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
     }
 
-    protected void includeDrawer() {
+    protected void includeDrawer(Boolean back) {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
@@ -180,15 +199,31 @@ public class BaseActivity extends AppCompatActivity {
                 this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
 
-        toggle.syncState();
 
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("cek", "home selected");
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
+
+        if (back != true) {
+            toggle.syncState();
+            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("cek", "home selected");
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            });
+        } else {
+            Drawable icArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black);
+            icArrow.setColorFilter(getColor(R.color.colorWhite), PorterDuff.Mode.SRC_ATOP);
+            myToolbar.setLogo(icArrow);
+            myToolbar.setOnClickListener(new Toolbar.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+//            toggle.setDrawerIndicatorEnabled(true);
+//            toggle.setHomeAsUpIndicator(R.drawable.ic_happy_black);
+        }
+
 
         // Get the navigationView and set an item selected listener
         NavigationView navigationView = (NavigationView) this.findViewById(R.id.nav_view);
@@ -222,8 +257,8 @@ public class BaseActivity extends AppCompatActivity {
                                 "Please begin a new route to view ETAs", Snackbar.LENGTH_LONG);
                         mySnackbar.show();
                     } else {
-                        Intent displayETAsActivityIntent = new Intent(getApplicationContext(), EtaActivity.class);
-                        startActivity(displayETAsActivityIntent);
+                        Intent displayMeetupInvite = new Intent(getApplicationContext(), MeetupInviteActivity.class);
+                        startActivity(displayMeetupInvite);
                     }
                 } else if (id == R.id.nav_requests) {
                     if (currentlyRouting == true) {

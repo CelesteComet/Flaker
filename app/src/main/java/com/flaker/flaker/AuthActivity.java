@@ -141,8 +141,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInwithCrednetial:Success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-//                            startActivity(displayMainActivityIntent);
+                            Intent displayMainActivityIntent = new Intent(getApplicationContext(), TestActivity.class);
+                            startActivity(displayMainActivityIntent);
 //                            updateUI(user);
                             Log.d("theuser", user.toString());
 

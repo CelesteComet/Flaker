@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class InviteeListAdapter extends ArrayAdapter {
     Context context;
+    Toast m_currentToast;
     public InviteeListAdapter(@NonNull Context context, ArrayList<String[]> friends) {
         super(context, R.layout.invitee_row, friends);
         this.context = context;
@@ -39,7 +41,7 @@ public class InviteeListAdapter extends ArrayAdapter {
         View inviteesView = theInflater.inflate(R.layout.invitee_row, parent, false);
 
         String[] singleFriend = (String[]) getItem(position);
-        String singleName = singleFriend[0];
+        final String singleName = singleFriend[0];
 
         String singlePhotoUrl = singleFriend[1];
 
@@ -49,19 +51,37 @@ public class InviteeListAdapter extends ArrayAdapter {
 
         TextView nameText = (TextView)  inviteesView.findViewById(R.id.invitee_name_text);
         ImageView photoView = (ImageView) inviteesView.findViewById(R.id.invitee_row_photo);
-        Button inviteButton = (Button) inviteesView.findViewById(R.id.invite_button);
+//        Button inviteButton = (Button) inviteesView.findViewById(R.id.invite_button);
 
         final User tempUser = new User(singleName, singleUserEmail, singlePhotoUrl, 0);
-        inviteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            Meeting.inviteUserToMeetup(singleUserId, BaseActivity.meetingId);
-                //addInvitedUserToMeetup(tempUser, BaseActivity.meetingId, singleUserId);
-            }
-        });
+//        inviteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            Meeting.inviteUserToMeetup(singleUserId, BaseActivity.meetingId);
+//                //addInvitedUserToMeetup(tempUser, BaseActivity.meetingId, singleUserId);
+//            }
+//        });
 
         nameText.setText(singleName);
         Picasso.with(this.context).load(singlePhotoUrl).into(photoView);
+
+        inviteesView.findViewById(R.id.inviteeRow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Meeting.inviteUserToMeetup(singleUserId, BaseActivity.meetingId);
+
+
+
+                //display in short period of time
+                showToast("Invitation sent to " + singleName + ".");
+
+            }
+        });
+
+
+
+
 
         return inviteesView;
     }
@@ -95,6 +115,19 @@ public class InviteeListAdapter extends ArrayAdapter {
         //add Meetup to the invited user's InvitedMeetups
 //        DatabaseReference userInvitedMeetupsRef = UsersDatabase.child("G1223232").child("invitedMeetups");
 //        userInvitedMeetupsRef.push().setValue(meetupKey);
+    }
+
+
+
+    void showToast(String text)
+    {
+        if(m_currentToast != null)
+        {
+            m_currentToast.cancel();
+        }
+        m_currentToast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+        m_currentToast.show();
+
     }
 
 

@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.SupportActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,10 +39,10 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public CardView mCardView;
-        public ViewHolder(CardView v) {
+        public LinearLayout mLinearLayout;
+        public ViewHolder(LinearLayout v) {
             super(v);
-            mCardView = v;
+            mLinearLayout = v;
         }
     }
 
@@ -61,9 +61,12 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 //                .inflate(R.layout.request_row, parent, false);
 //        ViewHolder vh = new ViewHolder(v);
 //        return vh;
-        CardView mCardView = (CardView) LayoutInflater.from(parent.getContext())
+        LinearLayout mLinearLayout = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.request_row, parent, false);
-        ViewHolder vh = new ViewHolder(mCardView);
+        ViewHolder vh = new ViewHolder(mLinearLayout);
+
+
+
         return vh;
     }
 
@@ -73,20 +76,26 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        TextView requestRowOwnerId = holder.mCardView.findViewById(R.id.requestRowOwner);
-        TextView requestRowAddress = holder.mCardView.findViewById(R.id.requestRowAddress);
-        TextView requestRowScheduledTime = holder.mCardView.findViewById(R.id.requestRowScheduledTime);
+        TextView requestRowOwnerId = holder.mLinearLayout.findViewById(R.id.requestRowOwner);
+        TextView requestRowAddress = holder.mLinearLayout.findViewById(R.id.requestRowAddress);
+//        TextView requestRowScheduledTime = holder.mLinearLayout.findViewById(R.id.requestRowScheduledTime);
 
 
         final Meeting meeting = mDataset.get(position);
 
+        String militaryTime = BaseActivity.normalizeTime(meeting.scheduledTime).toString();
+
         requestRowAddress.setText(meeting.address); // address
 
 
-        requestRowOwnerId.setText(meeting.ownerName); // ownerName
-        requestRowScheduledTime.setText(meeting.scheduledTime.toString()); // scheduledTime
+        requestRowOwnerId.setText(meeting.ownerName + " @ " + militaryTime); // ownerName
 
-        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+
+
+
+//        requestRowScheduledTime.setText(BaseActivity.normalizeTime(meeting.scheduledTime).toString()); // scheduledTime
+
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

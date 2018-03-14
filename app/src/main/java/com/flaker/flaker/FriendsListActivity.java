@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,7 +81,11 @@ public class FriendsListActivity extends BaseActivity {
         final DatabaseReference mrootRef = database.getReference();
         friendsListRef = mrootRef.child("friends_list").child(currentUserId);
 
-        includeDrawer();
+        includeDrawer(true);
+
+
+
+
 
         //initial friends list fetch
         fetchFriendsList();

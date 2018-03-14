@@ -48,7 +48,7 @@
         <!-- <activity -->
         <!-- android:name=".MainActivity" -->
         <!-- android:label="" /> -->
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileActivity" android:label=""/>
         <activity android:name=".RequestTestActivity" />
         <!-- <activity android:name=".MapsActivity" /> -->
         <activity android:name=".EtaActivity" />
@@ -56,8 +56,8 @@
             android:name=".FriendsListActivity"
             android:label=""
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".RequesteeViewActivity" />
-        <activity android:name=".MeetupInviteActivity" />
+        <activity android:name=".RequesteeViewActivity" android:label=""/>
+        <activity android:name=".MeetupInviteActivity" android:label=""/>
          <activity android:name=".TestActivity" android:label=""></activity>
         <activity android:name=".ConfirmActivity" />
         <activity android:name=".AddFriendActivity" android:label=""></activity>
